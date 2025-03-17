@@ -6,7 +6,7 @@ class ManagerViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/manager" // ✅ Replace with actual API URL
-    private let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQxNzkwMDUyLCJleHAiOjE3NDE3OTMwNTJ9.FdenLtor9X1M7Zxcib_qfvgBVE7vQvnADk7uRaPUB8E" // ✅ Use a real token
+    private let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQxODU3NzgxLCJleHAiOjE3NDE4NjA3ODF9.Y-h-k_WxwMl2PVrr360tW2fzovNleTEMQZD9u8tL3aw" // ✅ Use a real token
 
     /// Fetch managers from the API
     func fetchManagers() async {

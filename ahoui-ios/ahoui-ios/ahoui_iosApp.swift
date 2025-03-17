@@ -9,9 +9,16 @@ import SwiftUI
 
 @main
 struct ahoui_iosApp: App {
+    @StateObject var authViewModel = AuthViewModel()
+    @StateObject var sellerViewModel = SellerViewModel()
+    @StateObject var sessionViewModel = SessionViewModel()
+
     var body: some Scene {
         WindowGroup {
-            ListeManagersView()
+            HomeView()
+                .environmentObject(authViewModel)
+                .environmentObject(sellerViewModel)
+                .environmentObject(sessionViewModel)
         }
     }
 }
