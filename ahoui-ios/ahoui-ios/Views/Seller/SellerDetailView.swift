@@ -12,7 +12,10 @@ struct SellerDetailView: View {
     @State private var phone = ""
     @State private var amountOwed = ""
 
-    @StateObject private var depositedGameViewModel = DepositedGameViewModel(service: DepositedGameService()) // ✅ Initialize ViewModel
+    @StateObject private var depositedGameViewModel = DepositedGameViewModel(service: DepositedGameService())
+    @StateObject private var transactionViewModel = TransactionViewModel(service: TransactionService())
+    @StateObject private var refundViewModel = RefundViewModel(service: RefundService())
+
 
     @State private var selectedOption = "Jeux déposés"
     let options = ["Jeux déposés", "Transactions", "Remboursements"]
@@ -88,9 +91,14 @@ struct SellerDetailView: View {
                     .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
                     .onChange(of: selectedOption) { newValue in
                         if newValue == "Jeux déposés" {
-                            depositedGameViewModel.fetchDepositedGamesBySeller(sellerId: sellerId) // ✅ Fetch data
+                            depositedGameViewModel.fetchDepositedGamesBySeller(sellerId: sellerId)
+                        } else if newValue == "Transactions" {
+                            transactionViewModel.fetchTransactionsBySeller(sellerId: sellerId)
+                        } else if newValue == "Remboursements" {
+                            refundViewModel.fetchRefundsBySeller(sellerId: sellerId)
                         }
                     }
+
 
                     // 🔹 Display Deposited Games when "Jeux déposés" is selected
                     if selectedOption == "Jeux déposés" {
@@ -112,6 +120,44 @@ struct SellerDetailView: View {
                             }
                         }
                     }
+                    if selectedOption == "Transactions" {
+                        if transactionViewModel.isLoading {
+                            ProgressView("Chargement des transactions...")
+                        } else if let errorMessage = transactionViewModel.errorMessage {
+                            Text("Erreur: \(errorMessage)").foregroundColor(.red)
+                        } else if transactionViewModel.transactions.isEmpty {
+                            Text("Aucune transaction trouvée.").foregroundColor(.gray)
+                        } else {
+                            ScrollView {
+                                VStack(spacing: 15) {
+                                    ForEach(transactionViewModel.transactions) { transaction in
+                                        TransactionView(transaction: transaction)
+                                    }
+                                }
+                                .padding(.top, 10)
+                            }
+                        }
+                    }
+                    if selectedOption == "Remboursements" {
+                        if refundViewModel.isLoading {
+                            ProgressView("Chargement des remboursements...")
+                        } else if let errorMessage = refundViewModel.errorMessage {
+                            Text("Erreur: \(errorMessage)").foregroundColor(.red)
+                        } else if refundViewModel.refunds.isEmpty {
+                            Text("Aucun remboursement trouvé.").foregroundColor(.gray)
+                        } else {
+                            ScrollView {
+                                VStack(spacing: 15) {
+                                    ForEach(refundViewModel.refunds, id: \.refundDate) { refund in
+                                        RefundView(refund: refund)
+                                    }
+                                }
+                                .padding(.top, 10)
+                            }
+                        }
+                    }
+
+
                 } else {
                     ProgressView("Chargement...")
                 }
@@ -121,8 +167,9 @@ struct SellerDetailView: View {
                 viewModel.fetchSeller(id: sellerId)
                 sessionViewModel.loadActiveSession()
                 
-                // ✅ Fetch deposited games immediately when the page loads
+                // Fetch deposited games, transactuin and refunds immediately when the page loads
                 depositedGameViewModel.fetchDepositedGamesBySeller(sellerId: sellerId)
+                transactionViewModel.fetchTransactionsBySeller(sellerId: sellerId)
             }
 
             .onReceive(viewModel.$selectedSeller) { seller in
