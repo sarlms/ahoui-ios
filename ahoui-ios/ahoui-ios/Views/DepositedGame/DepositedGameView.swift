@@ -6,27 +6,41 @@ struct DepositedGameView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
-                    ForEach(viewModel.depositedGames) { game in
-                        DepositedGameCardView(game: game) // ✅ Using a separate card component
-                            .frame(maxWidth: .infinity)
+                if viewModel.isLoading {
+                    ProgressView("Chargement des jeux déposés...")
+                } else if let errorMessage = viewModel.errorMessage {
+                    Text("❌ Erreur: \(errorMessage)").foregroundColor(.red)
+                } else if viewModel.depositedGames.isEmpty {
+                    Text("⚠️ Aucun jeu déposé trouvé.").font(.headline).foregroundColor(.gray)
+                } else {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
+                        ForEach(viewModel.depositedGames) { game in
+                            DepositedGameCardView(game: game) // ✅ FIXED: Now passing DepositedGame
+                                .frame(maxWidth: .infinity)
+                        }
                     }
+                    .padding()
                 }
-                .padding()
             }
             .navigationTitle("Jeux Déposés")
             .onAppear {
+                print("🔹 DepositedGameView appeared") // ✅ Debugging
                 viewModel.fetchAllDepositedGames()
             }
         }
     }
 }
 
+
 struct DepositedGameCardView: View {
-    let game: DepositedGame
-    
+    let game: DepositedGame // ✅ FIX: Use DepositedGame
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            Text("ID: \(game.id)") // ✅ Debugging: Ensure each game has an ID
+                .font(.caption)
+                .foregroundColor(.gray)
+            
             Text("\(game.gameDescription.name) | \(String(format: "%.2f", game.salePrice))€")
                 .font(.system(size: 20, weight: .bold))
                 .foregroundColor(.black)
@@ -47,33 +61,10 @@ struct DepositedGameCardView: View {
                     .foregroundColor(.black)
                 Text("Nom : \(game.session.name)")
                     .font(.system(size: 14))
-                Text("Statut : clôturée") // Assuming all sessions are closed
+                Text("Statut : clôturée")
                     .font(.system(size: 14, weight: .bold))
                     .foregroundColor(.pink)
             }
-            
-            VStack(alignment: .leading, spacing: 5) {
-                Text("Etiquette")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.black)
-                Text("\(game.id)")
-                    .font(.system(size: 14))
-            }
-            
-            VStack(alignment: .center, spacing: 5) {
-                Text("Vendu ?")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.black)
-                
-                Text(game.sold ? "Oui" : "Non")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(width: 80)
-                    .background(Color.black)
-                    .cornerRadius(20)
-            }
-            .frame(maxWidth: .infinity, alignment: .center)
         }
         .padding()
         .background(Color.white.opacity(0.5))

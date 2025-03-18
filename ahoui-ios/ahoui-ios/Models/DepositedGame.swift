@@ -2,9 +2,9 @@ import Foundation
 
 struct DepositedGame: Identifiable, Codable {
     let id: String
-    let seller: SellerInfo
-    let session: SessionInfo
-    let gameDescription: GameDescriptionInfo
+    let seller: DepositedGameSellerInfo
+    let session: DepositedGameSessionInfo
+    let gameDescription: DepositedGameDescriptionInfo
     let salePrice: Double
     let forSale: Bool
     let pickedUp: Bool
@@ -13,9 +13,9 @@ struct DepositedGame: Identifiable, Codable {
     // ✅ Map `_id` from MongoDB to `id`
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case seller = "sellerId"
-        case session = "sessionId"
-        case gameDescription = "gameDescriptionId"
+        case seller = "sellerId" // ✅ Correct mapping
+        case session = "sessionId" // ✅ Correct mapping
+        case gameDescription = "gameDescriptionId" // ✅ Correct mapping
         case salePrice
         case forSale
         case pickedUp
@@ -24,7 +24,7 @@ struct DepositedGame: Identifiable, Codable {
 }
 
 // 🔹 Nested struct for seller details
-struct SellerInfo: Codable {
+struct DepositedGameSellerInfo: Codable {
     let id: String
     let name: String
     let email: String
@@ -37,22 +37,20 @@ struct SellerInfo: Codable {
 }
 
 // 🔹 Nested struct for session details
-struct SessionInfo: Codable {
+struct DepositedGameSessionInfo: Codable {
     let id: String
     let name: String
-    let startDate: String
-    let endDate: String
+    let saleComission: Int // ✅ Removed startDate and endDate (they were missing in API)
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case name
-        case startDate
-        case endDate
+        case saleComission
     }
 }
 
 // 🔹 Nested struct for game description
-struct GameDescriptionInfo: Codable {
+struct DepositedGameDescriptionInfo: Codable {
     let id: String
     let name: String
     let publisher: String

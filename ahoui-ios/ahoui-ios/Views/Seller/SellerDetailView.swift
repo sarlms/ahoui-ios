@@ -106,20 +106,28 @@ struct SellerDetailView: View {
                             ProgressView("Chargement des jeux déposés...")
                         } else if let errorMessage = depositedGameViewModel.errorMessage {
                             Text("Erreur: \(errorMessage)").foregroundColor(.red)
-                        } else if depositedGameViewModel.depositedGames.isEmpty {
-                            Text("Aucun jeu déposé trouvé pour ce vendeur.")
+                        } else if depositedGameViewModel.depositedGamesForSeller.isEmpty {
+                            Text("⚠️ Aucun jeu déposé trouvé pour ce vendeur.")
+                                .font(.headline)
                                 .foregroundColor(.gray)
+                                .onAppear {
+                                    print("🚨 UI thinks depositedGamesForSeller is empty!") // ✅ Debugging
+                                }
                         } else {
                             ScrollView {
                                 VStack(spacing: 15) {
-                                    ForEach(depositedGameViewModel.depositedGames) { game in
+                                    ForEach(depositedGameViewModel.depositedGamesForSeller, id: \.id) { game in
                                         DepositedGameSellerDetailView(game: game) // ✅ Display deposited games
+                                            .onAppear {
+                                                print("🎮 Showing game: \(game.gameDescription.name) | ID: \(game.id)") // ✅ Debugging
+                                            }
                                     }
                                 }
                                 .padding(.top, 10)
                             }
                         }
                     }
+
                     if selectedOption == "Transactions" {
                         if transactionViewModel.isLoading {
                             ProgressView("Chargement des transactions...")

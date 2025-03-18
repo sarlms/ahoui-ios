@@ -8,42 +8,11 @@ class DepositedGameService {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization") // ✅ Uses static token
+        request.addValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         return request
     }
 
-    func fetchDepositedGamesBySeller(sellerId: String, completion: @escaping (Result<[DepositedGame], Error>) -> Void) {
-        print("\(baseURL)/seller/\(sellerId)") // url is right
-        guard let url = URL(string: "\(baseURL)/seller/\(sellerId)") else {
-            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
-            return
-        }
-
-        let request = createRequest(url: url, method: "GET")
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-
-                guard let data = data else {
-                    completion(.failure(NSError(domain: "No data received", code: -2, userInfo: nil)))
-                    return
-                }
-
-                do {
-                    let games = try JSONDecoder().decode([DepositedGame].self, from: data)
-                    completion(.success(games))
-                } catch {
-                    completion(.failure(error))
-                }
-            }
-        }.resume()
-    }
-    
-    // ✅ New function to fetch all deposited games
+    /// 🔹 Fetch **all** deposited games
     func fetchAllDepositedGames(completion: @escaping (Result<[DepositedGame], Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -68,6 +37,39 @@ class DepositedGameService {
                     let games = try JSONDecoder().decode([DepositedGame].self, from: data)
                     completion(.success(games))
                 } catch {
+                    print("❌ JSON Decoding Error for ALL games: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+
+    /// 🔹 Fetch deposited games for a **specific seller**
+    func fetchDepositedGamesBySeller(sellerId: String, completion: @escaping (Result<[SellerDepositedGameSeller], Error>) -> Void) {
+        guard let url = URL(string: "\(baseURL)/seller/\(sellerId)") else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+            return
+        }
+
+        let request = createRequest(url: url, method: "GET")
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                guard let data = data else {
+                    completion(.failure(NSError(domain: "No data received", code: -2, userInfo: nil)))
+                    return
+                }
+
+                do {
+                    let games = try JSONDecoder().decode([SellerDepositedGameSeller].self, from: data)
+                    completion(.success(games))
+                } catch {
+                    print("❌ JSON Decoding Error for SELLER games: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DepositedGameSellerDetailView: View {
-    let game: DepositedGame
+    let game: SellerDepositedGameSeller
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
