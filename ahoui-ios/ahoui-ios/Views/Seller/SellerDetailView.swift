@@ -113,7 +113,7 @@ struct SellerDetailView: View {
                             ScrollView {
                                 VStack(spacing: 15) {
                                     ForEach(depositedGameViewModel.depositedGames) { game in
-                                        DepositedGameView(game: game) // ✅ Display deposited games
+                                        DepositedGameSellerDetailView(game: game) // ✅ Display deposited games
                                     }
                                 }
                                 .padding(.top, 10)

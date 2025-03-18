@@ -4,6 +4,7 @@ struct NavBarView: View {
     @Binding var isMenuOpen: Bool
     @EnvironmentObject var viewModel: AuthViewModel
     @State private var shouldNavigateToSellerList = false
+    @State private var shouldNavigateToDepositedGames = false
 
     var body: some View {
         ZStack {
@@ -26,7 +27,27 @@ struct NavBarView: View {
 
                         if viewModel.isAuthenticated {
                             menuButton(title: "+ SESSION")
-                            menuButton(title: "JEUX DEPOSÉS")
+                            
+                            Button(action: {
+                                shouldNavigateToDepositedGames = true
+                            }) {
+                                Text("JEUX DEPOSÉS")
+                                    .font(.custom("Poppins", size: 17))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.black)
+                                    .frame(width: 200)
+                                    .padding()
+                                    .background(Color(red: 1, green: 0.98, blue: 0.95))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(Color.black, lineWidth: 1)
+                                    )
+                            }
+                            .navigationDestination(isPresented: $shouldNavigateToDepositedGames) {
+                                DepositedGameView() // Replace this with your actual DepositedGame view list
+                            }
+
                             menuButton(title: "+ DÉPÔT")
                             menuButton(title: "+ JEU")
                             menuButton(title: "ENCAISSEMENT")

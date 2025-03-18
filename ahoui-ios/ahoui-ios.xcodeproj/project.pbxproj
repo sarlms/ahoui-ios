@@ -34,7 +34,7 @@
 		B73FF36A2D89C5A800BF24BF /* DepositedGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3692D89C5A800BF24BF /* DepositedGame.swift */; };
 		B73FF36C2D89C5F100BF24BF /* DepositedGameService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF36B2D89C5F100BF24BF /* DepositedGameService.swift */; };
 		B73FF36E2D89C60D00BF24BF /* DepositedGameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF36D2D89C60D00BF24BF /* DepositedGameViewModel.swift */; };
-		B73FF3712D89EEA900BF24BF /* DepositedGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3702D89EEA900BF24BF /* DepositedGameView.swift */; };
+		B73FF3712D89EEA900BF24BF /* DepositedGameSellerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3702D89EEA900BF24BF /* DepositedGameSellerDetailView.swift */; };
 		B73FF3742D89FD1500BF24BF /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3732D89FD1500BF24BF /* Transaction.swift */; };
 		B73FF3762D89FDCA00BF24BF /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3752D89FDCA00BF24BF /* Client.swift */; };
 		B73FF3782D89FDF200BF24BF /* TransactionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3772D89FDF200BF24BF /* TransactionService.swift */; };
@@ -42,6 +42,7 @@
 		B73FF37D2D89FE3D00BF24BF /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF37C2D89FE3D00BF24BF /* TransactionView.swift */; };
 		B73FF3802D8A054300BF24BF /* RefundViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF37F2D8A054300BF24BF /* RefundViewModel.swift */; };
 		B73FF3822D8A05AC00BF24BF /* RefundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3812D8A05AC00BF24BF /* RefundView.swift */; };
+		B73FF3842D8A0E7700BF24BF /* DepositedGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3832D8A0E7700BF24BF /* DepositedGameView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -73,7 +74,7 @@
 		B73FF3692D89C5A800BF24BF /* DepositedGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositedGame.swift; sourceTree = "<group>"; };
 		B73FF36B2D89C5F100BF24BF /* DepositedGameService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositedGameService.swift; sourceTree = "<group>"; };
 		B73FF36D2D89C60D00BF24BF /* DepositedGameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositedGameViewModel.swift; sourceTree = "<group>"; };
-		B73FF3702D89EEA900BF24BF /* DepositedGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositedGameView.swift; sourceTree = "<group>"; };
+		B73FF3702D89EEA900BF24BF /* DepositedGameSellerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositedGameSellerDetailView.swift; sourceTree = "<group>"; };
 		B73FF3732D89FD1500BF24BF /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		B73FF3752D89FDCA00BF24BF /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		B73FF3772D89FDF200BF24BF /* TransactionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionService.swift; sourceTree = "<group>"; };
@@ -81,6 +82,7 @@
 		B73FF37C2D89FE3D00BF24BF /* TransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionView.swift; sourceTree = "<group>"; };
 		B73FF37F2D8A054300BF24BF /* RefundViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundViewModel.swift; sourceTree = "<group>"; };
 		B73FF3812D8A05AC00BF24BF /* RefundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundView.swift; sourceTree = "<group>"; };
+		B73FF3832D8A0E7700BF24BF /* DepositedGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositedGameView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,7 +213,8 @@
 		B73FF36F2D89EE8900BF24BF /* DepositedGame */ = {
 			isa = PBXGroup;
 			children = (
-				B73FF3702D89EEA900BF24BF /* DepositedGameView.swift */,
+				B73FF3702D89EEA900BF24BF /* DepositedGameSellerDetailView.swift */,
+				B73FF3832D8A0E7700BF24BF /* DepositedGameView.swift */,
 			);
 			path = DepositedGame;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				B73FF36E2D89C60D00BF24BF /* DepositedGameViewModel.swift in Sources */,
 				B73FF37D2D89FE3D00BF24BF /* TransactionView.swift in Sources */,
 				B73FF3352D8833C700BF24BF /* Seller.swift in Sources */,
+				B73FF3842D8A0E7700BF24BF /* DepositedGameView.swift in Sources */,
 				B73FF3212D86ECE700BF24BF /* AuthViewModel.swift in Sources */,
 				B73FF3762D89FDCA00BF24BF /* Client.swift in Sources */,
 				B73FF3112D81D2B000BF24BF /* ManagerViewModel.swift in Sources */,
@@ -333,7 +337,7 @@
 				B73FF30B2D81D1DC00BF24BF /* ManagerModel.swift in Sources */,
 				B73FF3422D884B4900BF24BF /* Refund.swift in Sources */,
 				B73FF3282D86F13D00BF24BF /* CustomTextField.swift in Sources */,
-				B73FF3712D89EEA900BF24BF /* DepositedGameView.swift in Sources */,
+				B73FF3712D89EEA900BF24BF /* DepositedGameSellerDetailView.swift in Sources */,
 				B73FF3402D8834A300BF24BF /* NewSellerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

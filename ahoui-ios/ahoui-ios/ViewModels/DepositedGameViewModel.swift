@@ -27,4 +27,25 @@ class DepositedGameViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchAllDepositedGames() {
+        isLoading = true
+        errorMessage = nil
+        print("Fetching all deposited games...") // ✅ Debugging
+
+        service.fetchAllDepositedGames { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let games):
+                    print("Successfully fetched \(games.count) games") // ✅ Debugging
+                    self?.depositedGames = games
+                case .failure(let error):
+                    print("Error fetching games: \(error.localizedDescription)") // ✅ Debugging
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+
 }
