@@ -6,32 +6,37 @@ struct SellerDetailView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @Environment(\.presentationMode) var presentationMode // ✅ Used to go back after delete
     let sellerId: String
-    
+
     @State private var name = ""
     @State private var email = ""
     @State private var phone = ""
     @State private var amountOwed = ""
-    
+
+    @StateObject private var depositedGameViewModel = DepositedGameViewModel(service: DepositedGameService()) // ✅ Initialize ViewModel
+
+    @State private var selectedOption = "Jeux déposés"
+    let options = ["Jeux déposés", "Transactions", "Remboursements"]
+
     var amountOwedDouble: Double {
         Double(amountOwed) ?? 0.0
     }
-    
+
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea() // ✅ Fond pour éviter un affichage vide
-            
+            Color.white.ignoresSafeArea()
+
             VStack {
                 Text("Détails du vendeur")
                     .font(.system(size: 25, weight: .semibold))
                     .foregroundColor(.black)
-                
+
                 if let seller = viewModel.selectedSeller {
                     VStack {
                         InputField(title: "Nom", text: $name, placeholder: "")
                         InputField(title: "Email", text: $email, placeholder: "")
                         InputField(title: "Numéro de téléphone", text: $phone, placeholder: "")
                         InputField(title: "Montant dû (€)", text: $amountOwed, placeholder: "0")
-                        
+
                         HStack {
                             Button(action: updateSellerDetails) {
                                 Text("Enregistrer")
@@ -42,7 +47,7 @@ struct SellerDetailView: View {
                                     .background(Color.blue)
                                     .cornerRadius(15)
                             }
-                            
+
                             Button(action: deleteSeller) {
                                 Text("Supprimer")
                                     .font(.system(size: 12, weight: .medium))
@@ -52,7 +57,7 @@ struct SellerDetailView: View {
                                     .background(Color.red)
                                     .cornerRadius(15)
                             }
-                            
+
                             Button(action: refundSeller) {
                                 Text("Rembourser")
                                     .foregroundColor(.white)
@@ -68,6 +73,45 @@ struct SellerDetailView: View {
                     .background(Color.white.opacity(0.5))
                     .cornerRadius(20)
                     .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
+
+                    // 🔹 Dropdown menu
+                    Picker("Sélectionner", selection: $selectedOption) {
+                        ForEach(options, id: \.self) { option in
+                            Text(option).tag(option)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .padding()
+                    .frame(width: 200)
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
+                    .onChange(of: selectedOption) { newValue in
+                        if newValue == "Jeux déposés" {
+                            depositedGameViewModel.fetchDepositedGamesBySeller(sellerId: sellerId) // ✅ Fetch data
+                        }
+                    }
+
+                    // 🔹 Display Deposited Games when "Jeux déposés" is selected
+                    if selectedOption == "Jeux déposés" {
+                        if depositedGameViewModel.isLoading {
+                            ProgressView("Chargement des jeux déposés...")
+                        } else if let errorMessage = depositedGameViewModel.errorMessage {
+                            Text("Erreur: \(errorMessage)").foregroundColor(.red)
+                        } else if depositedGameViewModel.depositedGames.isEmpty {
+                            Text("Aucun jeu déposé trouvé pour ce vendeur.")
+                                .foregroundColor(.gray)
+                        } else {
+                            ScrollView {
+                                VStack(spacing: 15) {
+                                    ForEach(depositedGameViewModel.depositedGames) { game in
+                                        DepositedGameView(game: game) // ✅ Display deposited games
+                                    }
+                                }
+                                .padding(.top, 10)
+                            }
+                        }
+                    }
                 } else {
                     ProgressView("Chargement...")
                 }
@@ -76,59 +120,56 @@ struct SellerDetailView: View {
             .onAppear {
                 viewModel.fetchSeller(id: sellerId)
                 sessionViewModel.loadActiveSession()
+                
+                // ✅ Fetch deposited games immediately when the page loads
+                depositedGameViewModel.fetchDepositedGamesBySeller(sellerId: sellerId)
             }
+
             .onReceive(viewModel.$selectedSeller) { seller in
                 if let seller = seller {
                     name = seller.name
                     email = seller.email
                     phone = seller.phone
                     amountOwed = String(format: "%.2f", seller.amountOwed)
-                    //print("✅ Données du vendeur mises à jour : \(seller.name)")
                 }
             }
         }
     }
-    
+
     func updateSellerDetails() {
         let updatedSeller = Seller(id: sellerId, name: name, email: email, phone: phone, amountOwed: amountOwedDouble)
         viewModel.updateSeller(id: sellerId, updatedSeller: updatedSeller)
-        //print("✅ Mise à jour du vendeur effectuée.")
-        presentationMode.wrappedValue.dismiss() // ✅ Navigate back to SellerListView after update
+        presentationMode.wrappedValue.dismiss()
     }
-    
+
     func deleteSeller() {
         viewModel.deleteSeller(id: sellerId)
-        //print("❌ Vendeur supprimé.")
-        presentationMode.wrappedValue.dismiss() // ✅ Navigate back after delete
+        presentationMode.wrappedValue.dismiss()
     }
-    
+
     func refundSeller() {
         guard let activeSession = sessionViewModel.activeSession else {
             viewModel.errorMessage = "Aucune session active trouvée."
-            print("active session: ", sessionViewModel.activeSession)
-            print("❌ Erreur : Aucune session active.")
             return
         }
-        
+
         guard let managerId = authViewModel.managerId else {
             viewModel.errorMessage = "Utilisateur non authentifié."
-            print("manager id: ", authViewModel.managerId)
-            print("❌ Erreur : Utilisateur non authentifié.")
             return
         }
-        
-        print("📌 Remboursement en cours pour la session: \(activeSession.id) et le vendeur \(sellerId)")
-        
+
         viewModel.refundSeller(
             sellerId: sellerId,
             refundAmount: amountOwedDouble,
             authViewModel: authViewModel,
             sessionViewModel: sessionViewModel
         )
-        
+
         presentationMode.wrappedValue.dismiss()
     }
 }
+
+
 
 struct ActionButton: View {
     var title: String
@@ -148,16 +189,3 @@ struct ActionButton: View {
     }
 }
 
-struct DepositedGameView: View {
-    var body: some View {
-        VStack {
-            Text("UNO - Deluxe | 12€")
-                .font(.system(size: 14, weight: .bold))
-            Text("Session: Février - Clôturée")
-            Text("Vendu: Non, Disponible: Non, Récupéré: Oui")
-        }
-        .padding()
-        .background(Color.white.opacity(0.5))
-        .cornerRadius(20)
-    }
-}
