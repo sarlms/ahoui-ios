@@ -82,31 +82,19 @@ class SellerViewModel: ObservableObject {
     }
     
     func refundSeller(sellerId: String, refundAmount: Double, authViewModel: AuthViewModel, sessionViewModel: SessionViewModel) {
-            guard let managerId = authViewModel.managerId else {
-                self.errorMessage = "Erreur: Manager non trouvé."
-                return
-            }
-            
-            guard let activeSession = sessionViewModel.activeSession else {
-                self.errorMessage = "Erreur: Aucune session active trouvée."
-                return
-            }
-
-            refundService.createRefund(
-                sellerId: sellerId,
-                refundAmount: refundAmount,
-                authViewModel: authViewModel,
-                sessionViewModel: sessionViewModel
-            ) { result in
+            refundService.createRefund(sellerId: sellerId, refundAmount: refundAmount, authViewModel: authViewModel, sessionViewModel: sessionViewModel) { [weak self] result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success:
                         print("✅ Remboursement réussi pour le vendeur \(sellerId)")
+                        if let seller = self?.selectedSeller {
+                            let updatedSeller = Seller(id: seller.id, name: seller.name, email: seller.email, phone: seller.phone, amountOwed: 0)
+                            self?.updateSeller(id: sellerId, updatedSeller: updatedSeller)
+                        }
                     case .failure(let error):
-                        self.errorMessage = "Erreur de remboursement: \(error.localizedDescription)"
+                        self?.errorMessage = "Erreur de remboursement: \(error.localizedDescription)"
                     }
                 }
             }
         }
-
 }

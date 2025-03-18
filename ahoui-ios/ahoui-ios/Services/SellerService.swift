@@ -35,7 +35,7 @@ class SellerService {
 
             // ✅ Debug: Print raw response
             if let jsonString = String(data: data, encoding: .utf8) {
-                print("✅ Raw JSON Response: \(jsonString)")
+                //print("✅ Raw JSON Response: \(jsonString)")
             }
 
             do {

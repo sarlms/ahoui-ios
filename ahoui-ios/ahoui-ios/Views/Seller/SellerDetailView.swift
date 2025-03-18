@@ -83,7 +83,7 @@ struct SellerDetailView: View {
                     email = seller.email
                     phone = seller.phone
                     amountOwed = String(format: "%.2f", seller.amountOwed)
-                    print("✅ Données du vendeur mises à jour : \(seller.name)")
+                    //print("✅ Données du vendeur mises à jour : \(seller.name)")
                 }
             }
         }
@@ -92,25 +92,27 @@ struct SellerDetailView: View {
     func updateSellerDetails() {
         let updatedSeller = Seller(id: sellerId, name: name, email: email, phone: phone, amountOwed: amountOwedDouble)
         viewModel.updateSeller(id: sellerId, updatedSeller: updatedSeller)
-        print("✅ Mise à jour du vendeur effectuée.")
+        //print("✅ Mise à jour du vendeur effectuée.")
         presentationMode.wrappedValue.dismiss() // ✅ Navigate back to SellerListView after update
     }
     
     func deleteSeller() {
         viewModel.deleteSeller(id: sellerId)
-        print("❌ Vendeur supprimé.")
+        //print("❌ Vendeur supprimé.")
         presentationMode.wrappedValue.dismiss() // ✅ Navigate back after delete
     }
     
     func refundSeller() {
         guard let activeSession = sessionViewModel.activeSession else {
             viewModel.errorMessage = "Aucune session active trouvée."
+            print("active session: ", sessionViewModel.activeSession)
             print("❌ Erreur : Aucune session active.")
             return
         }
         
         guard let managerId = authViewModel.managerId else {
             viewModel.errorMessage = "Utilisateur non authentifié."
+            print("manager id: ", authViewModel.managerId)
             print("❌ Erreur : Utilisateur non authentifié.")
             return
         }
