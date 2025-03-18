@@ -5,7 +5,7 @@ struct HomeView: View {
     @State private var countdown: String = ""
     @State private var timer: Timer? = nil
     @EnvironmentObject var viewModel: AuthViewModel
-    @StateObject private var sessionViewModel = SessionViewModel() // ✅ Use SessionViewModel
+    @StateObject private var sessionViewModel = SessionViewModel() // ✅ Utilisation correcte du ViewModel
 
     var body: some View {
         ZStack {
@@ -52,6 +52,7 @@ struct HomeView: View {
 
                 Spacer()
 
+                // 🔹 Affichage selon la session active ou à venir
                 if let session = sessionViewModel.activeSession {
                     VStack {
                         Text("\(session.name) en cours !")
@@ -102,8 +103,8 @@ struct HomeView: View {
             }
         }
         .onAppear {
-            sessionViewModel.fetchActiveSession() // ✅ Load active session
-            sessionViewModel.fetchAllSessions()   // ✅ Load upcoming sessions
+            sessionViewModel.loadActiveSession() // ✅ Chargement de la session active
+            sessionViewModel.loadNextSession()   // ✅ Chargement de la prochaine session
         }
         .onReceive(sessionViewModel.$nextSession) { session in
             if let session = session {
@@ -119,12 +120,14 @@ struct HomeView: View {
         )
     }
 
-    // Gestion du compte à rebours
-    func startCountdown(to targetDate: Date) {
+    // 🔹 Gestion du compte à rebours
+    func startCountdown(to targetDate: String) {
+        guard let targetDate = ISO8601DateFormatter().date(from: targetDate) else { return }
+
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            let now = Date().timeIntervalSince1970
-            let timeLeft = targetDate.timeIntervalSince1970 - now
+            let now = Date()
+            let timeLeft = targetDate.timeIntervalSince(now)
 
             if timeLeft <= 0 {
                 timer?.invalidate()

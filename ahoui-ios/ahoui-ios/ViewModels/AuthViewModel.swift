@@ -5,32 +5,24 @@ class AuthViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var isLoading: Bool = false
     @Published var loginError: String?
-    @Published var authToken: String? {
-        didSet {
-            UserDefaults.standard.set(authToken, forKey: "authToken")
-        }
-    }
-    @Published var managerId: String? {  // ✅ Store manager's ID
-        didSet {
-            UserDefaults.standard.set(managerId, forKey: "managerId")
-        }
-    }
+    @Published var authToken: String?
+    @Published var managerId: String?
+    @Published var storeId: String?
+    @Published var firstName: String?
+    @Published var lastName: String?
+    @Published var isAdmin: Bool = false
     @Published var isAuthenticated: Bool = false
     @Published var shouldNavigateToHome: Bool = false
 
-    private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/auth"
+    private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr"
 
-    init() {
-        self.authToken = UserDefaults.standard.string(forKey: "authToken")
-        self.managerId = UserDefaults.standard.string(forKey: "managerId") // ✅ Retrieve manager ID on app start
-        self.isAuthenticated = (authToken != nil)
-    }
-
+    /// 🔹 Login Function
     func login() {
+        print("🔑 Logging in with email:", email)
         isLoading = true
         loginError = nil
 
-        guard let url = URL(string: "\(baseURL)/login") else {
+        guard let url = URL(string: "\(baseURL)/auth/login") else {
             isLoading = false
             loginError = "URL invalide"
             return
@@ -51,30 +43,150 @@ class AuthViewModel: ObservableObject {
         URLSession.shared.dataTask(with: request) { data, _, error in
             DispatchQueue.main.async {
                 self.isLoading = false
-                
-                guard let data = data, error == nil,
-                      let json = try? JSONSerialization.jsonObject(with: data, options: []),
-                      let responseDict = json as? [String: Any],
-                      let token = responseDict["token"] as? String,
-                      let managerId = responseDict["id"] as? String else {  // ✅ Extract manager ID
+
+                if let error = error {
+                    print("❌ Erreur de requête : \(error.localizedDescription)")
+                    self.loginError = "Erreur de connexion au serveur"
+                    return
+                }
+
+                guard let data = data else {
+                    print("❌ Aucune donnée reçue")
+                    self.loginError = "Aucune réponse du serveur"
+                    return
+                }
+
+                let json = try? JSONSerialization.jsonObject(with: data, options: [])
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("📩 Réponse brute du serveur : \(responseString)")
+                }
+
+                guard let responseDict = json as? [String: Any],
+                      let token = responseDict["token"] as? String else {
+                    print("🚨 API Response:", json ?? "Invalid JSON")
                     self.loginError = "Email ou mot de passe incorrect"
                     return
                 }
 
-                self.authToken = token
-                self.managerId = managerId // ✅ Store manager ID
-                self.isAuthenticated = true
-                self.shouldNavigateToHome = true
+                // ✅ Decode JWT Token to Get Manager ID
+                if let managerId = self.decodeJWT(token: token) {
+                    self.authToken = token
+                    self.managerId = managerId
+                    self.isAuthenticated = true
+                    self.fetchManagerProfile(token: token) // Fetch additional data
+                } else {
+                    print("❌ Impossible de décoder le JWT")
+                    self.loginError = "Erreur d'authentification"
+                }
             }
         }.resume()
     }
 
+    /// 🔹 Fetch Manager Profile After Login
+    func fetchManagerProfile(token: String) {
+        guard let url = URL(string: "\(baseURL)/manager/profile") else {
+            print("❌ Invalid URL")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ Error fetching profile: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let data = data else {
+                    print("❌ No data received")
+                    return
+                }
+
+                let json = try? JSONSerialization.jsonObject(with: data, options: [])
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("📩 Server Response (Profile): \(responseString)")
+                }
+
+                guard let responseDict = json as? [String: Any] else {
+                    print("🚨 API Response (Profile) is invalid:", json ?? "No JSON received")
+                    return
+                }
+
+                // ✅ Extract Manager Details
+                self.firstName = responseDict["firstName"] as? String
+                self.lastName = responseDict["lastName"] as? String
+                self.isAdmin = responseDict["admin"] as? Bool ?? false
+                self.storeId = responseDict["storeId"] as? String
+
+                print("✅ Manager Info: \(self.firstName ?? "") \(self.lastName ?? ""), Admin: \(self.isAdmin)")
+
+                // ✅ Ensure navigation happens on main thread
+                DispatchQueue.main.async {
+                    self.shouldNavigateToHome = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        self.shouldNavigateToHome = true
+                        print("🔄 shouldNavigateToHome is set to TRUE ✅")
+                    }
+                }
+            }
+        }.resume()
+    }
+
+
+    /// 🔹 Decode JWT Token to Extract Manager ID
+    func decodeJWT(token: String) -> String? {
+        let parts = token.split(separator: ".")
+        guard parts.count == 3 else {
+            print("❌ JWT structure is invalid")
+            return nil
+        }
+
+        var payload = String(parts[1])
+
+        // ✅ Fix Base64 URL Encoding
+        payload = payload.replacingOccurrences(of: "-", with: "+")
+                         .replacingOccurrences(of: "_", with: "/")
+
+        // ✅ Ensure correct padding
+        while payload.count % 4 != 0 {
+            payload += "="
+        }
+
+        // ✅ Decode Base64
+        guard let payloadData = Data(base64Encoded: payload) else {
+            print("❌ Failed to decode Base64 JWT payload")
+            return nil
+        }
+
+        // ✅ Convert JSON
+        do {
+            let jsonObject = try JSONSerialization.jsonObject(with: payloadData, options: [])
+            if let payloadDict = jsonObject as? [String: Any], let managerId = payloadDict["id"] as? String {
+                print("✅ Extracted Manager ID from JWT: \(managerId)")
+                return managerId
+            } else {
+                print("🚨 JWT Payload Invalid:", jsonObject)
+            }
+        } catch {
+            print("❌ Error parsing JWT JSON:", error.localizedDescription)
+        }
+
+        return nil
+    }
+
+
+    /// 🔹 Logout Function
     func logout() {
         self.authToken = nil
         self.managerId = nil
+        self.storeId = nil
+        self.firstName = nil
+        self.lastName = nil
+        self.isAdmin = false
         self.isAuthenticated = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.shouldNavigateToHome = false
-        }
+        self.shouldNavigateToHome = false
     }
 }

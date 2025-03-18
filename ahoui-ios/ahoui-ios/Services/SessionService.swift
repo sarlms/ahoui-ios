@@ -1,60 +1,87 @@
 import Foundation
 
 class SessionService {
-    private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/session"
+    private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/session/active"
 
-    private func createRequest(url: URL, method: String) -> URLRequest {
-        var request = URLRequest(url: url)
-        request.httpMethod = method
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        return request // Pas de token nécessaire
-    }
+    // Récupère la session active complète
+    func fetchActiveSession(completion: @escaping (Session?) -> Void) {
+        guard let url = URL(string: baseURL) else {
+            print("❌ URL invalide")
+            completion(nil)
+            return
+        }
 
-    func fetchActiveSession(completion: @escaping (Result<Session, Error>) -> Void) {
-        guard let url = URL(string: "\(baseURL)/active") else { return }
-        let request = createRequest(url: url, method: "GET")
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
-                completion(.failure(error))
+                print("❌ Erreur de requête :", error.localizedDescription)
+                completion(nil)
                 return
             }
+
             guard let data = data else {
-                completion(.failure(NSError(domain: "No data", code: 0, userInfo: nil)))
+                print("❌ Aucune donnée reçue")
+                completion(nil)
                 return
             }
+
             do {
-                let activeSession = try JSONDecoder().decode(Session.self, from: data)
-                DispatchQueue.main.async {
-                    completion(.success(activeSession))
+                let sessions = try JSONDecoder().decode([Session].self, from: data)
+                let activeSession = sessions.first // Il ne peut y avoir qu'une seule session active
+                if let session = activeSession {
+                    print("✅ Session active récupérée :", session)
+                } else {
+                    print("⚠️ Aucune session active trouvée")
                 }
+                completion(activeSession)
             } catch {
-                completion(.failure(error))
+                print("❌ Erreur de décodage :", error.localizedDescription)
+                completion(nil)
             }
         }.resume()
     }
-    
-    func fetchAllSessions(completion: @escaping (Result<[Session], Error>) -> Void) {
-            guard let url = URL(string: baseURL) else { return }
-            let request = createRequest(url: url, method: "GET")
 
-            URLSession.shared.dataTask(with: request) { data, _, error in
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-                guard let data = data else {
-                    completion(.failure(NSError(domain: "No data", code: 0, userInfo: nil)))
-                    return
-                }
-                do {
-                    let sessions = try JSONDecoder().decode([Session].self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(sessions))
-                    }
-                } catch {
-                    completion(.failure(error))
-                }
-            }.resume()
+    // Récupère uniquement l'identifiant de la session active
+    func fetchActiveSessionId(completion: @escaping (String?) -> Void) {
+        fetchActiveSession { session in
+            if let session = session {
+                print("✅ ID de la session active :", session.id)
+                completion(session.id)
+            } else {
+                print("⚠️ Impossible de récupérer l'ID de la session active")
+                completion(nil)
+            }
         }
+    }
+    
+    // Récupère la prochaine session à venir (la plus proche dans le futur)
+    func fetchNextSession(completion: @escaping (Session?) -> Void) {
+        guard let url = URL(string: "\(baseURL)/upcoming") else {  // ✅ Endpoint à définir côté backend
+            print("❌ URL invalide")
+            completion(nil)
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("❌ Erreur de requête :", error.localizedDescription)
+                completion(nil)
+                return
+            }
+
+            guard let data = data else {
+                print("❌ Aucune donnée reçue")
+                completion(nil)
+                return
+            }
+
+            do {
+                let sessions = try JSONDecoder().decode([Session].self, from: data)
+                let nextSession = sessions.first  // La prochaine session (la plus proche dans le futur)
+                completion(nextSession)
+            } catch {
+                print("❌ Erreur de décodage :", error.localizedDescription)
+                completion(nil)
+            }
+        }.resume()
+    }
 }

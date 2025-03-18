@@ -4,12 +4,10 @@ class SellerViewModel: ObservableObject {
     @Published var sellers: [Seller] = []
     @Published var selectedSeller: Seller?
     @Published var errorMessage: String? // Store error messages for UI feedback
-    @Published var currentSessionId: String? // ✅ Doit être rempli par l'application
     @Published var managerId: String? // ✅ Doit être rempli par l'application
 
     private let sellerService = SellerService()
     private let refundService = RefundService()
-    private let sessionViewModel = SessionViewModel()
     
     func createSeller(seller: Seller) {
         sellerService.createSeller(seller) { [weak self] result in
@@ -84,33 +82,31 @@ class SellerViewModel: ObservableObject {
     }
     
     func refundSeller(sellerId: String, refundAmount: Double, authViewModel: AuthViewModel, sessionViewModel: SessionViewModel) {
-        guard let managerId = authViewModel.managerId else {
-            self.errorMessage = "Erreur: Manager non trouvé."
-            return
-        }
-        
-        guard let activeSession = sessionViewModel.activeSession else {
-            self.errorMessage = "Erreur: Aucune session active trouvée."
-            return
-        }
-        
-        let refundService = RefundService()
+            guard let managerId = authViewModel.managerId else {
+                self.errorMessage = "Erreur: Manager non trouvé."
+                return
+            }
+            
+            guard let activeSession = sessionViewModel.activeSession else {
+                self.errorMessage = "Erreur: Aucune session active trouvée."
+                return
+            }
 
-        refundService.createRefund(
-            sellerId: sellerId,
-            refundAmount: refundAmount,
-            authViewModel: authViewModel,
-            sessionViewModel: sessionViewModel
-        ) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    print("Remboursement réussi pour le vendeur \(sellerId)")
-                case .failure(let error):
-                    self.errorMessage = "Erreur de remboursement: \(error.localizedDescription)"
+            refundService.createRefund(
+                sellerId: sellerId,
+                refundAmount: refundAmount,
+                authViewModel: authViewModel,
+                sessionViewModel: sessionViewModel
+            ) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success:
+                        print("✅ Remboursement réussi pour le vendeur \(sellerId)")
+                    case .failure(let error):
+                        self.errorMessage = "Erreur de remboursement: \(error.localizedDescription)"
+                    }
                 }
             }
         }
-    }
 
 }

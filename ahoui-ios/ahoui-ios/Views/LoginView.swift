@@ -1,12 +1,11 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject var viewModel: AuthViewModel // ✅ Utilise l'instance globale
+    @EnvironmentObject var viewModel: AuthViewModel  // ✅ Use the global AuthViewModel
 
     var body: some View {
         NavigationStack {
             VStack {
-                // Interface de connexion
                 Text("CONNEXION")
                     .font(.custom("Poppins-SemiBold", size: 30))
                     .foregroundColor(.black)
@@ -25,7 +24,7 @@ struct LoginView: View {
                         .shadow(color: Color.black.opacity(0.25), radius: 4, x: 0, y: 4)
                 )
 
-                // Bouton Connexion
+                // 🔹 Connexion Button
                 Button(action: viewModel.login) {
                     Text(viewModel.isLoading ? "Connexion..." : "Connexion")
                         .font(.custom("Poppins-Medium", size: 20))
@@ -41,7 +40,7 @@ struct LoginView: View {
                 }
                 .disabled(viewModel.isLoading)
 
-                // Affichage des erreurs
+                // 🔹 Affichage des erreurs
                 if let loginError = viewModel.loginError {
                     Text(loginError)
                         .foregroundColor(.red)
@@ -50,7 +49,7 @@ struct LoginView: View {
                 }
             }
             .padding()
-            // ✅ Ajoute navigationDestination ici
+            // 🔹 Navigation to HomeView when login is successful
             .navigationDestination(isPresented: $viewModel.shouldNavigateToHome) {
                 HomeView()
             }

@@ -2,37 +2,31 @@ import Foundation
 
 class SessionViewModel: ObservableObject {
     @Published var activeSession: Session?
-    @Published var errorMessage: String?
+    @Published var activeSessionId: String?
     @Published var nextSession: Session?
-
+    
     private let sessionService = SessionService()
 
-    func fetchActiveSession() {
-        sessionService.fetchActiveSession { [weak self] result in
+    func loadActiveSession() {
+        sessionService.fetchActiveSession { [weak self] session in
             DispatchQueue.main.async {
-                switch result {
-                case .success(let session):
-                    self?.activeSession = session
-                case .failure(let error):
-                    self?.errorMessage = "Erreur lors de la récupération de la session active: \(error.localizedDescription)"
-                }
+                self?.activeSession = session
+            }
+        }
+    }
+
+    func loadActiveSessionId() {
+        sessionService.fetchActiveSessionId { [weak self] sessionId in
+            DispatchQueue.main.async {
+                self?.activeSessionId = sessionId
             }
         }
     }
     
-    func fetchAllSessions() {
-        sessionService.fetchAllSessions { [weak self] result in
+    func loadNextSession() {
+        sessionService.fetchNextSession { [weak self] session in
             DispatchQueue.main.async {
-                switch result {
-                case .success(let sessions):
-                    let now = Date()
-                    self?.nextSession = sessions
-                        .filter { $0.startDate > now }
-                        .sorted { $0.startDate < $1.startDate }
-                        .first
-                case .failure:
-                    self?.nextSession = nil
-                }
+                self?.nextSession = session
             }
         }
     }

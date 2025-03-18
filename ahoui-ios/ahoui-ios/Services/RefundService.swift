@@ -18,7 +18,6 @@ class RefundService {
             return
         }
 
-        sessionViewModel.fetchActiveSession() // ✅ Fetch active session before refund
         guard let activeSession = sessionViewModel.activeSession else {
             completion(.failure(NSError(domain: "No active session found", code: 0, userInfo: nil)))
             return
@@ -28,10 +27,10 @@ class RefundService {
 
         let refund = Refund(
             sellerId: sellerId,
-            sessionId: activeSession.id,  // ✅ Use active session ID
-            managerId: managerId,         // ✅ Use logged-in manager ID
+            sessionId: activeSession.id,
+            managerId: managerId,
             refundAmount: refundAmount,
-            refundDate: ISO8601DateFormatter().string(from: Date()) // ✅ Use current date
+            refundDate: ISO8601DateFormatter().string(from: Date())
         )
 
         do {
