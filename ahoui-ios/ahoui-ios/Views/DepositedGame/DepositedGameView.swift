@@ -49,9 +49,9 @@ struct DepositedGameCardView: View {
                 Text("Vendeur")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.black)
-                Text("Nom : \(game.seller.name)")
+                Text("Nom : \(game.seller!.name)")
                     .font(.system(size: 14))
-                Text("Email : \(game.seller.email)")
+                Text("Email : \(game.seller!.email)")
                     .font(.system(size: 14))
             }
             
@@ -59,7 +59,7 @@ struct DepositedGameCardView: View {
                 Text("Session")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.black)
-                Text("Nom : \(game.session.name)")
+                Text("Nom : \(game.session!.name)")
                     .font(.system(size: 14))
                 Text("Statut : clôturée")
                     .font(.system(size: 14, weight: .bold))

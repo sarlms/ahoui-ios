@@ -94,46 +94,39 @@ class AuthViewModel: ObservableObject {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
         URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error = error {
+                print("❌ Error fetching profile: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("❌ No data received")
+                return
+            }
+
+            let json = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("📩 Server Response (Profile): \(responseString)")
+            }
+
+            guard let responseDict = json as? [String: Any],
+                  let managerId = responseDict["id"] as? String else {
+                print("🚨 API Response (Profile) is invalid:", json ?? "No JSON received")
+                return
+            }
+
             DispatchQueue.main.async {
-                if let error = error {
-                    print("❌ Error fetching profile: \(error.localizedDescription)")
-                    return
-                }
-
-                guard let data = data else {
-                    print("❌ No data received")
-                    return
-                }
-
-                let json = try? JSONSerialization.jsonObject(with: data, options: [])
-                if let responseString = String(data: data, encoding: .utf8) {
-                    print("📩 Server Response (Profile): \(responseString)")
-                }
-
-                guard let responseDict = json as? [String: Any] else {
-                    print("🚨 API Response (Profile) is invalid:", json ?? "No JSON received")
-                    return
-                }
-
-                // ✅ Extract Manager Details
+                self.managerId = managerId
                 self.firstName = responseDict["firstName"] as? String
                 self.lastName = responseDict["lastName"] as? String
-                self.isAdmin = responseDict["admin"] as? Bool ?? false
+                self.isAdmin = responseDict["admin"] as? Bool ?? true
                 self.storeId = responseDict["storeId"] as? String
 
                 print("✅ Manager Info: \(self.firstName ?? "") \(self.lastName ?? ""), Admin: \(self.isAdmin)")
-
-                // ✅ Ensure navigation happens on main thread
-                DispatchQueue.main.async {
-                    self.shouldNavigateToHome = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        self.shouldNavigateToHome = true
-                        print("🔄 shouldNavigateToHome is set to TRUE ✅")
-                    }
-                }
             }
         }.resume()
     }
+
 
 
     /// 🔹 Decode JWT Token to Extract Manager ID
@@ -146,26 +139,30 @@ class AuthViewModel: ObservableObject {
 
         var payload = String(parts[1])
 
-        // ✅ Fix Base64 URL Encoding
         payload = payload.replacingOccurrences(of: "-", with: "+")
                          .replacingOccurrences(of: "_", with: "/")
 
-        // ✅ Ensure correct padding
         while payload.count % 4 != 0 {
             payload += "="
         }
 
-        // ✅ Decode Base64
         guard let payloadData = Data(base64Encoded: payload) else {
             print("❌ Failed to decode Base64 JWT payload")
             return nil
         }
 
-        // ✅ Convert JSON
         do {
             let jsonObject = try JSONSerialization.jsonObject(with: payloadData, options: [])
             if let payloadDict = jsonObject as? [String: Any], let managerId = payloadDict["id"] as? String {
                 print("✅ Extracted Manager ID from JWT: \(managerId)")
+
+                // ✅ Stocke dans UserDefaults et met à jour `shouldNavigateToHome`
+                DispatchQueue.main.async {
+                    self.managerId = managerId
+                    UserDefaults.standard.set(managerId, forKey: "managerId")
+                    self.shouldNavigateToHome = true  // ✅ Active la navigation
+                    print("🔄 shouldNavigateToHome is set to TRUE ✅")
+                }
                 return managerId
             } else {
                 print("🚨 JWT Payload Invalid:", jsonObject)
@@ -188,5 +185,8 @@ class AuthViewModel: ObservableObject {
         self.isAdmin = false
         self.isAuthenticated = false
         self.shouldNavigateToHome = false
+        
+        // 🔹 Supprimer le managerId de UserDefaults
+        UserDefaults.standard.removeObject(forKey: "managerId")
     }
 }

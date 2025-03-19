@@ -5,6 +5,7 @@ struct NavBarView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     @State private var shouldNavigateToSellerList = false
     @State private var shouldNavigateToDepositedGames = false
+    @State private var shouldNavigateToCart = false
 
     var body: some View {
         ZStack {
@@ -27,57 +28,38 @@ struct NavBarView: View {
 
                         if viewModel.isAuthenticated {
                             menuButton(title: "+ SESSION")
-                            
+
                             Button(action: {
                                 shouldNavigateToDepositedGames = true
                             }) {
-                                Text("JEUX DEPOSÉS")
-                                    .font(.custom("Poppins", size: 17))
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.black)
-                                    .frame(width: 200)
-                                    .padding()
-                                    .background(Color(red: 1, green: 0.98, blue: 0.95))
-                                    .cornerRadius(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.black, lineWidth: 1)
-                                    )
+                                navButtonTitle("JEUX DEPOSÉS")
                             }
                             .navigationDestination(isPresented: $shouldNavigateToDepositedGames) {
-                                DepositedGameView() // Replace this with your actual DepositedGame view list
+                                DepositedGameView()
                             }
 
                             menuButton(title: "+ DÉPÔT")
                             menuButton(title: "+ JEU")
-                            menuButton(title: "ENCAISSEMENT")
+
+                            Button(action: {
+                                shouldNavigateToCart = true
+                            }) {
+                                navButtonTitle("ENCAISSEMENT")
+                            }
+                            .navigationDestination(isPresented: $shouldNavigateToCart) {
+                                CartView().environmentObject(viewModel)
+                            }
+
                             menuButton(title: "TRANSACTIONS")
                             menuButton(title: "TRÉSORERIE")
-                            
-                            // ✅ Navigation trigger for "SELLER MANAGEMENT"
+
                             Button(action: {
                                 shouldNavigateToSellerList = true
                             }) {
-                                Text("SELLER MANAGEMENT")
-                                    .font(.custom("Poppins", size: 17))
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.black)
-                                    .frame(width: 200)
-                                    .padding()
-                                    .background(Color(red: 1, green: 0.98, blue: 0.95))
-                                    .cornerRadius(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.black, lineWidth: 1)
-                                    )
+                                navButtonTitle("SELLER MANAGEMENT")
                             }
-                            .navigationDestination(isPresented: $shouldNavigateToSellerList) { // ✅ Navigation destination
+                            .navigationDestination(isPresented: $shouldNavigateToSellerList) {
                                 SellerListView().environmentObject(viewModel)
-                            }
-
-                            // ✅ Navigation automatique après déconnexion
-                            .navigationDestination(isPresented: $viewModel.shouldNavigateToHome) {
-                                HomeView().environmentObject(viewModel)
                             }
 
                             Button(action: {
@@ -147,26 +129,30 @@ struct NavBarView: View {
         )
     }
     
+    /// ✅ Fonction générique pour créer un bouton de menu sans navigation
     func menuButton(title: String) -> some View {
         Button(action: {
             print("\(title) tapped")
         }) {
-            Text(title)
-                .font(.custom("Poppins", size: 17))
-                .fontWeight(.bold)
-                .foregroundColor(.black)
-                .frame(width: 200)
-                .padding()
-                .background(Color(red: 1, green: 0.98, blue: 0.95))
-                .cornerRadius(10)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.black, lineWidth: 1)
-                )
+            navButtonTitle(title)
         }
+    }
+
+    /// ✅ Fonction pour le style des boutons
+    func navButtonTitle(_ title: String) -> some View {
+        Text(title)
+            .font(.custom("Poppins", size: 17))
+            .fontWeight(.bold)
+            .foregroundColor(.black)
+            .frame(width: 200)
+            .padding()
+            .background(Color(red: 1, green: 0.98, blue: 0.95))
+            .cornerRadius(10)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
     }
 }
 
 #Preview {
-    NavBarView(isMenuOpen: .constant(true)).environmentObject(AuthViewModel())
+    NavBarView(isMenuOpen: .constant(true))
+        .environmentObject(AuthViewModel())
 }

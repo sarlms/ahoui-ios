@@ -2,8 +2,8 @@ import Foundation
 
 struct DepositedGame: Identifiable, Codable {
     let id: String
-    let seller: DepositedGameSellerInfo
-    let session: DepositedGameSessionInfo
+    let seller: DepositedGameSellerInfo?
+    let session: DepositedGameSessionInfo?
     let gameDescription: DepositedGameDescriptionInfo
     let salePrice: Double
     let forSale: Bool
@@ -27,7 +27,7 @@ struct DepositedGame: Identifiable, Codable {
 struct DepositedGameSellerInfo: Codable {
     let id: String
     let name: String
-    let email: String
+    let email: String?
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
@@ -40,7 +40,7 @@ struct DepositedGameSellerInfo: Codable {
 struct DepositedGameSessionInfo: Codable {
     let id: String
     let name: String
-    let saleComission: Int // ✅ Removed startDate and endDate (they were missing in API)
+    let saleComission: Int? // ✅ Removed startDate and endDate (they were missing in API)
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"

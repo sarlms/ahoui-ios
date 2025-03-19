@@ -172,5 +172,29 @@ class SellerService {
                 completion(.failure(error))
             }
         }
+    
+    
+    func updateSellerAmountOwed(sellerId: String, amount: Double, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: "\(baseURL)/\(sellerId)") else { return }
+
+        let requestBody = ["amountOwed": amount]
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
+            completion(.failure(NSError(domain: "Encoding error", code: -3, userInfo: nil)))
+            return
+        }
+
+        var request = createRequest(url: url, method: "PUT", body: jsonData)
+
+        URLSession.shared.dataTask(with: request) { _, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                completion(.success(()))
+            }
+        }.resume()
+    }
+
 
 }

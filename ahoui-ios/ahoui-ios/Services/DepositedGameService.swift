@@ -4,11 +4,12 @@ class DepositedGameService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/depositedGame"
     private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyMzMwMTkzLCJleHAiOjE3NDIzMzMxOTN9.GGuoXkqEwLFcCf_Huy4kMMpq2K9V0rw_st8jeJNx28c"
 
-    private func createRequest(url: URL, method: String) -> URLRequest {
+    private func createRequest(url: URL, method: String, body: Data? = nil) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        request.httpBody = body
         return request
     }
 
@@ -75,4 +76,30 @@ class DepositedGameService {
             }
         }.resume()
     }
+    
+    
+    func markAsSold(gameId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: "\(baseURL)/\(gameId)") else { return }
+
+        let requestBody = ["forSale": false, "sold": true]
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
+            completion(.failure(NSError(domain: "Encoding error", code: -3, userInfo: nil)))
+            return
+        }
+
+        var request = createRequest(url: url, method: "PUT", body: jsonData)
+
+        URLSession.shared.dataTask(with: request) { _, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                completion(.success(()))
+            }
+        }.resume()
+    }
+    
+    
+    
 }
