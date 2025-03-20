@@ -2,7 +2,7 @@ import Foundation
 
 class ClientService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/client"
-    private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // Replace with actual token
+    private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyNDYzMTg4LCJleHAiOjE3NDI0NjYxODh9.fnpsca9zJe-QOXvCs_AELVUWodfkC7yh6RdMuZwndT4"
 
     private func createRequest(url: URL, method: String, body: Data? = nil) -> URLRequest {
         var request = URLRequest(url: url)
@@ -13,7 +13,7 @@ class ClientService {
         return request
     }
 
-    /// 🔹 Fetch all clients
+    // Fetch all clients
     func fetchClients(completion: @escaping (Result<[Client], Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -38,14 +38,14 @@ class ClientService {
                     let clients = try JSONDecoder().decode([Client].self, from: data)
                     completion(.success(clients))
                 } catch {
-                    print("❌ JSON Decoding Error: \(error.localizedDescription)")
+                    print("JSON Decoding Error: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }
         }.resume()
     }
 
-    /// 🔹 Fetch a single client by ID
+    // Fetch a single client by ID
     func fetchClientById(clientId: String, completion: @escaping (Result<Client, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(clientId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -70,24 +70,28 @@ class ClientService {
                     let client = try JSONDecoder().decode(Client.self, from: data)
                     completion(.success(client))
                 } catch {
-                    print("❌ JSON Decoding Error: \(error.localizedDescription)")
+                    print("JSON Decoding Error: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }
         }.resume()
     }
 
-    /// 🔹 Create a new client
+    // Create a new client
     func createClient(client: Client, completion: @escaping (Result<Client, Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
             return
         }
 
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
+        let clientData: [String: Any] = [
+            "name": client.name,
+            "email": client.email,
+            "phone": client.phone,
+            "address": client.address
+        ]
 
-        guard let jsonData = try? encoder.encode(client) else {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: clientData, options: []) else {
             completion(.failure(NSError(domain: "Encoding error", code: -3, userInfo: nil)))
             return
         }
@@ -110,14 +114,14 @@ class ClientService {
                     let newClient = try JSONDecoder().decode(Client.self, from: data)
                     completion(.success(newClient))
                 } catch {
-                    print("❌ JSON Decoding Error: \(error.localizedDescription)")
+                    print("JSON Decoding Error: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }
         }.resume()
     }
 
-    /// 🔹 Update an existing client
+    // Update an existing client
     func updateClient(clientId: String, client: Client, completion: @escaping (Result<Client, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(clientId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -148,14 +152,14 @@ class ClientService {
                     let updatedClient = try JSONDecoder().decode(Client.self, from: data)
                     completion(.success(updatedClient))
                 } catch {
-                    print("❌ JSON Decoding Error: \(error.localizedDescription)")
+                    print("JSON Decoding Error: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }
         }.resume()
     }
 
-    /// 🔹 Delete a client by ID
+    // Delete a client by ID
     func deleteClient(clientId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(clientId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))

@@ -52,6 +52,9 @@
 		B73FF3AA2D8B2C9400BF24BF /* CartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3A92D8B2C9400BF24BF /* CartViewModel.swift */; };
 		B73FF3AC2D8B2CD200BF24BF /* CartItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3AB2D8B2CD200BF24BF /* CartItem.swift */; };
 		B73FF3AE2D8B7FD200BF24BF /* NavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3AD2D8B7FD200BF24BF /* NavigationViewModel.swift */; };
+		B73FF3B02D8C13B500BF24BF /* ClientDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3AF2D8C13B500BF24BF /* ClientDetailView.swift */; };
+		B73FF3B22D8C143B00BF24BF /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B12D8C143B00BF24BF /* SharedComponents.swift */; };
+		B73FF3B42D8C151400BF24BF /* ManagementSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B32D8C151400BF24BF /* ManagementSelection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -101,6 +104,9 @@
 		B73FF3A92D8B2C9400BF24BF /* CartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewModel.swift; sourceTree = "<group>"; };
 		B73FF3AB2D8B2CD200BF24BF /* CartItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItem.swift; sourceTree = "<group>"; };
 		B73FF3AD2D8B7FD200BF24BF /* NavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewModel.swift; sourceTree = "<group>"; };
+		B73FF3AF2D8C13B500BF24BF /* ClientDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientDetailView.swift; sourceTree = "<group>"; };
+		B73FF3B12D8C143B00BF24BF /* SharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedComponents.swift; sourceTree = "<group>"; };
+		B73FF3B32D8C151400BF24BF /* ManagementSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagementSelection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +205,7 @@
 				B73FF30E2D81D27800BF24BF /* ListeManagersView.swift */,
 				B73FF3222D86ED1400BF24BF /* LoginView.swift */,
 				B73FF3242D86EFD000BF24BF /* NavBarView.swift */,
+				B73FF3B32D8C151400BF24BF /* ManagementSelection.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -207,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				B73FF3272D86F13D00BF24BF /* CustomTextField.swift */,
+				B73FF3B12D8C143B00BF24BF /* SharedComponents.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -266,6 +274,7 @@
 			children = (
 				B73FF38A2D8A207700BF24BF /* ClientListView.swift */,
 				B73FF38E2D8A20C400BF24BF /* NewClientView.swift */,
+				B73FF3AF2D8C13B500BF24BF /* ClientDetailView.swift */,
 			);
 			path = Client;
 			sourceTree = "<group>";
@@ -350,6 +359,7 @@
 			files = (
 				B73FF3462D8854AC00BF24BF /* Session.swift in Sources */,
 				B73FF33C2D88346E00BF24BF /* SellerDetailView.swift in Sources */,
+				B73FF3B02D8C13B500BF24BF /* ClientDetailView.swift in Sources */,
 				B73FF37A2D89FE1600BF24BF /* TransactionViewModel.swift in Sources */,
 				B73FF3782D89FDF200BF24BF /* TransactionService.swift in Sources */,
 				B73FF36C2D89C5F100BF24BF /* DepositedGameService.swift in Sources */,
@@ -386,11 +396,13 @@
 				B73FF3AC2D8B2CD200BF24BF /* CartItem.swift in Sources */,
 				B73FF3AA2D8B2C9400BF24BF /* CartViewModel.swift in Sources */,
 				B73FF3422D884B4900BF24BF /* Refund.swift in Sources */,
+				B73FF3B22D8C143B00BF24BF /* SharedComponents.swift in Sources */,
 				B73FF3862D8A1FB700BF24BF /* ClientService.swift in Sources */,
 				B73FF3282D86F13D00BF24BF /* CustomTextField.swift in Sources */,
 				B73FF3712D89EEA900BF24BF /* DepositedGameSellerDetailView.swift in Sources */,
 				B73FF3402D8834A300BF24BF /* NewSellerView.swift in Sources */,
 				B73FF38F2D8A20C400BF24BF /* NewClientView.swift in Sources */,
+				B73FF3B42D8C151400BF24BF /* ManagementSelection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

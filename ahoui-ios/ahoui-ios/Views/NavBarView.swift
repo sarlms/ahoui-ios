@@ -6,6 +6,9 @@ struct NavBarView: View {
     @State private var shouldNavigateToSellerList = false
     @State private var shouldNavigateToDepositedGames = false
     @State private var shouldNavigateToCart = false
+    @State private var shouldNavigateToClientList = false
+    @State private var shouldNavigateToManagerList = false
+    @State private var isDropdownOpen = false
 
     var body: some View {
         ZStack {
@@ -19,7 +22,7 @@ struct NavBarView: View {
                     }
             }
 
-            NavigationStack { // ✅ Ajout de NavigationStack
+            NavigationStack {
                 VStack {
                     Spacer()
                     VStack(spacing: 13) {
@@ -53,14 +56,46 @@ struct NavBarView: View {
                             menuButton(title: "TRANSACTIONS")
                             menuButton(title: "TRÉSORERIE")
 
-                            Button(action: {
-                                shouldNavigateToSellerList = true
-                            }) {
-                                navButtonTitle("SELLER MANAGEMENT")
-                            }
-                            .navigationDestination(isPresented: $shouldNavigateToSellerList) {
-                                SellerListView().environmentObject(viewModel)
-                            }
+                            VStack(spacing: 5) {
+                                                            Button(action: {
+                                                                withAnimation {
+                                                                    isDropdownOpen.toggle()
+                                                                }
+                                                            }) {
+                                                                HStack {
+                                                                    Text("SELLER MANAGEMENT")
+                                                                        .font(.custom("Poppins", size: 17))
+                                                                        .fontWeight(.bold)
+                                                                        .foregroundColor(.black)
+                                                                        .frame(width: 200)
+                                                                        .padding()
+                                                                        .background(Color(red: 1, green: 0.98, blue: 0.95))
+                                                                        .cornerRadius(10)
+                                                                        .overlay(
+                                                                            RoundedRectangle(cornerRadius: 8)
+                                                                                .stroke(Color.black, lineWidth: 1)
+                                                                        )
+                                                                    Image(systemName: isDropdownOpen ? "chevron.up" : "chevron.down")
+                                                                        .foregroundColor(.black)
+                                                                }
+                                                            }
+
+                                                            if isDropdownOpen {
+                                                                VStack {
+                                                                    NavigationLink(destination: SellerListView().environmentObject(viewModel)) {
+                                                                        dropdownButtonTitle("Sellers")
+                                                                    }
+
+                                                                    NavigationLink(destination: ClientListView().environmentObject(viewModel)) {
+                                                                        dropdownButtonTitle("Clients")
+                                                                    }
+
+                                                                    NavigationLink(destination: ListeManagersView().environmentObject(viewModel)) {
+                                                                        dropdownButtonTitle("Managers")
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
 
                             Button(action: {
                                 viewModel.logout()
@@ -148,6 +183,18 @@ struct NavBarView: View {
             .padding()
             .background(Color(red: 1, green: 0.98, blue: 0.95))
             .cornerRadius(10)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
+    }
+    
+    /// ✅ Function to style dropdown options
+    func dropdownButtonTitle(_ title: String) -> some View {
+        Text(title)
+            .font(.custom("Poppins", size: 15))
+            .foregroundColor(.black)
+            .frame(width: 180)
+            .padding(8)
+            .background(Color(red: 1, green: 0.98, blue: 0.95))
+            .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
     }
 }

@@ -14,10 +14,10 @@ struct NewClientView: View {
                 Text("Créer un client")
                     .font(.system(size: 22, weight: .bold))
 
-                InputField(title: "Nom", text: $name, placeholder: "Nom du client")
-                InputField(title: "Email", text: $email, placeholder: "Email")
-                InputField(title: "Téléphone", text: $phone, placeholder: "Téléphone")
-                InputField(title: "Adresse", text: $address, placeholder: "Adresse")
+                InputFieldNewClient(title: "Nom", text: $name, placeholder: "Nom du client")
+                InputFieldNewClient(title: "Email", text: $email, placeholder: "Email")
+                InputFieldNewClient(title: "Téléphone", text: $phone, placeholder: "Téléphone")
+                InputFieldNewClient(title: "Adresse", text: $address, placeholder: "Adresse")
 
                 Button(action: createClient) {
                     Text("Créer")
@@ -39,8 +39,9 @@ struct NewClientView: View {
     }
 
     func createClient() {
-        let newClient = Client(id: UUID().uuidString, name: name, email: email, phone: phone, address: address)
+        let newClient = Client(id: "", name: name, email: email, phone: phone, address: address) // Empty id
         viewModel.createClient(client: newClient)
         presentationMode.wrappedValue.dismiss()
     }
+
 }

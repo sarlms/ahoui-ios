@@ -3,7 +3,7 @@ import SwiftUI
 struct ClientListView: View {
     @StateObject private var viewModel = ClientViewModel(service: ClientService())
     @State private var searchText = ""
-    @State private var showNewClientView = false // ✅ Track navigation state
+    @State private var showNewClientView = false
 
     var filteredClients: [Client] {
         if searchText.isEmpty {
@@ -20,7 +20,7 @@ struct ClientListView: View {
                     .font(.system(size: 25, weight: .semibold))
                     .foregroundColor(.black)
                 
-                Button(action: { showNewClientView = true }) { // ✅ Show NewClientView
+                Button(action: { showNewClientView = true }) {
                     Text("Créer un nouveau client")
                         .font(.system(size: 14, weight: .medium))
                         .foregroundColor(Color.green)
@@ -31,7 +31,7 @@ struct ClientListView: View {
                         .overlay(RoundedRectangle(cornerRadius: 15)
                             .stroke(Color.green, lineWidth: 1))
                 }
-                .sheet(isPresented: $showNewClientView) { // ✅ Open sheet for NewClientView
+                .sheet(isPresented: $showNewClientView) {
                     NewClientView()
                         .environmentObject(viewModel)
                 }
@@ -52,7 +52,10 @@ struct ClientListView: View {
                 ScrollView {
                     VStack {
                         ForEach(filteredClients) { client in
-                            ClientCardView(client: client)
+                            NavigationLink(destination: ClientDetailView(client: client)) {
+                                ClientCardView(client: client)
+                            }
+                            .buttonStyle(PlainButtonStyle()) // Removes link styling
                         }
                     }
                 }
@@ -65,6 +68,7 @@ struct ClientListView: View {
         }
     }
 }
+
 
 struct ClientCardView: View {
     let client: Client

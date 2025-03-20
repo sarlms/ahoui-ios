@@ -35,7 +35,7 @@ class ClientViewModel: ObservableObject {
         self.service = service
     }
 
-    /// 🔹 Fetch all clients
+    // Fetch all clients
     func fetchClients() {
         isLoading = true
         errorMessage = nil
@@ -45,17 +45,17 @@ class ClientViewModel: ObservableObject {
                 self?.isLoading = false
                 switch result {
                 case .success(let clients):
-                    print("✅ Successfully fetched \(clients.count) clients")
+                    print("Successfully fetched \(clients.count) clients")
                     self?.clients = clients
                 case .failure(let error):
-                    print("❌ Error fetching clients: \(error.localizedDescription)")
+                    print("Error fetching clients: \(error.localizedDescription)")
                     self?.errorMessage = error.localizedDescription
                 }
             }
         }
     }
 
-    /// 🔹 Fetch a single client by ID
+    //🔹 Fetch a single client by ID
     func fetchClientById(clientId: String) {
         isLoading = true
         errorMessage = nil
@@ -73,6 +73,7 @@ class ClientViewModel: ObservableObject {
         }
     }
     
+    // Create a client
     func createClient(client: Client) {
         service.createClient(client: client) { [weak self] result in
             DispatchQueue.main.async {
@@ -87,7 +88,7 @@ class ClientViewModel: ObservableObject {
     }
     
     
-    //utilisée dans Cart (encaissement)
+    // utilisée dans Cart (encaissement)
     func fetchUniqueClientEmails() {
         isLoading = true
         errorMessage = nil
@@ -106,6 +107,49 @@ class ClientViewModel: ObservableObject {
         }
     }
     
+    // Update client details
+    func updateClient(client: Client, completion: @escaping (Bool) -> Void) {
+        isLoading = true
+        errorMessage = nil
+
+        service.updateClient(clientId: client.id, client: client) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let updatedClient):
+                    if let index = self?.clients.firstIndex(where: { $0.id == updatedClient.id }) {
+                        self?.clients[index] = updatedClient
+                    }
+                    self?.selectedClient = updatedClient
+                    completion(true) // Notify success
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(false) // Notify failure
+                }
+            }
+        }
+    }
+    
+    // Delete a client by ID
+    func deleteClient(clientId: String, completion: @escaping (Bool) -> Void) {
+        isLoading = true
+        errorMessage = nil
+
+        service.deleteClient(clientId: clientId) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success:
+                    self?.clients.removeAll { $0.id == clientId } // Remove client from list
+                    self?.selectedClient = nil
+                    completion(true)
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(false)
+                }
+            }
+        }
+    }
     
     func fetchClientByEmail(email: String) {
         guard let client = clients.first(where: { $0.email == email }) else {

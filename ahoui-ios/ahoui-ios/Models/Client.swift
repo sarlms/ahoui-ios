@@ -7,7 +7,7 @@ struct Client: Identifiable, Codable {
     let phone: String
     let address: String
 
-    // Map `_id` from MongoDB to `id`
+    // Map _id from MongoDB to id
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case name
