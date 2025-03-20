@@ -9,6 +9,28 @@ class SellerViewModel: ObservableObject {
     private let sellerService = SellerService()
     private let refundService = RefundService()
     
+    
+    // Utilisé pour la recherche d'email
+    @Published var uniqueSellerEmails: [String] = []
+    @Published var selectedEmail: String?
+    @Published var searchText: String = "" {
+        didSet {
+            if searchText.isEmpty {
+                selectedSeller = nil
+            }
+        }
+    }
+
+    // Filtrer les emails
+    var filteredEmails: [String] {
+        if searchText.isEmpty {
+            return uniqueSellerEmails
+        } else {
+            return uniqueSellerEmails.filter { $0.lowercased().contains(searchText.lowercased()) }
+        }
+    }
+
+    
     func createSeller(seller: Seller) {
         sellerService.createSeller(seller) { [weak self] result in
             DispatchQueue.main.async {
@@ -97,4 +119,37 @@ class SellerViewModel: ObservableObject {
                 }
             }
         }
+    
+    func fetchUniqueSellerEmails() {
+        sellerService.fetchSellers { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let sellers):
+                    let emails = Set(sellers.map { $0.email })
+                    self?.uniqueSellerEmails = Array(emails).sorted()
+                case .failure(let error):
+                    self?.errorMessage = "Erreur lors de la récupération des emails: \(error.localizedDescription)"
+                }
+            }
+        }
+    }
+
+    func fetchSellerByEmail(email: String) {
+        guard let seller = sellers.first(where: { $0.email == email }) else {
+            sellerService.fetchSellers { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let fetchedSellers):
+                        if let foundSeller = fetchedSellers.first(where: { $0.email == email }) {
+                            self?.selectedSeller = foundSeller
+                        }
+                    case .failure(let error):
+                        self?.errorMessage = "❌ Impossible de récupérer le vendeur : \(error.localizedDescription)"
+                    }
+                }
+            }
+            return
+        }
+        selectedSeller = seller
+    }
 }

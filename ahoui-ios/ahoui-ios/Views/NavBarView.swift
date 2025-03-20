@@ -9,6 +9,7 @@ struct NavBarView: View {
     @State private var shouldNavigateToClientList = false
     @State private var shouldNavigateToManagerList = false
     @State private var shouldNavigateToTransactions = false
+    @State private var shouldNavigateToCreateDepositedGame = false // ✅ Ajout pour + DÉPÔT
     @State private var isDropdownOpen = false
 
     var body: some View {
@@ -42,7 +43,15 @@ struct NavBarView: View {
                                 DepositedGameView()
                             }
 
-                            menuButton(title: "+ DÉPÔT")
+                            Button(action: {
+                                shouldNavigateToCreateDepositedGame = true
+                            }) {
+                                navButtonTitle("+ DÉPÔT")
+                            }
+                            .navigationDestination(isPresented: $shouldNavigateToCreateDepositedGame) {
+                                CreateDepositedGameView()
+                            }
+
                             menuButton(title: "+ JEU")
 
                             Button(action: {
@@ -62,49 +71,49 @@ struct NavBarView: View {
                             .navigationDestination(isPresented: $shouldNavigateToTransactions) {
                                 TransactionListView()
                             }
-                            
+
                             menuButton(title: "TRÉSORERIE")
 
                             VStack(spacing: 5) {
-                                                            Button(action: {
-                                                                withAnimation {
-                                                                    isDropdownOpen.toggle()
-                                                                }
-                                                            }) {
-                                                                HStack {
-                                                                    Text("USER MANAGEMENT")
-                                                                        .font(.custom("Poppins", size: 17))
-                                                                        .fontWeight(.bold)
-                                                                        .foregroundColor(.black)
-                                                                        .frame(width: 200)
-                                                                        .padding()
-                                                                        .background(Color(red: 1, green: 0.98, blue: 0.95))
-                                                                        .cornerRadius(10)
-                                                                        .overlay(
-                                                                            RoundedRectangle(cornerRadius: 8)
-                                                                                .stroke(Color.black, lineWidth: 1)
-                                                                        )
-                                                                    Image(systemName: isDropdownOpen ? "chevron.up" : "chevron.down")
-                                                                        .foregroundColor(.black)
-                                                                }
-                                                            }
+                                Button(action: {
+                                    withAnimation {
+                                        isDropdownOpen.toggle()
+                                    }
+                                }) {
+                                    HStack {
+                                        Text("USER MANAGEMENT")
+                                            .font(.custom("Poppins", size: 17))
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.black)
+                                            .frame(width: 200)
+                                            .padding()
+                                            .background(Color(red: 1, green: 0.98, blue: 0.95))
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .stroke(Color.black, lineWidth: 1)
+                                            )
+                                        Image(systemName: isDropdownOpen ? "chevron.up" : "chevron.down")
+                                            .foregroundColor(.black)
+                                    }
+                                }
 
-                                                            if isDropdownOpen {
-                                                                VStack {
-                                                                    NavigationLink(destination: SellerListView().environmentObject(viewModel)) {
-                                                                        dropdownButtonTitle("Sellers")
-                                                                    }
+                                if isDropdownOpen {
+                                    VStack {
+                                        NavigationLink(destination: SellerListView().environmentObject(viewModel)) {
+                                            dropdownButtonTitle("Sellers")
+                                        }
 
-                                                                    NavigationLink(destination: ClientListView().environmentObject(viewModel)) {
-                                                                        dropdownButtonTitle("Clients")
-                                                                    }
+                                        NavigationLink(destination: ClientListView().environmentObject(viewModel)) {
+                                            dropdownButtonTitle("Clients")
+                                        }
 
-                                                                    NavigationLink(destination: ManagerListView().environmentObject(viewModel)) {
-                                                                        dropdownButtonTitle("Managers")
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
+                                        NavigationLink(destination: ManagerListView().environmentObject(viewModel)) {
+                                            dropdownButtonTitle("Managers")
+                                        }
+                                    }
+                                }
+                            }
 
                             Button(action: {
                                 viewModel.logout()

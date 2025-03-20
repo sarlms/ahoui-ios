@@ -21,6 +21,25 @@ struct DepositedGame: Identifiable, Codable {
         case pickedUp
         case sold
     }
+    
+    // ✅ Initialisation avec des valeurs par défaut
+    init(id: String = UUID().uuidString,
+         seller: DepositedGameSellerInfo? = nil,
+         session: DepositedGameSessionInfo? = nil,
+         gameDescription: DepositedGameDescriptionInfo = DepositedGameDescriptionInfo(id: UUID().uuidString, name: "", publisher: "", description: "", photoURL: "", minPlayers: 1, maxPlayers: 1, ageRange: "All"),
+         salePrice: Double = 0.0,
+         forSale: Bool = false,
+         pickedUp: Bool = false,
+         sold: Bool = false) {
+        self.id = id
+        self.seller = seller
+        self.session = session
+        self.gameDescription = gameDescription
+        self.salePrice = salePrice
+        self.forSale = forSale
+        self.pickedUp = pickedUp
+        self.sold = sold
+    }
 }
 
 // 🔹 Nested struct for seller details

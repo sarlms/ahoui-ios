@@ -73,11 +73,29 @@ class CartViewModel: ObservableObject {
         cartItems = cartService.getCartItems()
     }
     
-    /// 🔹 Finaliser l'encaissement
     func finalizeCheckout(clientId: String?) {
         print("🔹 Début de finalizeCheckout")
 
-        // 🔹 Récupérer le managerId depuis UserDefaults
+        // 🔹 Vérification si le panier est vide
+        guard !cartItems.isEmpty else {
+            DispatchQueue.main.async {
+                self.errorMessage = ErrorMessage(message: "❌ Votre panier est vide.")
+            }
+            print("❌ Le panier est vide, abandon de la transaction.")
+            return
+        }
+        
+        // 🔹 Vérification si un client est sélectionné
+        guard let clientId = clientId else {
+            DispatchQueue.main.async {
+                self.errorMessage = ErrorMessage(message: "❌ Veuillez sélectionner un client.")
+            }
+            print("❌ Aucun client sélectionné, abandon de la transaction.")
+            return
+        }
+        print("✅ Client sélectionné : \(clientId)")
+
+        // 🔹 Récupération du managerId depuis UserDefaults
         guard let managerId = UserDefaults.standard.string(forKey: "managerId") else {
             DispatchQueue.main.async {
                 self.errorMessage = ErrorMessage(message: "❌ Impossible de récupérer le manager.")
@@ -87,25 +105,7 @@ class CartViewModel: ObservableObject {
         }
         print("✅ Manager ID récupéré depuis UserDefaults : \(managerId)")
 
-        guard !cartItems.isEmpty else {
-            DispatchQueue.main.async {
-                self.errorMessage = ErrorMessage(message: "❌ Votre panier est vide.")
-            }
-            print("❌ Le panier est vide, abandon de la transaction.")
-            return
-        }
-
-        guard let clientId = clientId else {
-            DispatchQueue.main.async {
-                self.errorMessage = ErrorMessage(message: "❌ Veuillez sélectionner un client.")
-            }
-            print("❌ Aucun client sélectionné, abandon de la transaction.")
-            return
-        }
-
-        print("✅ Client sélectionné : \(clientId)")
-
-        // 🟢 Récupérer la session active
+        // 🔹 Récupérer la session active
         sessionService.fetchActiveSessionId { sessionId in
             guard let sessionId = sessionId else {
                 DispatchQueue.main.async {
@@ -114,30 +114,37 @@ class CartViewModel: ObservableObject {
                 print("❌ Session active introuvable")
                 return
             }
-
             print("✅ ID de la session active : \(sessionId)")
 
-            // 🔹 Construire les transactions
+            // 🔹 Construction de la liste des transactions
             let transactions = self.cartItems.map { game in
+                let labelId = String(game.id)  // ✅ Forcer l'ID en String
+                print("🛠️ Vérification ID labelId :", labelId)  // ✅ Vérification de l'ID
+
                 let transaction = TransactionRequest(
-                    labelId: game.id,
+                    labelId: labelId,
                     sessionId: sessionId,
                     sellerId: game.seller?.id ?? "",
                     clientId: clientId,
                     managerId: managerId
                 )
-                print("📩 Transaction créée : \(transaction)")
                 return transaction
             }
 
-            // 🔹 Envoyer les transactions au backend
+
+
+            // 📩 Log des transactions avant l'envoi
+            print("📩 Transactions à envoyer : \(transactions)")
+
+            // 🔹 Envoi des transactions au backend
             self.transactionService.createMultipleTransactions(transactions: transactions) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success:
                         print("✅ Transactions envoyées avec succès.")
-                        self.updateSoldGamesAndSellers()
+                        self.updateSoldGamesAndSellers(transactions: transactions)
                         self.cartItems.removeAll() // ✅ Vider le panier après validation
+                        print("✅ Panier vidé après validation.")
                     case .failure(let error):
                         self.errorMessage = ErrorMessage(message: "❌ Erreur lors de la validation: \(error.localizedDescription)")
                         print("❌ Erreur lors de la création des transactions : \(error.localizedDescription)")
@@ -150,23 +157,26 @@ class CartViewModel: ObservableObject {
 
 
 
-    /// 🔹 Mettre à jour les jeux vendus et le montant des vendeurs
-    private func updateSoldGamesAndSellers() {
+
+    private func updateSoldGamesAndSellers(transactions: [TransactionRequest]) {
         print("🔹 Début de la mise à jour des jeux vendus et des montants des vendeurs")
 
-        for game in cartItems {
-            print("📌 Tentative de marquage comme vendu du jeu : \(game.id) - \(game.gameDescription.name)")
-
-            depositedGameService.markAsSold(gameId: game.id) { result in
+        for transaction in transactions {
+            let gameId = transaction.labelId
+            let sellerId = transaction.sellerId
+            
+            // 🔹 Marquer le jeu comme vendu
+            depositedGameService.markAsSold(gameId: gameId) { result in
                 switch result {
                 case .success:
-                    print("✅ Jeu marqué comme vendu : \(game.id)")
+                    print("✅ Jeu marqué comme vendu : \(gameId)")
                 case .failure(let error):
-                    print("❌ Erreur : Impossible de marquer le jeu comme vendu : \(game.id) - \(error.localizedDescription)")
+                    print("❌ Erreur : Impossible de marquer le jeu comme vendu : \(gameId) - \(error.localizedDescription)")
                 }
             }
 
-            if let sellerId = game.seller?.id, let commission = game.session?.saleComission {
+            // 🔹 Mise à jour du montant dû au vendeur
+            if !sellerId.isEmpty, let game = self.cartItems.first(where: { $0.id == gameId }), let commission = game.session?.saleComission {
                 let amountToAdd = game.salePrice - (game.salePrice * Double(commission) / 100)
                 print("📌 Ajout du montant \(amountToAdd) au vendeur \(sellerId)")
 
@@ -181,5 +191,6 @@ class CartViewModel: ObservableObject {
             }
         }
     }
+
 
 }

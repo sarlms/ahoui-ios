@@ -46,19 +46,27 @@
 		B73FF38B2D8A207700BF24BF /* ClientListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF38A2D8A207700BF24BF /* ClientListView.swift */; };
 		B73FF38F2D8A20C400BF24BF /* NewClientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF38E2D8A20C400BF24BF /* NewClientView.swift */; };
 		B73FF3A42D8B2BF100BF24BF /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3A32D8B2BF100BF24BF /* CartView.swift */; };
-		B73FF3A62D8B2C1A00BF24BF /* GameDescriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3A52D8B2C1A00BF24BF /* GameDescriptionService.swift */; };
 		B73FF3A82D8B2C3D00BF24BF /* CartService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3A72D8B2C3D00BF24BF /* CartService.swift */; };
 		B73FF3AA2D8B2C9400BF24BF /* CartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3A92D8B2C9400BF24BF /* CartViewModel.swift */; };
 		B73FF3AC2D8B2CD200BF24BF /* CartItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3AB2D8B2CD200BF24BF /* CartItem.swift */; };
 		B73FF3AE2D8B7FD200BF24BF /* NavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3AD2D8B7FD200BF24BF /* NavigationViewModel.swift */; };
 		B73FF3B02D8C13B500BF24BF /* ClientDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3AF2D8C13B500BF24BF /* ClientDetailView.swift */; };
 		B73FF3B22D8C143B00BF24BF /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B12D8C143B00BF24BF /* SharedComponents.swift */; };
-		B73FF3B42D8C151400BF24BF /* ManagementSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B32D8C151400BF24BF /* ManagementSelection.swift */; };
 		B73FF3B72D8C1EF600BF24BF /* ManagerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B62D8C1EF600BF24BF /* ManagerListView.swift */; };
 		B73FF3B92D8C206300BF24BF /* ManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B82D8C206300BF24BF /* ManagerService.swift */; };
 		B73FF3BB2D8C21CB00BF24BF /* NewManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3BA2D8C21CB00BF24BF /* NewManagerView.swift */; };
 		B73FF3BD2D8C21DD00BF24BF /* EditManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3BC2D8C21DD00BF24BF /* EditManagerView.swift */; };
 		B73FF3BF2D8C26E300BF24BF /* TransactionListVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3BE2D8C26E300BF24BF /* TransactionListVIew.swift */; };
+		B73FF3C22D8C97BE00BF24BF /* CreateDepositedGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3C12D8C97BE00BF24BF /* CreateDepositedGameView.swift */; };
+		B73FF3C42D8C97E700BF24BF /* CreateDepositedGameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3C32D8C97E700BF24BF /* CreateDepositedGameViewModel.swift */; };
+		B73FF3C62D8CAAAB00BF24BF /* GameDescriptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3C52D8CAAAB00BF24BF /* GameDescriptionViewModel.swift */; };
+		B73FF3C82D8CAB5100BF24BF /* GameDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3C72D8CAB5100BF24BF /* GameDescription.swift */; };
+		B73FF3CA2D8CAB6E00BF24BF /* GameDescriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3C92D8CAB6E00BF24BF /* GameDescriptionService.swift */; };
+		B73FF3CE2D8CCA7D00BF24BF /* GameSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3CD2D8CCA7D00BF24BF /* GameSelectionView.swift */; };
+		B73FF3D02D8CCA9700BF24BF /* TotalFeesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3CF2D8CCA9700BF24BF /* TotalFeesView.swift */; };
+		B73FF3D22D8CCAB500BF24BF /* SellerSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3D12D8CCAB500BF24BF /* SellerSelectionView.swift */; };
+		B73FF3D42D8CCCBA00BF24BF /* SessionInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3D32D8CCCBA00BF24BF /* SessionInfoView.swift */; };
+		B73FF3D62D8CD10600BF24BF /* GameDeposited.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3D52D8CD10600BF24BF /* GameDeposited.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -102,19 +110,27 @@
 		B73FF38A2D8A207700BF24BF /* ClientListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientListView.swift; sourceTree = "<group>"; };
 		B73FF38E2D8A20C400BF24BF /* NewClientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewClientView.swift; sourceTree = "<group>"; };
 		B73FF3A32D8B2BF100BF24BF /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
-		B73FF3A52D8B2C1A00BF24BF /* GameDescriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDescriptionService.swift; sourceTree = "<group>"; };
 		B73FF3A72D8B2C3D00BF24BF /* CartService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartService.swift; sourceTree = "<group>"; };
 		B73FF3A92D8B2C9400BF24BF /* CartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewModel.swift; sourceTree = "<group>"; };
 		B73FF3AB2D8B2CD200BF24BF /* CartItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItem.swift; sourceTree = "<group>"; };
 		B73FF3AD2D8B7FD200BF24BF /* NavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewModel.swift; sourceTree = "<group>"; };
 		B73FF3AF2D8C13B500BF24BF /* ClientDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientDetailView.swift; sourceTree = "<group>"; };
 		B73FF3B12D8C143B00BF24BF /* SharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedComponents.swift; sourceTree = "<group>"; };
-		B73FF3B32D8C151400BF24BF /* ManagementSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagementSelection.swift; sourceTree = "<group>"; };
 		B73FF3B62D8C1EF600BF24BF /* ManagerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerListView.swift; sourceTree = "<group>"; };
 		B73FF3B82D8C206300BF24BF /* ManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerService.swift; sourceTree = "<group>"; };
 		B73FF3BA2D8C21CB00BF24BF /* NewManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewManagerView.swift; sourceTree = "<group>"; };
 		B73FF3BC2D8C21DD00BF24BF /* EditManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditManagerView.swift; sourceTree = "<group>"; };
 		B73FF3BE2D8C26E300BF24BF /* TransactionListVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListVIew.swift; sourceTree = "<group>"; };
+		B73FF3C12D8C97BE00BF24BF /* CreateDepositedGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDepositedGameView.swift; sourceTree = "<group>"; };
+		B73FF3C32D8C97E700BF24BF /* CreateDepositedGameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDepositedGameViewModel.swift; sourceTree = "<group>"; };
+		B73FF3C52D8CAAAB00BF24BF /* GameDescriptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDescriptionViewModel.swift; sourceTree = "<group>"; };
+		B73FF3C72D8CAB5100BF24BF /* GameDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDescription.swift; sourceTree = "<group>"; };
+		B73FF3C92D8CAB6E00BF24BF /* GameDescriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDescriptionService.swift; sourceTree = "<group>"; };
+		B73FF3CD2D8CCA7D00BF24BF /* GameSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSelectionView.swift; sourceTree = "<group>"; };
+		B73FF3CF2D8CCA9700BF24BF /* TotalFeesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalFeesView.swift; sourceTree = "<group>"; };
+		B73FF3D12D8CCAB500BF24BF /* SellerSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerSelectionView.swift; sourceTree = "<group>"; };
+		B73FF3D32D8CCCBA00BF24BF /* SessionInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionInfoView.swift; sourceTree = "<group>"; };
+		B73FF3D52D8CD10600BF24BF /* GameDeposited.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDeposited.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +194,7 @@
 				B73FF3732D89FD1500BF24BF /* Transaction.swift */,
 				B73FF3752D89FDCA00BF24BF /* Client.swift */,
 				B73FF3AB2D8B2CD200BF24BF /* CartItem.swift */,
+				B73FF3C72D8CAB5100BF24BF /* GameDescription.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -186,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				B73FF3102D81D2B000BF24BF /* ManagerViewModel.swift */,
+				B73FF3D52D8CD10600BF24BF /* GameDeposited.swift */,
 				B73FF3202D86ECE700BF24BF /* AuthViewModel.swift */,
 				B73FF3362D8833ED00BF24BF /* SellerViewModel.swift */,
 				B73FF3472D8858BC00BF24BF /* SessionViewModel.swift */,
@@ -195,6 +213,8 @@
 				B73FF3872D8A1FCB00BF24BF /* ClientViewModel.swift */,
 				B73FF3A92D8B2C9400BF24BF /* CartViewModel.swift */,
 				B73FF3AD2D8B7FD200BF24BF /* NavigationViewModel.swift */,
+				B73FF3C32D8C97E700BF24BF /* CreateDepositedGameViewModel.swift */,
+				B73FF3C52D8CAAAB00BF24BF /* GameDescriptionViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -202,6 +222,7 @@
 		B73FF30D2D81D20200BF24BF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B73FF3C02D8C976B00BF24BF /* CreateDepositedGame */,
 				B73FF3B52D8C1EC300BF24BF /* Manager */,
 				B73FF3A22D8B2BD900BF24BF /* Cart */,
 				B73FF3892D8A206900BF24BF /* Client */,
@@ -213,7 +234,6 @@
 				B73FF32F2D87423E00BF24BF /* HomeView.swift */,
 				B73FF3222D86ED1400BF24BF /* LoginView.swift */,
 				B73FF3242D86EFD000BF24BF /* NavBarView.swift */,
-				B73FF3B32D8C151400BF24BF /* ManagementSelection.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -236,9 +256,9 @@
 				B73FF36B2D89C5F100BF24BF /* DepositedGameService.swift */,
 				B73FF3772D89FDF200BF24BF /* TransactionService.swift */,
 				B73FF3852D8A1FB700BF24BF /* ClientService.swift */,
-				B73FF3A52D8B2C1A00BF24BF /* GameDescriptionService.swift */,
 				B73FF3A72D8B2C3D00BF24BF /* CartService.swift */,
 				B73FF3B82D8C206300BF24BF /* ManagerService.swift */,
+				B73FF3C92D8CAB6E00BF24BF /* GameDescriptionService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -305,6 +325,18 @@
 				B73FF3BC2D8C21DD00BF24BF /* EditManagerView.swift */,
 			);
 			path = Manager;
+			sourceTree = "<group>";
+		};
+		B73FF3C02D8C976B00BF24BF /* CreateDepositedGame */ = {
+			isa = PBXGroup;
+			children = (
+				B73FF3C12D8C97BE00BF24BF /* CreateDepositedGameView.swift */,
+				B73FF3CD2D8CCA7D00BF24BF /* GameSelectionView.swift */,
+				B73FF3CF2D8CCA9700BF24BF /* TotalFeesView.swift */,
+				B73FF3D12D8CCAB500BF24BF /* SellerSelectionView.swift */,
+				B73FF3D32D8CCCBA00BF24BF /* SessionInfoView.swift */,
+			);
+			path = CreateDepositedGame;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -384,49 +416,57 @@
 				B73FF3782D89FDF200BF24BF /* TransactionService.swift in Sources */,
 				B73FF36C2D89C5F100BF24BF /* DepositedGameService.swift in Sources */,
 				B73FF38B2D8A207700BF24BF /* ClientListView.swift in Sources */,
+				B73FF3C42D8C97E700BF24BF /* CreateDepositedGameViewModel.swift in Sources */,
 				B73FF3802D8A054300BF24BF /* RefundViewModel.swift in Sources */,
 				B73FF3252D86EFD000BF24BF /* NavBarView.swift in Sources */,
+				B73FF3C62D8CAAAB00BF24BF /* GameDescriptionViewModel.swift in Sources */,
 				B73FF3482D8858BC00BF24BF /* SessionViewModel.swift in Sources */,
 				B73FF3232D86ED1400BF24BF /* LoginView.swift in Sources */,
 				B73FF3AE2D8B7FD200BF24BF /* NavigationViewModel.swift in Sources */,
 				B73FF3BD2D8C21DD00BF24BF /* EditManagerView.swift in Sources */,
+				B73FF3CE2D8CCA7D00BF24BF /* GameSelectionView.swift in Sources */,
 				B73FF3822D8A05AC00BF24BF /* RefundView.swift in Sources */,
 				B73FF3302D87423E00BF24BF /* HomeView.swift in Sources */,
 				B73FF3B92D8C206300BF24BF /* ManagerService.swift in Sources */,
 				B73FF3BB2D8C21CB00BF24BF /* NewManagerView.swift in Sources */,
 				B73FF3882D8A1FCB00BF24BF /* ClientViewModel.swift in Sources */,
+				B73FF3D02D8CCA9700BF24BF /* TotalFeesView.swift in Sources */,
 				B73FF3392D88343700BF24BF /* SellerService.swift in Sources */,
 				B73FF3372D8833ED00BF24BF /* SellerViewModel.swift in Sources */,
 				B73FF3332D8757BB00BF24BF /* SessionService.swift in Sources */,
 				B73FF3442D884CE000BF24BF /* RefundService.swift in Sources */,
 				B73FF36A2D89C5A800BF24BF /* DepositedGame.swift in Sources */,
-				B73FF3A62D8B2C1A00BF24BF /* GameDescriptionService.swift in Sources */,
 				B73FF2FE2D81D1C000BF24BF /* ContentView.swift in Sources */,
+				B73FF3D22D8CCAB500BF24BF /* SellerSelectionView.swift in Sources */,
 				B73FF36E2D89C60D00BF24BF /* DepositedGameViewModel.swift in Sources */,
 				B73FF37D2D89FE3D00BF24BF /* TransactionView.swift in Sources */,
 				B73FF3A82D8B2C3D00BF24BF /* CartService.swift in Sources */,
+				B73FF3C22D8C97BE00BF24BF /* CreateDepositedGameView.swift in Sources */,
 				B73FF3A42D8B2BF100BF24BF /* CartView.swift in Sources */,
 				B73FF3352D8833C700BF24BF /* Seller.swift in Sources */,
 				B73FF3842D8A0E7700BF24BF /* DepositedGameView.swift in Sources */,
 				B73FF3B72D8C1EF600BF24BF /* ManagerListView.swift in Sources */,
 				B73FF3212D86ECE700BF24BF /* AuthViewModel.swift in Sources */,
 				B73FF3762D89FDCA00BF24BF /* Client.swift in Sources */,
+				B73FF3CA2D8CAB6E00BF24BF /* GameDescriptionService.swift in Sources */,
 				B73FF3112D81D2B000BF24BF /* ManagerViewModel.swift in Sources */,
 				B73FF3742D89FD1500BF24BF /* Transaction.swift in Sources */,
 				B73FF2FC2D81D1C000BF24BF /* ahoui_iosApp.swift in Sources */,
 				B73FF3BF2D8C26E300BF24BF /* TransactionListVIew.swift in Sources */,
+				B73FF3D42D8CCCBA00BF24BF /* SessionInfoView.swift in Sources */,
 				B73FF33E2D88348800BF24BF /* SellerListView.swift in Sources */,
 				B73FF30B2D81D1DC00BF24BF /* ManagerModel.swift in Sources */,
 				B73FF3AC2D8B2CD200BF24BF /* CartItem.swift in Sources */,
 				B73FF3AA2D8B2C9400BF24BF /* CartViewModel.swift in Sources */,
 				B73FF3422D884B4900BF24BF /* Refund.swift in Sources */,
 				B73FF3B22D8C143B00BF24BF /* SharedComponents.swift in Sources */,
+				B73FF3C82D8CAB5100BF24BF /* GameDescription.swift in Sources */,
 				B73FF3862D8A1FB700BF24BF /* ClientService.swift in Sources */,
 				B73FF3282D86F13D00BF24BF /* CustomTextField.swift in Sources */,
 				B73FF3712D89EEA900BF24BF /* DepositedGameSellerDetailView.swift in Sources */,
 				B73FF3402D8834A300BF24BF /* NewSellerView.swift in Sources */,
 				B73FF38F2D8A20C400BF24BF /* NewClientView.swift in Sources */,
-				B73FF3B42D8C151400BF24BF /* ManagementSelection.swift in Sources */,
+				B73FF3D62D8CD10600BF24BF /* GameDeposited.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

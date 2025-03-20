@@ -92,6 +92,11 @@ class AuthViewModel: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        DispatchQueue.main.async {
+            UserDefaults.standard.set(token, forKey: "token")
+            print("✅✅✅✅✅ TOKEN ajouté en local storage : \(token)")
+        }
 
         URLSession.shared.dataTask(with: request) { data, _, error in
             if let error = error {
