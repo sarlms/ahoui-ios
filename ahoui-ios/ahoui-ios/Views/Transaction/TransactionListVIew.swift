@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TransactionListView: View {
     @StateObject private var viewModel = TransactionViewModel(service: TransactionService())
+    @State private var showFilters = false
 
     var body: some View {
         NavigationView {
@@ -14,7 +15,9 @@ struct TransactionListView: View {
 
                 // 🔹 Filter Button
                 Button(action: {
-                    // TODO: Add filtering logic
+                    withAnimation {
+                        showFilters.toggle()
+                    }
                 }) {
                     Text("FILTRER")
                         .font(.system(size: 14, weight: .bold))
@@ -26,6 +29,34 @@ struct TransactionListView: View {
                 }
                 .padding(.bottom, 10)
 
+                // 🔹 Filter Input Fields (Shown when `showFilters` is true)
+                if showFilters {
+                    VStack(spacing: 10) {
+                        FilterTextField(title: "Transaction ID", text: $viewModel.searchTransactionId)
+                        FilterTextField(title: "Nom du Client", text: $viewModel.searchClientName)
+                        FilterTextField(title: "Nom du Vendeur", text: $viewModel.searchSellerName)
+                        FilterTextField(title: "Nom du Jeu", text: $viewModel.searchGameName)
+                        FilterTextField(title: "Nom de la Session", text: $viewModel.searchSessionName)
+
+                        Button(action: {
+                            viewModel.applyFilters()
+                        }) {
+                            Text("APPLIQUER FILTRES")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 200)
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        }
+                    }
+                    .padding()
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(15)
+                    .overlay(RoundedRectangle(cornerRadius: 15).stroke(Color.black, lineWidth: 1))
+                    .padding(.bottom, 10)
+                }
+
                 // 🔹 Transactions List
                 ScrollView {
                     LazyVStack(spacing: 20) {
@@ -35,7 +66,7 @@ struct TransactionListView: View {
                             Text("Aucune transaction disponible")
                                 .foregroundColor(.gray)
                         } else {
-                            ForEach(viewModel.transactionsList) { transaction in
+                            ForEach(viewModel.filteredTransactions) { transaction in
                                 TransactionCard(transaction: transaction)
                                     .padding(.horizontal, 20)
                             }
@@ -108,7 +139,7 @@ struct TransactionCard: View {
                 .foregroundColor(.black)
 
             // Seller Info
-            Text("Nom vendeur : \(transaction.seller.name)")  // ✅ Fix: seller is an object
+            Text("Nom vendeur : \(transaction.seller.name)")
                 .font(.system(size: 12, weight: .bold))
                 .foregroundColor(.black)
 
@@ -130,5 +161,21 @@ struct TransactionCard: View {
         .background(Color.white.opacity(0.5))
         .cornerRadius(20)
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
+    }
+}
+
+
+// 🔹 Generic Filter Input Component
+struct FilterTextField: View {
+    let title: String
+    @Binding var text: String
+
+    var body: some View {
+        TextField(title, text: $text)
+            .padding()
+            .background(Color.white.opacity(0.5))
+            .cornerRadius(10)
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
+            .frame(width: 250)
     }
 }

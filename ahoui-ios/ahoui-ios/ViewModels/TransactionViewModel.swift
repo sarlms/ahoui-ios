@@ -3,8 +3,16 @@ import Foundation
 class TransactionViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
     @Published var transactionsList: [TransactionList] = []
+    @Published var filteredTransactions: [TransactionList] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    
+    // Filter inputs
+    @Published var searchTransactionId = ""
+    @Published var searchClientName = ""
+    @Published var searchSellerName = ""
+    @Published var searchGameName = ""
+    @Published var searchSessionName = ""
 
     private let service: TransactionService
 
@@ -41,6 +49,7 @@ class TransactionViewModel: ObservableObject {
             let transactions = try await service.fetchAllTransactions()
             await MainActor.run {
                 self.transactionsList = transactions
+                self.filteredTransactions = transactions
             }
         } catch {
             await MainActor.run {
@@ -50,6 +59,16 @@ class TransactionViewModel: ObservableObject {
 
         DispatchQueue.main.async {
             self.isLoading = false
+        }
+    }
+    
+    func applyFilters() {
+        filteredTransactions = transactionsList.filter { transaction in
+            (searchTransactionId.isEmpty || transaction.id.contains(searchTransactionId)) &&
+            (searchClientName.isEmpty || transaction.client.name.lowercased().contains(searchClientName.lowercased())) &&
+            (searchSellerName.isEmpty || transaction.seller.name.lowercased().contains(searchSellerName.lowercased())) &&
+            (searchGameName.isEmpty || transaction.label.gameDescription.name.lowercased().contains(searchGameName.lowercased())) &&
+            (searchSessionName.isEmpty || transaction.session.name.lowercased().contains(searchSessionName.lowercased()))
         }
     }
 }
