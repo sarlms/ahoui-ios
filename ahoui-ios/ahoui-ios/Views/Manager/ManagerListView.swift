@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ListeManagersView: View {
+struct ManagerListView: View {
     @StateObject private var viewModel = ManagerViewModel()
     @State private var searchText = ""
 

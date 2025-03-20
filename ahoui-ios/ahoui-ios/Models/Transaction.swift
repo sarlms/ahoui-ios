@@ -20,6 +20,19 @@ struct Transaction: Identifiable, Codable {
     }
 }
 
+// 🔹 Fix: Create a struct for Seller Info
+struct TransactionSellerInfo: Codable {
+    let id: String
+    let name: String
+    let email: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name
+        case email
+    }
+}
+
 // 🔹 Local struct for LabelInfo (to avoid modifying existing GameDescriptionInfo)
 struct TransactionLabelInfo: Codable {
     let id: String
@@ -78,5 +91,25 @@ struct TransactionGameDescriptionInfo: Codable {
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case name
+    }
+}
+
+struct TransactionList: Identifiable, Codable {
+    let id: String
+    let label: TransactionLabelInfo  // ✅ Struct for labelId
+    let session: TransactionSessionInfo  // ✅ Struct for sessionId
+    let seller: TransactionSellerInfo  // ✅ Fix: seller is an object, not a string
+    let client: TransactionClientInfo  // ✅ Struct for clientId
+    let manager: TransactionManagerInfo  // ✅ Struct for managerId
+    let transactionDate: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case label = "labelId"
+        case session = "sessionId"
+        case seller = "sellerId"  // ✅ Fix: match JSON response
+        case client = "clientId"
+        case manager = "managerId"
+        case transactionDate
     }
 }

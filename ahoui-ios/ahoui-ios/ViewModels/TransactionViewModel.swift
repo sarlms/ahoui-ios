@@ -2,6 +2,7 @@ import Foundation
 
 class TransactionViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
+    @Published var transactionsList: [TransactionList] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
 
@@ -26,6 +27,29 @@ class TransactionViewModel: ObservableObject {
                     self?.errorMessage = error.localizedDescription
                 }
             }
+        }
+    }
+    
+    // ✅ Fetch all transactions
+    func fetchAllTransactions() async {
+        DispatchQueue.main.async {
+            self.isLoading = true
+            self.errorMessage = nil
+        }
+
+        do {
+            let transactions = try await service.fetchAllTransactions()
+            await MainActor.run {
+                self.transactionsList = transactions
+            }
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Error fetching transactions: \(error.localizedDescription)"
+            }
+        }
+
+        DispatchQueue.main.async {
+            self.isLoading = false
         }
     }
 }

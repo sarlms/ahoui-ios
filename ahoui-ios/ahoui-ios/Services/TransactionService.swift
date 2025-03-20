@@ -2,7 +2,7 @@ import Foundation
 
 class TransactionService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/transaction"
-    private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyMzIyMTQwLCJleHAiOjE3NDIzMjUxNDB9.Ibr-yQg7qGK61jhtxseBA2XnFJN94zP3SjzdoveD72U"
+    private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyNDY3NzM2LCJleHAiOjE3NDI0NzA3MzZ9.AW-Cn8Z182QuPIpM_1yKXNW2UR8HFK55NlNMisk16r4"
 
     private func createRequest(url: URL, method: String, body: Data? = nil) -> URLRequest {
         var request = URLRequest(url: url)
@@ -13,6 +13,21 @@ class TransactionService {
         return request
     }
 
+    // ✅ Fetch all transactions
+    func fetchAllTransactions() async throws -> [TransactionList] {
+        guard let url = URL(string: baseURL) else {
+            throw URLError(.badURL)
+        }
+
+        let request = createRequest(url: url, method: "GET")
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+
+        return try JSONDecoder().decode([TransactionList].self, from: data)
+    }
 
     // ✅ Fetch transactions by seller
     func fetchTransactionsBySeller(sellerId: String, completion: @escaping (Result<[Transaction], Error>) -> Void) {

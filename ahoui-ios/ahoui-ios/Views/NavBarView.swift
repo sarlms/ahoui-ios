@@ -8,6 +8,7 @@ struct NavBarView: View {
     @State private var shouldNavigateToCart = false
     @State private var shouldNavigateToClientList = false
     @State private var shouldNavigateToManagerList = false
+    @State private var shouldNavigateToTransactions = false
     @State private var isDropdownOpen = false
 
     var body: some View {
@@ -53,7 +54,15 @@ struct NavBarView: View {
                                 CartView().environmentObject(viewModel)
                             }
 
-                            menuButton(title: "TRANSACTIONS")
+                            Button(action: {
+                                shouldNavigateToTransactions = true
+                            }) {
+                                navButtonTitle("TRANSACTIONS")
+                            }
+                            .navigationDestination(isPresented: $shouldNavigateToTransactions) {
+                                TransactionListView()
+                            }
+                            
                             menuButton(title: "TRÉSORERIE")
 
                             VStack(spacing: 5) {
@@ -90,7 +99,7 @@ struct NavBarView: View {
                                                                         dropdownButtonTitle("Clients")
                                                                     }
 
-                                                                    NavigationLink(destination: ListeManagersView().environmentObject(viewModel)) {
+                                                                    NavigationLink(destination: ManagerListView().environmentObject(viewModel)) {
                                                                         dropdownButtonTitle("Managers")
                                                                     }
                                                                 }

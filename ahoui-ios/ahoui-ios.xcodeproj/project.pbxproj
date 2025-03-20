@@ -12,7 +12,6 @@
 		B73FF3002D81D1C100BF24BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B73FF2FF2D81D1C100BF24BF /* Assets.xcassets */; };
 		B73FF3032D81D1C100BF24BF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B73FF3022D81D1C100BF24BF /* Preview Assets.xcassets */; };
 		B73FF30B2D81D1DC00BF24BF /* ManagerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF30A2D81D1DC00BF24BF /* ManagerModel.swift */; };
-		B73FF30F2D81D27800BF24BF /* ListeManagersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF30E2D81D27800BF24BF /* ListeManagersView.swift */; };
 		B73FF3112D81D2B000BF24BF /* ManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3102D81D2B000BF24BF /* ManagerViewModel.swift */; };
 		B73FF3212D86ECE700BF24BF /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3202D86ECE700BF24BF /* AuthViewModel.swift */; };
 		B73FF3232D86ED1400BF24BF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3222D86ED1400BF24BF /* LoginView.swift */; };
@@ -55,6 +54,11 @@
 		B73FF3B02D8C13B500BF24BF /* ClientDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3AF2D8C13B500BF24BF /* ClientDetailView.swift */; };
 		B73FF3B22D8C143B00BF24BF /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B12D8C143B00BF24BF /* SharedComponents.swift */; };
 		B73FF3B42D8C151400BF24BF /* ManagementSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B32D8C151400BF24BF /* ManagementSelection.swift */; };
+		B73FF3B72D8C1EF600BF24BF /* ManagerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B62D8C1EF600BF24BF /* ManagerListView.swift */; };
+		B73FF3B92D8C206300BF24BF /* ManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3B82D8C206300BF24BF /* ManagerService.swift */; };
+		B73FF3BB2D8C21CB00BF24BF /* NewManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3BA2D8C21CB00BF24BF /* NewManagerView.swift */; };
+		B73FF3BD2D8C21DD00BF24BF /* EditManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3BC2D8C21DD00BF24BF /* EditManagerView.swift */; };
+		B73FF3BF2D8C26E300BF24BF /* TransactionListVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3BE2D8C26E300BF24BF /* TransactionListVIew.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,7 +68,6 @@
 		B73FF2FF2D81D1C100BF24BF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B73FF3022D81D1C100BF24BF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B73FF30A2D81D1DC00BF24BF /* ManagerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerModel.swift; sourceTree = "<group>"; };
-		B73FF30E2D81D27800BF24BF /* ListeManagersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListeManagersView.swift; sourceTree = "<group>"; };
 		B73FF3102D81D2B000BF24BF /* ManagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerViewModel.swift; sourceTree = "<group>"; };
 		B73FF3202D86ECE700BF24BF /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		B73FF3222D86ED1400BF24BF /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -107,6 +110,11 @@
 		B73FF3AF2D8C13B500BF24BF /* ClientDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientDetailView.swift; sourceTree = "<group>"; };
 		B73FF3B12D8C143B00BF24BF /* SharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedComponents.swift; sourceTree = "<group>"; };
 		B73FF3B32D8C151400BF24BF /* ManagementSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagementSelection.swift; sourceTree = "<group>"; };
+		B73FF3B62D8C1EF600BF24BF /* ManagerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerListView.swift; sourceTree = "<group>"; };
+		B73FF3B82D8C206300BF24BF /* ManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerService.swift; sourceTree = "<group>"; };
+		B73FF3BA2D8C21CB00BF24BF /* NewManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewManagerView.swift; sourceTree = "<group>"; };
+		B73FF3BC2D8C21DD00BF24BF /* EditManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditManagerView.swift; sourceTree = "<group>"; };
+		B73FF3BE2D8C26E300BF24BF /* TransactionListVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListVIew.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +202,7 @@
 		B73FF30D2D81D20200BF24BF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B73FF3B52D8C1EC300BF24BF /* Manager */,
 				B73FF3A22D8B2BD900BF24BF /* Cart */,
 				B73FF3892D8A206900BF24BF /* Client */,
 				B73FF37E2D8A052B00BF24BF /* Refund */,
@@ -202,7 +211,6 @@
 				B73FF33A2D88345600BF24BF /* Seller */,
 				B73FF3262D86F11A00BF24BF /* Components */,
 				B73FF32F2D87423E00BF24BF /* HomeView.swift */,
-				B73FF30E2D81D27800BF24BF /* ListeManagersView.swift */,
 				B73FF3222D86ED1400BF24BF /* LoginView.swift */,
 				B73FF3242D86EFD000BF24BF /* NavBarView.swift */,
 				B73FF3B32D8C151400BF24BF /* ManagementSelection.swift */,
@@ -230,6 +238,7 @@
 				B73FF3852D8A1FB700BF24BF /* ClientService.swift */,
 				B73FF3A52D8B2C1A00BF24BF /* GameDescriptionService.swift */,
 				B73FF3A72D8B2C3D00BF24BF /* CartService.swift */,
+				B73FF3B82D8C206300BF24BF /* ManagerService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -257,6 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				B73FF37C2D89FE3D00BF24BF /* TransactionView.swift */,
+				B73FF3BE2D8C26E300BF24BF /* TransactionListVIew.swift */,
 			);
 			path = Transaction;
 			sourceTree = "<group>";
@@ -285,6 +295,16 @@
 				B73FF3A32D8B2BF100BF24BF /* CartView.swift */,
 			);
 			path = Cart;
+			sourceTree = "<group>";
+		};
+		B73FF3B52D8C1EC300BF24BF /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				B73FF3B62D8C1EF600BF24BF /* ManagerListView.swift */,
+				B73FF3BA2D8C21CB00BF24BF /* NewManagerView.swift */,
+				B73FF3BC2D8C21DD00BF24BF /* EditManagerView.swift */,
+			);
+			path = Manager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -366,12 +386,14 @@
 				B73FF38B2D8A207700BF24BF /* ClientListView.swift in Sources */,
 				B73FF3802D8A054300BF24BF /* RefundViewModel.swift in Sources */,
 				B73FF3252D86EFD000BF24BF /* NavBarView.swift in Sources */,
-				B73FF30F2D81D27800BF24BF /* ListeManagersView.swift in Sources */,
 				B73FF3482D8858BC00BF24BF /* SessionViewModel.swift in Sources */,
 				B73FF3232D86ED1400BF24BF /* LoginView.swift in Sources */,
 				B73FF3AE2D8B7FD200BF24BF /* NavigationViewModel.swift in Sources */,
+				B73FF3BD2D8C21DD00BF24BF /* EditManagerView.swift in Sources */,
 				B73FF3822D8A05AC00BF24BF /* RefundView.swift in Sources */,
 				B73FF3302D87423E00BF24BF /* HomeView.swift in Sources */,
+				B73FF3B92D8C206300BF24BF /* ManagerService.swift in Sources */,
+				B73FF3BB2D8C21CB00BF24BF /* NewManagerView.swift in Sources */,
 				B73FF3882D8A1FCB00BF24BF /* ClientViewModel.swift in Sources */,
 				B73FF3392D88343700BF24BF /* SellerService.swift in Sources */,
 				B73FF3372D8833ED00BF24BF /* SellerViewModel.swift in Sources */,
@@ -386,11 +408,13 @@
 				B73FF3A42D8B2BF100BF24BF /* CartView.swift in Sources */,
 				B73FF3352D8833C700BF24BF /* Seller.swift in Sources */,
 				B73FF3842D8A0E7700BF24BF /* DepositedGameView.swift in Sources */,
+				B73FF3B72D8C1EF600BF24BF /* ManagerListView.swift in Sources */,
 				B73FF3212D86ECE700BF24BF /* AuthViewModel.swift in Sources */,
 				B73FF3762D89FDCA00BF24BF /* Client.swift in Sources */,
 				B73FF3112D81D2B000BF24BF /* ManagerViewModel.swift in Sources */,
 				B73FF3742D89FD1500BF24BF /* Transaction.swift in Sources */,
 				B73FF2FC2D81D1C000BF24BF /* ahoui_iosApp.swift in Sources */,
+				B73FF3BF2D8C26E300BF24BF /* TransactionListVIew.swift in Sources */,
 				B73FF33E2D88348800BF24BF /* SellerListView.swift in Sources */,
 				B73FF30B2D81D1DC00BF24BF /* ManagerModel.swift in Sources */,
 				B73FF3AC2D8B2CD200BF24BF /* CartItem.swift in Sources */,
