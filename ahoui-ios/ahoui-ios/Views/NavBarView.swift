@@ -63,7 +63,7 @@ struct NavBarView: View {
                                                                 }
                                                             }) {
                                                                 HStack {
-                                                                    Text("SELLER MANAGEMENT")
+                                                                    Text("USER MANAGEMENT")
                                                                         .font(.custom("Poppins", size: 17))
                                                                         .fontWeight(.bold)
                                                                         .foregroundColor(.black)
