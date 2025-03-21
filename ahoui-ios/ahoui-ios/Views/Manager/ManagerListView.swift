@@ -3,6 +3,7 @@ import SwiftUI
 struct ManagerListView: View {
     @StateObject private var viewModel = ManagerViewModel()
     @State private var searchText = ""
+    @State private var isPresentingNewManagerView = false
 
     var filteredManagers: [Manager] {
         if searchText.isEmpty {
@@ -29,17 +30,22 @@ struct ManagerListView: View {
 
                 // Create Manager Button
                 Button(action: {
-                    // Action to create a new manager
+                    isPresentingNewManagerView = true
                 }) {
                     Text("Créer un nouveau manager")
-                    .font(
-                        Font.custom("myfont", size: 12)
-                    .weight(.medium)
-                    )
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color(red: 0.05, green: 0.61, blue: 0.04))
+                        .font(Font.custom("Poppins-Medium", size: 12))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color(red: 0.05, green: 0.61, blue: 0.04))
+                        .padding()
+                        .frame(width: 220, height: 40)
+                        .background(Color.white)
+                        .cornerRadius(20)
+                        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
                 }
                 .padding(.horizontal, 80)
+                .sheet(isPresented: $isPresentingNewManagerView) {
+                    NewManagerView(viewModel: viewModel) // ✅ Pass shared viewModel
+                }
                 
                 Spacer(minLength: 20)
 
@@ -112,16 +118,13 @@ struct ManagerCard: View {
 
             HStack {
                 Spacer()
-                Button(action: {
-                    // Edit action
-                }) {
+                NavigationLink(destination: EditManagerView(manager: manager)) {
                     Text("Éditer")
                         .font(.system(size: 14, weight: .medium))
                         .foregroundColor(Color.green)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 5)
-                        .overlay(RoundedRectangle(cornerRadius: 15)
-                            .stroke(Color.green, lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 15).stroke(Color.green, lineWidth: 1))
                 }
             }
             .padding(.top, 5)

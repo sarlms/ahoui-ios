@@ -27,14 +27,26 @@ class ManagerViewModel: ObservableObject {
     }
 
     /// Create a new manager
-    func createManager(_ manager: Manager) async {
+    func createManager(_ manager: CreateManager) async {
         do {
             try await service.createManager(manager)
-            await fetchManagers() // ✅ Refresh list after creating a manager
+            await fetchManagers() // Refresh list after creating a manager
         } catch {
             await MainActor.run {
                 self.errorMessage = "Failed to create manager: \(error.localizedDescription)"
             }
         }
     }
+
+    /// Update manager
+        func updateManager(id: String, updatedManager: UpdateManager) async {
+            do {
+                try await service.updateManager(id: id, updatedManager: updatedManager)
+                await fetchManagers() // Refresh the manager list
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = "Failed to update manager: \(error.localizedDescription)"
+                }
+            }
+        }
 }
