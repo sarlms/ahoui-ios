@@ -13,6 +13,7 @@ struct NavBarView: View {
     @State private var shouldNavigateToCreateDepositedGame = false
     @State private var shouldNavigateToCreateGameDescription = false
     @State private var shouldNavigateToSessionList = false
+    @State private var shouldNavigateToCreateSession = false
     @State private var isDropdownOpen = false
 
     var body: some View {
@@ -45,7 +46,15 @@ struct NavBarView: View {
                         menuButton(title: "CATALOGUE")
 
                         if viewModel.isAuthenticated {
-                            menuButton(title: "+ SESSION")
+                            Button(action: {
+                                shouldNavigateToCreateSession = true
+                            }) {
+                                navButtonTitle("+ SESSION")
+                            }
+                            .navigationDestination(isPresented: $shouldNavigateToCreateSession) {
+                                CreateSessionView().environmentObject(viewModel)
+                            }
+                            
 
                             Button(action: {
                                 shouldNavigateToDepositedGames = true

@@ -135,6 +135,85 @@ class SessionService {
         return dateString
     }
     
+    // Formate une heure ISO en "HH:mm" (ex: 14:30)
+    func formatTime(_ timeString: String) -> String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        if let date = isoFormatter.date(from: timeString) {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "fr_FR")
+            formatter.dateFormat = "HH:mm" // Format 24h
+            return formatter.string(from: date)
+        }
+
+        return timeString // Retourne la valeur brute en cas d'échec
+    }
+
+    
+    
+    // Fusionne une date et une heure en un format ISO8601 complet
+    func mergeDateAndTime(date: Date, time: Date) -> String {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+
+        let dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
+        let timeComponents = calendar.dateComponents([.hour, .minute], from: time)
+
+        var mergedComponents = DateComponents()
+        mergedComponents.year = dateComponents.year
+        mergedComponents.month = dateComponents.month
+        mergedComponents.day = dateComponents.day
+        mergedComponents.hour = timeComponents.hour
+        mergedComponents.minute = timeComponents.minute
+
+        if let mergedDate = calendar.date(from: mergedComponents) {
+            let isoFormatter = ISO8601DateFormatter()
+            isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            return isoFormatter.string(from: mergedDate)
+        }
+        return ""
+    }
+
+    // Fonction pour créer une session
+    func createSession(sessionData: [String: Any], authToken: String, completion: @escaping (Bool, String) -> Void) {
+        guard let url = URL(string: baseURL) else {
+            completion(false, "URL invalide")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: sessionData, options: [])
+        } catch {
+            completion(false, "Erreur lors de la conversion des données")
+            return
+        }
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(false, "Erreur réseau : \(error.localizedDescription)")
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(false, "Réponse invalide")
+                return
+            }
+
+            if httpResponse.statusCode == 201 {
+                completion(true, "Session créée avec succès")
+            } else {
+                completion(false, "Erreur serveur (Code \(httpResponse.statusCode))")
+            }
+        }.resume()
+    }
+    
+    
     // Supprime une session spécifique
     func deleteSession(sessionId: String, authToken: String?, completion: @escaping (Bool) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(sessionId)") else {

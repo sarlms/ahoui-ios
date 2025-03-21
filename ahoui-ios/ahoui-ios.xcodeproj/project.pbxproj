@@ -78,6 +78,8 @@
 		B73FF3EC2D8D9DA400BF24BF /* SessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3EB2D8D9DA400BF24BF /* SessionCardView.swift */; };
 		B73FF3EE2D8D9E1900BF24BF /* SessionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3ED2D8D9E1900BF24BF /* SessionListViewModel.swift */; };
 		B73FF3F12D8DB00300BF24BF /* CreateGameDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3F02D8DB00300BF24BF /* CreateGameDescriptionView.swift */; };
+		B73FF3F32D8DD27200BF24BF /* CreateSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3F22D8DD27200BF24BF /* CreateSessionViewModel.swift */; };
+		B73FF3F62D8DD2A200BF24BF /* CreateSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF3F52D8DD2A200BF24BF /* CreateSessionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -153,6 +155,8 @@
 		B73FF3EB2D8D9DA400BF24BF /* SessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCardView.swift; sourceTree = "<group>"; };
 		B73FF3ED2D8D9E1900BF24BF /* SessionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionListViewModel.swift; sourceTree = "<group>"; };
 		B73FF3F02D8DB00300BF24BF /* CreateGameDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGameDescriptionView.swift; sourceTree = "<group>"; };
+		B73FF3F22D8DD27200BF24BF /* CreateSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionViewModel.swift; sourceTree = "<group>"; };
+		B73FF3F52D8DD2A200BF24BF /* CreateSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,6 +243,7 @@
 				B73FF3C32D8C97E700BF24BF /* CreateDepositedGameViewModel.swift */,
 				B73FF3C52D8CAAAB00BF24BF /* GameDescriptionViewModel.swift */,
 				B73FF3ED2D8D9E1900BF24BF /* SessionListViewModel.swift */,
+				B73FF3F22D8DD27200BF24BF /* CreateSessionViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -246,6 +251,7 @@
 		B73FF30D2D81D20200BF24BF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B73FF3F42D8DD28E00BF24BF /* CreateSession */,
 				B73FF3EF2D8DAFF000BF24BF /* GameDescription */,
 				B73FF3E82D8D9D7900BF24BF /* Session */,
 				B73FF3DD2D8D955400BF24BF /* Treasury */,
@@ -396,6 +402,14 @@
 			path = GameDescription;
 			sourceTree = "<group>";
 		};
+		B73FF3F42D8DD28E00BF24BF /* CreateSession */ = {
+			isa = PBXGroup;
+			children = (
+				B73FF3F52D8DD2A200BF24BF /* CreateSessionView.swift */,
+			);
+			path = CreateSession;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -486,6 +500,7 @@
 				B73FF3232D86ED1400BF24BF /* LoginView.swift in Sources */,
 				B73FF3AE2D8B7FD200BF24BF /* NavigationViewModel.swift in Sources */,
 				B73FF3BD2D8C21DD00BF24BF /* EditManagerView.swift in Sources */,
+				B73FF3F62D8DD2A200BF24BF /* CreateSessionView.swift in Sources */,
 				B73FF3CE2D8CCA7D00BF24BF /* GameSelectionView.swift in Sources */,
 				B73FF3822D8A05AC00BF24BF /* RefundView.swift in Sources */,
 				B73FF3302D87423E00BF24BF /* HomeView.swift in Sources */,
@@ -501,6 +516,7 @@
 				B73FF3442D884CE000BF24BF /* RefundService.swift in Sources */,
 				B73FF36A2D89C5A800BF24BF /* DepositedGame.swift in Sources */,
 				B73FF2FE2D81D1C000BF24BF /* ContentView.swift in Sources */,
+				B73FF3F32D8DD27200BF24BF /* CreateSessionViewModel.swift in Sources */,
 				B73FF3D22D8CCAB500BF24BF /* SellerSelectionView.swift in Sources */,
 				B73FF36E2D89C60D00BF24BF /* DepositedGameViewModel.swift in Sources */,
 				B73FF37D2D89FE3D00BF24BF /* TransactionView.swift in Sources */,

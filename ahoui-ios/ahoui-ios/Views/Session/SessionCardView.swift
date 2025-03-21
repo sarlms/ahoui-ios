@@ -13,8 +13,9 @@ struct SessionCardView: View {
 
             Text("Date : \(sessionService.formatDate(session.startDate)) - \(sessionService.formatDate(session.endDate))")
                 .font(.system(size: 14, weight: .bold))
-
-            Text("Horaires : 09:00 - 22:00") // Si les horaires doivent être dynamiques, il faut les ajouter dans le backend
+            
+            Text("Horaires : \(sessionService.formatTime(session.startDate)) - \(sessionService.formatTime(session.endDate))")
+                .font(.system(size: 14, weight: .bold))
 
             Text("Lieu : \(session.location)")
                 .font(.system(size: 14, weight: .bold))
