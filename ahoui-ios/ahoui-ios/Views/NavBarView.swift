@@ -9,6 +9,7 @@ struct NavBarView: View {
     @State private var shouldNavigateToClientList = false
     @State private var shouldNavigateToManagerList = false
     @State private var shouldNavigateToTransactions = false
+    @State private var shouldNavigateToTreasury = false
     @State private var shouldNavigateToCreateDepositedGame = false // ✅ Ajout pour + DÉPÔT
     @State private var isDropdownOpen = false
 
@@ -72,7 +73,14 @@ struct NavBarView: View {
                                 TransactionListView()
                             }
 
-                            menuButton(title: "TRÉSORERIE")
+                            Button(action: {
+                                shouldNavigateToTreasury = true
+                            }) {
+                                navButtonTitle("TRÉSORERIE")
+                            }
+                            .navigationDestination(isPresented: $shouldNavigateToTreasury) {
+                                TreasuryView()
+                            }
 
                             VStack(spacing: 5) {
                                 Button(action: {

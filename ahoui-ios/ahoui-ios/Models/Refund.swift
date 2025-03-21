@@ -20,7 +20,7 @@ struct CreateRefund: Codable {
 struct Refund: Codable, Identifiable {
     let id: String
     let sellerId: SellerInfo
-    let sessionId: SessionInfo
+    let sessionId: SessionInfo?
     let managerId: ManagerInfo
     let refundAmount: Double
     let refundDate: String

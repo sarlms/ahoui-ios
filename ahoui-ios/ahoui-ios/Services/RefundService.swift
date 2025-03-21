@@ -2,7 +2,7 @@ import Foundation
 
 class RefundService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/refund"
-    private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyNTU0MjMyLCJleHAiOjE3NDI1NTcyMzJ9.sk0FQ9nIF95I_bQjdTllXrQZro2Gm9LK9jK0-kvnDmc"
+    private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyNTU4MzQ2LCJleHAiOjE3NDI1NjEzNDZ9.h_jMc2JfZZ89CvVdqW8fddHbDgL4ggcN9BtTv9SJBBY"
 
     private func createRequest(url: URL, method: String, body: Data? = nil) -> URLRequest {
         var request = URLRequest(url: url)
@@ -100,5 +100,48 @@ class RefundService {
             completion(.failure(error))
         }
     }
+    
+    // ✅ Fetch all refunds
+    func fetchAllRefunds(completion: @escaping (Result<[Refund], Error>) -> Void) {
+        guard let url = URL(string: baseURL) else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+            return
+        }
+
+        let request = createRequest(url: url, method: "GET")
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ Error fetching refunds: \(error.localizedDescription)")
+                    completion(.failure(error))
+                    return
+                }
+
+                guard let data = data else {
+                    print("❌ No refund data received")
+                    completion(.failure(NSError(domain: "No data", code: -2, userInfo: nil)))
+                    return
+                }
+
+                // ✅ Log Raw Response
+                if let rawJSON = String(data: data, encoding: .utf8) {
+                    print("📩 Raw Refund JSON Response: \(rawJSON)")
+                }
+
+                // ✅ Attempt to Decode
+                do {
+                    let refunds = try JSONDecoder().decode([Refund].self, from: data)
+                    print("✅ Successfully decoded refunds: \(refunds)")
+                    completion(.success(refunds))
+                } catch {
+                    print("❌ Error decoding refunds: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+
+
 
 }

@@ -62,23 +62,31 @@ struct CreateDepositedGameView: View {
 
                 // 🔘 Bouton VALIDER
                 Button(action: {
+                    print("🔍 SESSION : \(sessionViewModel.activeSession?.id ?? "nil")")
+                    print("🔍 SELLER ID : \(sellerViewModel.selectedSeller?.id ?? "nil")")
+                    print("🔍 MANAGER ID : \(UserDefaults.standard.string(forKey: "managerId") ?? "nil")")
+                    print("🔍 TOKEN : \(UserDefaults.standard.string(forKey: "token") ?? "nil")")
+
                     guard
                         let session = sessionViewModel.activeSession,
                         let sellerId = sellerViewModel.selectedSeller?.id,
-                        let managerId = authViewModel.managerId,
-                        let token = authViewModel.authToken
+                        let managerId = UserDefaults.standard.string(forKey: "managerId"),
+                        let token = UserDefaults.standard.string(forKey: "token")
                     else {
                         print("❌ Données manquantes pour soumettre")
                         return
                     }
 
+                    print("✅ Toutes les données sont disponibles, on envoie !")
+
                     depositedGameViewModel.submitDepositedGames(
                         session: session,
                         sellerId: sellerId,
-                        managerId: managerId,
-                        token: token,
-                        gameDescriptionViewModel: gameDescriptionViewModel
+                        gameDescriptionViewModel: gameDescriptionViewModel,
+                        token: token
                     )
+
+
                 }) {
                     Text("Valider")
                         .font(.custom("Poppins-Bold", size: 16))
@@ -89,6 +97,7 @@ struct CreateDepositedGameView: View {
                         .cornerRadius(10)
                 }
                 .padding(.top, 10)
+
             }
             .padding()
         }
