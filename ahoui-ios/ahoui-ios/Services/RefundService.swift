@@ -2,7 +2,7 @@ import Foundation
 
 class RefundService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/refund"
-    private let authToken = "YOUR_STATIC_TOKEN_HERE"  // ✅ Replace with your actual token
+    private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyNTU0MjMyLCJleHAiOjE3NDI1NTcyMzJ9.sk0FQ9nIF95I_bQjdTllXrQZro2Gm9LK9jK0-kvnDmc"
 
     private func createRequest(url: URL, method: String, body: Data? = nil) -> URLRequest {
         var request = URLRequest(url: url)
@@ -61,7 +61,7 @@ class RefundService {
             return
         }
 
-        let refund = Refund(
+        let refund = CreateRefund(
             sellerId: sellerId,
             sessionId: activeSession.id,
             managerId: managerId,
@@ -71,6 +71,14 @@ class RefundService {
 
         do {
             let jsonData = try JSONEncoder().encode(refund)
+            
+            
+
+            // ✅ Log the request body before sending it
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("📤 Refund Request JSON:\n\(jsonString)")
+            }
+
             var request = createRequest(url: url, method: "POST", body: jsonData)
 
             URLSession.shared.dataTask(with: request) { data, response, error in
@@ -80,7 +88,6 @@ class RefundService {
                         return
                     }
 
-                    // ✅ Check API response status code
                     if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
                         completion(.failure(NSError(domain: "Server error", code: httpResponse.statusCode, userInfo: nil)))
                         return
@@ -93,4 +100,5 @@ class RefundService {
             completion(.failure(error))
         }
     }
+
 }

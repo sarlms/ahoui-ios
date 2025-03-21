@@ -39,14 +39,26 @@ class ManagerViewModel: ObservableObject {
     }
 
     /// Update manager
-        func updateManager(id: String, updatedManager: UpdateManager) async {
-            do {
-                try await service.updateManager(id: id, updatedManager: updatedManager)
-                await fetchManagers() // Refresh the manager list
-            } catch {
-                await MainActor.run {
-                    self.errorMessage = "Failed to update manager: \(error.localizedDescription)"
-                }
+    func updateManager(id: String, updatedManager: UpdateManager) async {
+        do {
+            try await service.updateManager(id: id, updatedManager: updatedManager)
+            await fetchManagers() // Refresh the manager list
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Failed to update manager: \(error.localizedDescription)"
             }
         }
+    }
+    
+    /// Delete manager
+    func deleteManager(id: String) async {
+        do {
+            try await service.deleteManager(id: id)
+            await fetchManagers() // Refresh the manager list after deletion
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Failed to delete manager: (error.localizedDescription)"
+            }
+        }
+    }
 }

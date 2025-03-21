@@ -220,8 +220,9 @@ struct SellerDetailView: View {
             sessionViewModel: sessionViewModel
         )
 
-        presentationMode.wrappedValue.dismiss()
+        presentationMode.wrappedValue.dismiss() // ✅ OK, will dismiss after triggering refund
     }
+
 }
 
 
@@ -243,4 +244,3 @@ struct ActionButton: View {
         }
     }
 }
-

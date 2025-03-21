@@ -13,7 +13,7 @@ class GameDescriptionViewModel: ObservableObject {
             }
         }
     }
-
+    
     var filteredNames: [String] {
         if searchText.isEmpty {
             return uniqueGameNames
@@ -21,14 +21,14 @@ class GameDescriptionViewModel: ObservableObject {
             return uniqueGameNames.filter { $0.lowercased().contains(searchText.lowercased()) }
         }
     }
-
+    
     private let service: GameDescriptionService
-
+    
     init(service: GameDescriptionService) {
         self.service = service
         fetchGameDescriptions()  // ✅ Chargement immédiat
     }
-
+    
     func fetchGameDescriptions() {
         service.fetchAllGames { [weak self] result in
             DispatchQueue.main.async {
@@ -42,22 +42,27 @@ class GameDescriptionViewModel: ObservableObject {
             }
         }
     }
-
+    
     func fetchGameByName(name: String) {
         guard let game = gameDescriptions.first(where: { $0.name == name }) else {
             return
         }
         selectedGameDescription = game
     }
-
+    
     func addGameToSelection() {
         guard let game = selectedGameDescription, !selectedGames.contains(where: { $0.id == game.id }) else { return }
         selectedGames.append(game)  // ✅ Ajout du jeu sélectionné
         searchText = ""  // ✅ Réinitialisation du champ
         selectedGameDescription = nil
     }
-
+    
     func removeGameFromSelection(game: GameDescription) {
         selectedGames.removeAll { $0.id == game.id }  // ✅ Suppression d’un jeu de la liste
     }
+    
+    func getGameDescriptionId(byName name: String) -> String? {
+        return gameDescriptions.first(where: { $0.name == name })?.id
+    }
+
 }

@@ -5,6 +5,7 @@ struct CreateDepositedGameView: View {
     @StateObject private var gameDescriptionViewModel = GameDescriptionViewModel(service: GameDescriptionService())
     @StateObject private var sessionViewModel = SessionViewModel()
     @StateObject private var depositedGameViewModel = CreateDepositedGameViewModel()
+    @StateObject private var authViewModel = AuthViewModel()
 
     @State private var showSellerDropdown = false
     @State private var showGameDropdown = false
@@ -32,14 +33,18 @@ struct CreateDepositedGameView: View {
                             game: $depositedGameViewModel.gameContainers[index],
                             gameDescriptionViewModel: gameDescriptionViewModel,
                             removeAction: {
-                                depositedGameViewModel.removeGame(at: index)
+                                if let session = sessionViewModel.activeSession {
+                                    depositedGameViewModel.removeGame(at: index, session: session)
+                                }
                             }
                         )
                     }
                 }
 
                 Button(action: {
-                    depositedGameViewModel.addGame()
+                    if let session = sessionViewModel.activeSession {
+                        depositedGameViewModel.addGame(session: session)
+                    }
                 }) {
                     Text("+ Ajouter un jeu")
                         .font(.custom("Poppins-SemiBold", size: 14))
@@ -54,6 +59,36 @@ struct CreateDepositedGameView: View {
                 if let session = sessionViewModel.activeSession {
                     TotalFeesView(viewModel: depositedGameViewModel, session: session)
                 }
+
+                // 🔘 Bouton VALIDER
+                Button(action: {
+                    guard
+                        let session = sessionViewModel.activeSession,
+                        let sellerId = sellerViewModel.selectedSeller?.id,
+                        let managerId = authViewModel.managerId,
+                        let token = authViewModel.authToken
+                    else {
+                        print("❌ Données manquantes pour soumettre")
+                        return
+                    }
+
+                    depositedGameViewModel.submitDepositedGames(
+                        session: session,
+                        sellerId: sellerId,
+                        managerId: managerId,
+                        token: token,
+                        gameDescriptionViewModel: gameDescriptionViewModel
+                    )
+                }) {
+                    Text("Valider")
+                        .font(.custom("Poppins-Bold", size: 16))
+                        .padding()
+                        .frame(width: 200)
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding(.top, 10)
             }
             .padding()
         }

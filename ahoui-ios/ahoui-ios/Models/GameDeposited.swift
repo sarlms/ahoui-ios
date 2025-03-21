@@ -1,3 +1,10 @@
+//
+//  GameDeposited.swift
+//  ahoui-ios
+//
+//  Created by etud on 21/03/2025.
+//
+
 import Foundation
 
 struct GameDeposited: Identifiable {

@@ -14,6 +14,7 @@ struct EditManagerView: View {
     @State private var isAdmin: Bool
     @State private var errorMessage: String?
     @State private var isLoading = false
+    @State private var showDeleteAlert = false
 
     init(manager: Manager) {
         self.manager = manager
@@ -64,21 +65,50 @@ struct EditManagerView: View {
                         .padding()
                 }
 
-                Button(action: {
-                    Task {
-                        await updateManager()
+                HStack {
+                    // Update Button
+                    Button(action: {
+                        Task {
+                            await updateManager()
+                        }
+                    }) {
+                        Text("Enregistrer")
+                            .font(.custom("Poppins-Light", size: 14))
+                            .foregroundColor(.black)
+                            .padding()
+                            .frame(width: 120)
+                            .background(Color.white)
+                            .cornerRadius(20)
+                            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
                     }
-                }) {
-                    Text("Enregistrer")
-                        .font(.custom("Poppins-Light", size: 14))
-                        .foregroundColor(.black)
-                        .padding()
-                        .frame(width: 120)
-                        .background(Color.white)
-                        .cornerRadius(20)
-                        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
+                    .disabled(isLoading || firstName.isEmpty || lastName.isEmpty || email.isEmpty)
+
+                    // Delete Button
+                    Button(action: {
+                        showDeleteAlert = true
+                    }) {
+                        Text("Supprimer")
+                            .font(.custom("Poppins-Light", size: 14))
+                            .foregroundColor(.red)
+                            .padding()
+                            .frame(width: 120)
+                            .background(Color.white)
+                            .cornerRadius(20)
+                            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.red, lineWidth: 1))
+                    }
+                    .alert(isPresented: $showDeleteAlert) {
+                        Alert(
+                            title: Text("Confirmer la suppression"),
+                            message: Text("Êtes-vous sûr de vouloir supprimer ce manager ?"),
+                            primaryButton: .destructive(Text("Supprimer")) {
+                                Task {
+                                    await deleteManager()
+                                }
+                            },
+                            secondaryButton: .cancel()
+                        )
+                    }
                 }
-                .disabled(isLoading || firstName.isEmpty || lastName.isEmpty || email.isEmpty)
             }
             .padding()
         }
@@ -102,6 +132,20 @@ struct EditManagerView: View {
             presentationMode.wrappedValue.dismiss()
         } catch {
             errorMessage = "Échec de la mise à jour: \(error.localizedDescription)"
+        }
+
+        isLoading = false
+    }
+
+    private func deleteManager() async {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            try await viewModel.deleteManager(id: manager.id)
+            presentationMode.wrappedValue.dismiss()
+        } catch {
+            errorMessage = "Échec de la suppression: \(error.localizedDescription)"
         }
 
         isLoading = false

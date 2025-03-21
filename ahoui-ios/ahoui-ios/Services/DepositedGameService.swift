@@ -12,6 +12,36 @@ class DepositedGameService {
         request.httpBody = body
         return request
     }
+    
+    func createDepositedGame(data: [String: Any], token: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: baseURL) else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1)))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: data) else {
+            completion(.failure(NSError(domain: "Invalid JSON", code: -2)))
+            return
+        }
+
+        request.httpBody = jsonData
+
+        URLSession.shared.dataTask(with: request) { _, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }.resume()
+    }
+
 
     /// 🔹 Fetch **all** deposited games
     func fetchAllDepositedGames(completion: @escaping (Result<[DepositedGame], Error>) -> Void) {
@@ -99,5 +129,6 @@ class DepositedGameService {
             }
         }.resume()
     }
+    
     
 }

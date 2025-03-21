@@ -54,4 +54,18 @@ class ManagerService {
             throw URLError(.badServerResponse)
         }
     }
+    
+    /// Delete a manager by ID
+    func deleteManager(id: String) async throws {
+        guard let url = URL(string: "(baseURL)/(id)") else { throw URLError(.badURL) }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("Bearer (token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+    }
 }
