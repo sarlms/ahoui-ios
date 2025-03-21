@@ -10,7 +10,9 @@ struct NavBarView: View {
     @State private var shouldNavigateToManagerList = false
     @State private var shouldNavigateToTransactions = false
     @State private var shouldNavigateToTreasury = false
-    @State private var shouldNavigateToCreateDepositedGame = false // ✅ Ajout pour + DÉPÔT
+    @State private var shouldNavigateToCreateDepositedGame = false
+    @State private var shouldNavigateToCreateGameDescription = false
+    @State private var shouldNavigateToSessionList = false
     @State private var isDropdownOpen = false
 
     var body: some View {
@@ -29,7 +31,17 @@ struct NavBarView: View {
                 VStack {
                     Spacer()
                     VStack(spacing: 13) {
-                        menuButton(title: "SESSIONS")
+                        Button(action: {
+                            shouldNavigateToSessionList = true
+                        }) {
+                            navButtonTitle("SESSIONS")
+                        }
+                        .navigationDestination(isPresented: $shouldNavigateToSessionList) {
+                            SessionListView().environmentObject(viewModel)
+                        }
+                        
+                        
+                        
                         menuButton(title: "CATALOGUE")
 
                         if viewModel.isAuthenticated {
@@ -53,7 +65,14 @@ struct NavBarView: View {
                                 CreateDepositedGameView()
                             }
 
-                            menuButton(title: "+ JEU")
+                            Button(action: {
+                                shouldNavigateToCreateGameDescription = true
+                            }) {
+                                navButtonTitle("+ JEU")
+                            }
+                            .navigationDestination(isPresented: $shouldNavigateToCreateGameDescription) {
+                                CreateGameDescriptionView(viewModel: GameDescriptionViewModel(service: GameDescriptionService()))
+                            }
 
                             Button(action: {
                                 shouldNavigateToCart = true

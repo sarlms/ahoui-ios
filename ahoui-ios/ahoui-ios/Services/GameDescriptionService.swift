@@ -64,5 +64,42 @@ class GameDescriptionService {
             }
         }.resume()
     }
+    
+    func createGameDescription(_ game: GameDescriptionCreation, completion: @escaping (Result<GameDescription, Error>) -> Void) {
+            guard let url = URL(string: baseURL) else {
+                completion(.failure(URLError(.badURL)))
+                return
+            }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+            do {
+                request.httpBody = try JSONEncoder().encode(game)
+            } catch {
+                completion(.failure(error))
+                return
+            }
+
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                guard let data = data else {
+                    completion(.failure(URLError(.zeroByteResource)))
+                    return
+                }
+
+                do {
+                    let createdGame = try JSONDecoder().decode(GameDescription.self, from: data)
+                    completion(.success(createdGame))
+                } catch {
+                    completion(.failure(error))
+                }
+            }.resume()
+        }
 }
 

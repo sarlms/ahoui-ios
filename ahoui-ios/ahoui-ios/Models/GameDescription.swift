@@ -28,3 +28,13 @@ struct GameDescription: Identifiable, Codable {
         case ageRange
     }
 }
+
+struct GameDescriptionCreation: Codable {
+    let name: String
+    let publisher: String
+    let description: String
+    let photoURL: String
+    let minPlayers: Int
+    let maxPlayers: Int
+    let ageRange: String
+}

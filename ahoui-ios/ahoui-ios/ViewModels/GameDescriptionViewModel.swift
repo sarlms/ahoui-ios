@@ -64,5 +64,21 @@ class GameDescriptionViewModel: ObservableObject {
     func getGameDescriptionId(byName name: String) -> String? {
         return gameDescriptions.first(where: { $0.name == name })?.id
     }
+    
+    func createGame(description: GameDescriptionCreation, completion: @escaping (Bool) -> Void) {
+            service.createGameDescription(description) { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let newGame):
+                        self?.gameDescriptions.append(newGame)
+                        self?.uniqueGameNames.append(newGame.name)
+                        completion(true)
+                    case .failure(let error):
+                        print("❌ Failed to create game: (error.localizedDescription)")
+                        completion(false)
+                    }
+                }
+            }
+        }
 
 }
