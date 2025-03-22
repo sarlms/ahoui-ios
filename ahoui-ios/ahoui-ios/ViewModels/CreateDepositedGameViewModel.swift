@@ -19,9 +19,8 @@ class CreateDepositedGameViewModel: ObservableObject {
         updateTotals(session: session)
     }
 
-    func removeGame(at index: Int, session: Session) {
-        guard gameContainers.indices.contains(index), gameContainers.count > 1 else { return }
-        gameContainers.remove(at: index)
+    func removeGame(id: UUID, session: Session) {
+        gameContainers.removeAll { $0.id == id }
         updateTotals(session: session)
     }
 

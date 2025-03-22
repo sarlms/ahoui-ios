@@ -5,6 +5,7 @@ struct NavBarView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     
     @State private var shouldNavigateToSellerList = false
+    @State private var shouldNavigateToHome = false
     @State private var shouldNavigateToDepositedGames = false
     @State private var shouldNavigateToCart = false
     @State private var shouldNavigateToClientList = false
@@ -132,12 +133,20 @@ struct NavBarView: View {
                         .padding(.top, 80)
                 }
 
-                // ✅ Ce logo est maintenant centré indépendamment
-                Image("logoAHOUI")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 30)
-                    .padding(.top, 80)
+                NavigationLink(destination: HomeView().environmentObject(viewModel),
+                               isActive: $shouldNavigateToHome) {
+                    EmptyView()
+                }
+
+                Button(action: {
+                    shouldNavigateToHome = true
+                }) {
+                    Image("logoAHOUI")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 30)
+                        .padding(.top, 80)
+                }
             }
             .frame(height: 125)
             .background(Color(red: 1, green: 0.965, blue: 0.922))

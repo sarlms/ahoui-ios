@@ -2,6 +2,9 @@ import SwiftUI
 
 struct CreateGameDescriptionView: View {
     @ObservedObject var viewModel: GameDescriptionViewModel
+    @State private var shouldNavigate = false
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
+    @State private var isMenuOpen = false
     @Environment(\.presentationMode) var presentationMode
 
     @State private var name = ""
@@ -20,90 +23,93 @@ struct CreateGameDescriptionView: View {
     let ageRanges = ["0-5", "5-10", "8-12", "12-18", "18+"]
 
     var body: some View {
-        ZStack {
-            Color(red: 1, green: 0.965, blue: 0.922)
-                .edgesIgnoringSafeArea(.all)
-
-            VStack(spacing: 16) {
-                Text("Créer un nouveau jeu")
-                    .font(.custom("Poppins-SemiBold", size: 25))
-                    .foregroundColor(.black)
-                    .padding(.bottom, 20)
-
-                Group {
-                    customTextField("Nom du jeu", text: $name)
-                    customTextField("Éditeur", text: $publisher)
-                    customTextField("URL de la photo", text: $photoURL)
-                    customTextEditor("Description du jeu", text: $description)
-                        .frame(height: 120)
-
-                    customStepperField("Nombre min de joueurs", value: $minPlayers, range: 0...20)
-                    customStepperField("Nombre max de joueurs", value: $maxPlayers, range: minPlayers...20)
-                }
-
-                Picker(selection: $ageRange, label: pickerLabel("Tranche d’âge")) {
-                    ForEach(ageRanges, id: \.self) { age in
-                        Text(age).tag(age)
-                    }
-                }
-                .pickerStyle(MenuPickerStyle())
-                .frame(width: 180, height: 42)
-                .background(Color.white.opacity(0.5))
-                .cornerRadius(4)
-                .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.black, lineWidth: 1))
-
+        NavigationStack {
+            ZStack {
+                // ✅ Fond beige clair
+                Color(red: 1, green: 0.965, blue: 0.922)
+                    .ignoresSafeArea()
+                
                 Spacer()
-
-                Button(action: { showConfirmationDialog = true }) {
-                    Text("CREER")
-                        .foregroundColor(.white)
-                        .font(.custom("Poppins-Bold", size: 18))
-                        .frame(width: 140, height: 49)
-                        .background(isSubmitting ? Color.gray : Color.blue)
-                        .cornerRadius(15)
-                }
-                .padding(.top, 10)
-                .disabled(isSubmitting)
-                .alert(isPresented: $showAlert) {
-                    Alert(title: Text("Erreur"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                }
-                .confirmationDialog("Voulez-vous vraiment créer ce jeu ?", isPresented: $showConfirmationDialog, titleVisibility: .visible) {
-                    Button("Créer", role: .none) {
-                        createGame()
+                VStack(spacing: 16) {
+                    Text("Créer un jeu")
+                        .font(.custom("Poppins-Bold", size: 25))
+                        .foregroundColor(.black)
+                        .padding(.top, 50)
+                    
+                    Group {
+                        customTextField("Nom du jeu", text: $name)
+                        customTextField("Éditeur", text: $publisher)
+                        customTextField("URL de la photo", text: $photoURL)
+                        customTextEditor("Description du jeu", text: $description)
+                        
+                        customStepperField("Nb min de joueurs", value: $minPlayers, range: 0...20)
+                        customStepperField("Nb max de joueurs", value: $maxPlayers, range: minPlayers...20)
                     }
-                    Button("Annuler", role: .cancel) {}
+                    
+                    Picker(selection: $ageRange, label: pickerLabel("Tranche d’âge")) {
+                        ForEach(ageRanges, id: \.self) { age in
+                            Text(age).tag(age)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .frame(width: 180, height: 42)
+                    .background(Color.white.opacity(0.5))
+                    .cornerRadius(4)
+                    .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.black, lineWidth: 1))
+                    
+                    Button(action: {
+                        createGame()
+                    }) {
+                        Text("CRÉER")
+                            .font(.custom("Poppins-Bold", size: 18))
+                            .foregroundColor(.white)
+                            .frame(width: 120, height: 49)
+                            .background(isSubmitting ? Color.gray : Color.blue)
+                            .cornerRadius(15)
+                    }
+                    .navigationDestination(isPresented: $shouldNavigate) {
+                        HomeView()
+                    }
                 }
-
+                .padding(.horizontal, 45)
+                .padding(.top, 30)
+                .navigationBarBackButtonHidden(true)
+                .overlay(
+                    NavBarView(isMenuOpen: $isMenuOpen)
+                        .environmentObject(viewModel)
+                )
             }
-            .padding(.horizontal, 30)
-            .padding(.top, 30)
         }
     }
 
     // MARK: - Subviews Helpers
 
-    func customTextField(_ placeholder: String, text: Binding<String>) -> some View {
+    func customTextField(_ placeholder: String, text: Binding<String>, keyboard: UIKeyboardType = .default) -> some View {
         TextField(placeholder, text: text)
-            .padding()
-            .font(.custom("Poppins-ExtraLightItalic", size: 15))
+            .font(.custom("Poppins-LightItalic", size: 15))
+            .padding(.horizontal)
+            .frame(height: 42)
+            .keyboardType(keyboard)
             .background(Color.white.opacity(0.5))
-            .cornerRadius(4)
-            .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.black, lineWidth: 1))
-            .foregroundColor(.black)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color.black, lineWidth: 1)
+            )
     }
 
     func customTextEditor(_ placeholder: String, text: Binding<String>) -> some View {
         ZStack(alignment: .topLeading) {
             if text.wrappedValue.isEmpty {
                 Text(placeholder)
-                    .font(.custom("Poppins-ExtraLightItalic", size: 15))
+                    .font(.custom("Poppins-LightItalic", size: 15))
                     .foregroundColor(.gray)
                     .padding(8)
             }
             TextEditor(text: text)
-                .font(.custom("Poppins-ExtraLightItalic", size: 15))
+                .font(.custom("Poppins-LightItalic", size: 15))
                 .padding(4)
-                .background(Color.clear)
+                .background(Color.white.opacity(0.5))
+                .scrollContentBackground(.hidden)
         }
         .background(Color.white.opacity(0.5))
         .cornerRadius(4)
@@ -113,7 +119,7 @@ struct CreateGameDescriptionView: View {
     func customStepperField(_ title: String, value: Binding<Int>, range: ClosedRange<Int>) -> some View {
         HStack {
             Text(title)
-                .font(.custom("Poppins-ExtraLightItalic", size: 15))
+                .font(.custom("Poppins-LightItalic", size: 15))
             Spacer()
             HStack(spacing: 8) {
                 Button(action: {
@@ -150,7 +156,7 @@ struct CreateGameDescriptionView: View {
     func pickerLabel(_ title: String) -> some View {
         HStack {
             Text(title)
-                .font(.custom("Poppins-ExtraLightItalic", size: 15))
+                .font(.custom("Poppins-LightItalic", size: 15))
                 .foregroundColor(.black)
             Spacer()
             Image(systemName: "chevron.down")
@@ -198,7 +204,7 @@ struct CreateGameDescriptionView: View {
         viewModel.createGame(description: gameCreation) { success in
             isSubmitting = false
             if success {
-                presentationMode.wrappedValue.dismiss()
+                shouldNavigate = true
             } else {
                 alertMessage = "Erreur lors de la création du jeu."
                 showAlert = true

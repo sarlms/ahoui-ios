@@ -5,6 +5,7 @@ struct CreateSessionView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var navigationViewModel: NavigationViewModel
     @State private var isMenuOpen = false
+    @State private var shouldNavigate = false
 
     var body: some View {
         NavigationStack {
@@ -48,7 +49,7 @@ struct CreateSessionView: View {
                     }
                     
                     Text("A partir de 30$ de frais de dépôt")
-                        .font(.custom("Poppins-ExtraLightItalic", size: 13))
+                        .font(.custom("Poppins-LightItalic", size: 13))
                         .foregroundColor(.black)
                         .padding(.leading, 5)
                     
@@ -62,17 +63,23 @@ struct CreateSessionView: View {
                     Button(action: {
                         if let token = UserDefaults.standard.string(forKey: "token") {
                             viewModel.createSession(authToken: token)
+                            shouldNavigate = true
                         }
                     }) {
                         Text("CRÉER")
                             .font(.custom("Poppins-Bold", size: 18))
                             .foregroundColor(.white)
-                            .frame(width: 160, height: 49)
+                            .frame(width: 120, height: 49)
                             .background(Color(red: 0.05, green: 0.61, blue: 0.043))
                             .cornerRadius(15)
                     }
                     .padding(.top, 20)
+                    .navigationDestination(isPresented: $shouldNavigate) {
+                        SessionListView()
+                    }
+                    
                 }
+                .padding(.horizontal, 55)
                 .navigationBarBackButtonHidden(true)
                 .overlay(
                     NavBarView(isMenuOpen: $isMenuOpen)
@@ -84,7 +91,7 @@ struct CreateSessionView: View {
 
     func customTextField(_ placeholder: String, text: Binding<String>, keyboard: UIKeyboardType = .default) -> some View {
         TextField(placeholder, text: text)
-            .font(.custom("Poppins-ExtraLightItalic", size: 15))
+            .font(.custom("Poppins-LightItalic", size: 15))
             .padding(.horizontal)
             .frame(height: 42)
             .keyboardType(keyboard)
@@ -112,8 +119,4 @@ struct CreateSessionView: View {
             .cornerRadius(4)
             .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.black, lineWidth: 1))
     }
-}
-
-#Preview {
-    CreateSessionView()
 }

@@ -4,39 +4,69 @@ struct SessionInfoView: View {
     let session: Session
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text("Session")
-                .font(.custom("Poppins-SemiBold", size: 20))
-                .frame(maxWidth: .infinity, alignment: .center)
-
-            VStack(alignment: .leading, spacing: 5) {
-                Text("Nom de la session : \(session.name)")
-                    .font(.custom("Poppins-SemiBold", size: 14))
-
-                Text("Date de début : \(formatDate(session.startDate))")
-                    .font(.custom("Poppins-SemiBold", size: 14))
-
-                Text("Date de fin : \(formatDate(session.endDate))")
-                    .font(.custom("Poppins-SemiBold", size: 14))
-
-                Text("Frais de dépôt : \(String(format: "%.2f", session.depositFee))€ par article")
-                    .font(.custom("Poppins-SemiBold", size: 14))
-
-                Text("Nombre d'articles avant réduction : \(session.depositFeeLimitBeforeDiscount)")
-                    .font(.custom("Poppins-SemiBold", size: 14))
-
-                Text("Réduction : \(session.depositFeeDiscount)% du total")
-                    .font(.custom("Poppins-SemiBold", size: 14))
-
-                Text("Commission après vente : \(session.saleComission)% par article")
-                    .font(.custom("Poppins-SemiBold", size: 14))
+        ZStack {
+            VStack(spacing: 5) {
+                Text("Session")
+                    .font(.custom("Poppins-SemiBold", size: 20))
+                    .frame(maxWidth: .infinity, alignment: .center)
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(){
+                        Text("Nom de la session :")
+                            .font(.custom("Poppins-SemiBold", size: 15))
+                        Text("\(session.name)")
+                            .font(.custom("Poppins-Light", size: 13))
+                    }
+                    HStack(){
+                        Text("Date de début :")
+                            .font(.custom("Poppins-SemiBold", size: 15))
+                        Text("\(formatDate(session.startDate))")
+                            .font(.custom("Poppins-Light", size: 13))
+                    }
+                    
+                    HStack(){
+                        Text("Date de fin :")
+                            .font(.custom("Poppins-SemiBold", size: 15))
+                        Text("\(formatDate(session.endDate))")
+                            .font(.custom("Poppins-Light", size: 13))
+                    }
+                    
+                    HStack(){
+                        Text("Frais de dépôt :")
+                            .font(.custom("Poppins-SemiBold", size: 15))
+                        Text("\(session.depositFee)€ par article")
+                            .font(.custom("Poppins-Light", size: 13))
+                    }
+                    
+                    HStack(){
+                        Text("Nombre d'articles avant réduction :")
+                            .font(.custom("Poppins-SemiBold", size: 15))
+                        Text("\(session.depositFeeLimitBeforeDiscount)")
+                            .font(.custom("Poppins-Light", size: 13))
+                    }
+                    
+                    HStack(){
+                        Text("Réduction :")
+                            .font(.custom("Poppins-SemiBold", size: 15))
+                        Text("\(session.depositFeeDiscount)% du total")
+                            .font(.custom("Poppins-Light", size: 13))
+                    }
+                    
+                    HStack(){
+                        Text("Commission après vente :")
+                            .font(.custom("Poppins-SemiBold", size: 15))
+                        Text("\(session.saleComission)% par article")
+                            .font(.custom("Poppins-Light", size: 13))
+                    }
+                }
+                .padding()
+                .frame(width: 340)
+                .background(Color.white.opacity(0.5))
+                .cornerRadius(20)
+                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
             }
-            .padding()
-            .frame(width: 284)
-            .background(Color.white.opacity(0.5))
-            .cornerRadius(20)
-            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     func formatDate(_ dateString: String) -> String {
