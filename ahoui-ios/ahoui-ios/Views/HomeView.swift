@@ -15,56 +15,26 @@ struct HomeView: View {
                     .ignoresSafeArea()
 
                 VStack {
-                    HStack {
-                        Button(action: {
-                            withAnimation {
-                                isMenuOpen.toggle()
-                            }
-                        }) {
-                            Image("logoMENU")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.black)
-                                .padding(.leading, 20)
-                                .padding(.top, 50)
-                        }
 
-                        Spacer()
-
-                        Image("logoAHOUI")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 50)
-                            .padding(.top, 50)
-
-                        Spacer()
-
-                        Image("logoFLEUR")
-                            .resizable()
-                            .frame(width: 50, height: 40)
-                            .padding(.trailing, 20)
-                            .padding(.top, 40)
-                    }
-                    .frame(height: 110)
-                    .background(Color(red: 1, green: 0.965, blue: 0.922))
-                    .border(Color.black, width: 1)
-                    .ignoresSafeArea(edges: .top)
-
+                    Spacer()
+                    Spacer()
                     Spacer()
 
                     if let session = sessionViewModel.activeSession {
                         VStack {
-                            Text("\(session.name) en cours !")
-                                .font(.custom("Poppins-SemiBold", size: 24))
-                                .foregroundColor(.black)
-                                .multilineTextAlignment(.center)
-
-                            Text("Rendez-vous à \(session.location)")
-                                .font(.custom("Poppins-Light", size: 16))
-                                .foregroundColor(.black)
-
-                            Text("À vos marques... Prêts... Partez !!")
-                                .font(.custom("Poppins-Medium", size: 18))
+                            HStack{
+                                Text("La session")
+                                    .font(.custom("Poppins-Light", size: 18))
+                                    .foregroundColor(.black)
+                                Text("\(session.name)")
+                                    .font(.custom("Poppins-Bold", size: 18))
+                                    .foregroundColor(.black)
+                                Text("est ouverte !")
+                                    .font(.custom("Poppins-Light", size: 18))
+                                    .foregroundColor(.black)
+                            }
+                            Text("FONCEZ !!!")
+                                .font(.custom("Poppins-Bold", size: 35))
                                 .foregroundColor(.black)
                         }
                         .padding()
@@ -94,11 +64,28 @@ struct HomeView: View {
                         .frame(width: 213, height: 213)
 
                     Spacer()
+                    
+                    if let session = sessionViewModel.activeSession {
+                        VStack {
+                            Text("Rendez-vous au")
+                                .font(.custom("Poppins-Light", size: 16))
+                                .foregroundColor(.black)
+                            Text("\(session.location)")
+                                .font(.custom("Poppins-Bold", size: 16))
+                                .foregroundColor(.black)
+                        }
+                        .padding()
+                    }
 
-                    Image("logoFLEUR")
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    
+                    Image("logoBIGFLEUR")
                         .resizable()
-                        .frame(width: 100, height: 100)
-                        .padding(.bottom, 20)
+                        .scaledToFit()
+                        .frame(width: 250)
+                        .padding(.bottom, -35)
                 }
             }
             .onAppear {
@@ -118,6 +105,7 @@ struct HomeView: View {
                     .environmentObject(viewModel)
             )
         }
+        .navigationBarBackButtonHidden(true) 
     }
 
     func startCountdown(to targetDate: String) {
@@ -143,6 +131,4 @@ struct HomeView: View {
     }
 }
 
-#Preview {
-    HomeView()
-}
+

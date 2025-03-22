@@ -5,28 +5,42 @@ struct SessionCardView: View {
     let sessionService: SessionService
     @EnvironmentObject var authViewModel: AuthViewModel // Vérifie si le manager est connecté
     @State private var showDeleteConfirmation = false // Affiche la confirmation avant suppression
+    @State private var shouldNavigate = false
+
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(session.name)
-                .font(.system(size: 18, weight: .bold))
+                .font(.custom("Poppins-Bold", size: 23))
 
-            Text("Date : \(sessionService.formatDate(session.startDate)) - \(sessionService.formatDate(session.endDate))")
-                .font(.system(size: 14, weight: .bold))
+            HStack {
+                Text("Date :")
+                    .font(.custom("Poppins-Bold", size: 15))
+                Text("\(sessionService.formatDate(session.startDate)) - \(sessionService.formatDate(session.endDate))")
+                    .font(.custom("Poppins-Light", size: 15))
+            }
             
-            Text("Horaires : \(sessionService.formatTime(session.startDate)) - \(sessionService.formatTime(session.endDate))")
-                .font(.system(size: 14, weight: .bold))
+            HStack {
+                Text("Horaires :")
+                    .font(.custom("Poppins-Bold", size: 15))
+                Text("\(sessionService.formatTime(session.startDate)) - \(sessionService.formatTime(session.endDate))")
+                    .font(.custom("Poppins-Light", size: 15))
+            }
 
-            Text("Lieu : \(session.location)")
-                .font(.system(size: 14, weight: .bold))
+            HStack {
+                Text("Lieu :")
+                    .font(.custom("Poppins-Bold", size: 15))
+                Text("\(session.location)")
+                    .font(.custom("Poppins-Light", size: 15))
+            }
 
             HStack {
                 Text("Status :")
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.custom("Poppins-Bold", size: 14))
 
                 Text(sessionStatus())
                     .foregroundColor(statusColor())
-                    .fontWeight(.bold)
+                    .font(.custom("Poppins-Light", size: 14))
             }
 
             // Bouton "Catalogue" si la session est ouverte ou clôturée
@@ -35,17 +49,19 @@ struct SessionCardView: View {
                     print("Catalogue tapped for session: \(session.name)")
                 }) {
                     Text("Catalogue")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.black)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.white)
-                        .cornerRadius(20)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(Color.black, lineWidth: 1)
-                        )
-                }
+                             .font(.custom("Poppins-SemiBold", size: 18))
+                             .foregroundColor(.black)
+                             .padding(.horizontal, 20)
+                             .padding(.vertical, 10)
+                             .background(Color.white)
+                             .cornerRadius(20)
+                             .overlay(
+                                 RoundedRectangle(cornerRadius: 20)
+                                     .stroke(Color.black, lineWidth: 1)
+                             )
+                     }
+                     .frame(maxWidth: .infinity, alignment: .center)
+                     .padding(.top, 10)
             }
 
             // Bouton "Supprimer ?" si la session est "À venir" et le manager connecté
@@ -54,9 +70,9 @@ struct SessionCardView: View {
                     showDeleteConfirmation = true
                 }) {
                     Text("Supprimer ?")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.red)
-                        .underline()
+                        .font(.custom("Poppins-Medium", size: 16))
+                          .foregroundColor(.red)
+                          .underline()
                 }
                 .padding(.top, 8)
                 .alert(isPresented: $showDeleteConfirmation) {
@@ -71,8 +87,7 @@ struct SessionCardView: View {
                 }
             }
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(20)
         .background(Color.white.opacity(0.5))
         .cornerRadius(20)
         .overlay(
@@ -80,7 +95,11 @@ struct SessionCardView: View {
                 .stroke(Color.black, lineWidth: 1)
         )
         .padding(.horizontal)
+        .navigationDestination(isPresented: $shouldNavigate) {
+            SessionListView()
+        }
     }
+
 
     // Fonction pour déterminer le statut d'une session
     func sessionStatus() -> String {
@@ -122,8 +141,7 @@ struct SessionCardView: View {
             DispatchQueue.main.async {
                 if success {
                     print("✅ Session supprimée avec succès")
-                    // Optionnel : actualiser la liste après suppression
-                    NotificationCenter.default.post(name: NSNotification.Name("SessionDeleted"), object: nil)
+                    shouldNavigate = true // 👉 déclenche la navigation
                 } else {
                     print("❌ Échec de la suppression")
                 }

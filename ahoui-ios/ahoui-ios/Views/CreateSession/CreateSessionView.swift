@@ -2,83 +2,118 @@ import SwiftUI
 
 struct CreateSessionView: View {
     @StateObject private var viewModel = CreateSessionViewModel()
-    @EnvironmentObject var authViewModel: AuthViewModel // Pour récupérer le token
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
+    @State private var isMenuOpen = false
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 15) {
-                Text("Créer une session")
-                    .font(.system(size: 25, weight: .semibold))
-                    .padding(.bottom, 10)
-
-                TextField("Nom de la session", text: $viewModel.name)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                TextField("Adresse du lieu", text: $viewModel.location)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                TextField("Description", text: $viewModel.description)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                HStack {
-                    DatePicker("Date début", selection: $viewModel.startDate, displayedComponents: .date)
-                    Text("-")
-                    DatePicker("Date fin", selection: $viewModel.endDate, displayedComponents: .date)
-                }
-
-                HStack {
-                    DatePicker("Heure début", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
-                    Text("-")
-                    DatePicker("Heure fin", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
-                }
-
-                TextField("Frais de dépôt", text: $viewModel.depositFee)
-                    .keyboardType(.decimalPad)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                HStack {
-                    TextField("Réduction dépôt", text: $viewModel.depositFeeDiscount)
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                    Text("%")
-                }
-                Text("À partir de 30$ de frais de dépôt")
-                    .font(.caption)
-                    .foregroundColor(.gray)
-
-                HStack {
-                    TextField("Commission", text: $viewModel.saleComission)
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                    Text("%")
-                }
-
-                if let successMessage = viewModel.successMessage {
-                    Text(successMessage)
-                        .foregroundColor(.green)
-                        .font(.headline)
-                }
-
-                if let errorMessage = viewModel.errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .font(.headline)
-                }
-
-                Button(action: {
-                    if let authToken = UserDefaults.standard.string(forKey: "token") {
-                        viewModel.createSession(authToken: authToken)
+        NavigationStack {
+            ZStack {
+                // ✅ Fond beige clair
+                Color(red: 1, green: 0.965, blue: 0.922)
+                    .ignoresSafeArea()
+                
+                Spacer()
+                VStack(spacing: 16) {
+                    Text("Créer une session")
+                        .font(.custom("Poppins-Bold", size: 25))
+                        .foregroundColor(.black)
+                        .padding(.top, 30)
+                    
+                    Group {
+                        customTextField("Nom de la session", text: $viewModel.name)
+                        customTextField("Adresse du lieu", text: $viewModel.location)
+                        customTextField("Description", text: $viewModel.description)
                     }
-                }) {
-                    Text("CRÉER")
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.green)
-                        .cornerRadius(10)
+                    
+                    HStack(spacing: 10) {
+                        customDateField("Date début", date: $viewModel.startDate)
+                        Text("-")
+                        customDateField("Date fin", date: $viewModel.endDate)
+                    }
+                    
+                    HStack(spacing: 10) {
+                        customTimeField("Heure début", time: $viewModel.startTime)
+                        Text("-")
+                        customTimeField("Heure fin", time: $viewModel.endTime)
+                    }
+                    
+                    customTextField("Frais de dépôt", text: $viewModel.depositFee, keyboard: .decimalPad)
+                    
+                    HStack {
+                        customTextField("Réduction dépôt", text: $viewModel.depositFeeDiscount, keyboard: .decimalPad)
+                        Text("%")
+                            .font(.custom("Poppins-Medium", size: 17))
+                            .foregroundColor(.black)
+                    }
+                    
+                    Text("A partir de 30$ de frais de dépôt")
+                        .font(.custom("Poppins-ExtraLightItalic", size: 13))
+                        .foregroundColor(.black)
+                        .padding(.leading, 5)
+                    
+                    HStack {
+                        customTextField("Comission", text: $viewModel.saleComission, keyboard: .decimalPad)
+                        Text("%")
+                            .font(.custom("Poppins-Medium", size: 17))
+                            .foregroundColor(.black)
+                    }
+                    
+                    Button(action: {
+                        if let token = UserDefaults.standard.string(forKey: "token") {
+                            viewModel.createSession(authToken: token)
+                        }
+                    }) {
+                        Text("CRÉER")
+                            .font(.custom("Poppins-Bold", size: 18))
+                            .foregroundColor(.white)
+                            .frame(width: 160, height: 49)
+                            .background(Color(red: 0.05, green: 0.61, blue: 0.043))
+                            .cornerRadius(15)
+                    }
+                    .padding(.top, 20)
                 }
+                .navigationBarBackButtonHidden(true)
+                .overlay(
+                    NavBarView(isMenuOpen: $isMenuOpen)
+                        .environmentObject(viewModel)
+                )
             }
-            .padding()
         }
     }
+
+    func customTextField(_ placeholder: String, text: Binding<String>, keyboard: UIKeyboardType = .default) -> some View {
+        TextField(placeholder, text: text)
+            .font(.custom("Poppins-ExtraLightItalic", size: 15))
+            .padding(.horizontal)
+            .frame(height: 42)
+            .keyboardType(keyboard)
+            .background(Color.white.opacity(0.5))
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color.black, lineWidth: 1)
+            )
+    }
+
+    func customDateField(_ label: String, date: Binding<Date>) -> some View {
+        DatePicker("", selection: date, displayedComponents: .date)
+            .labelsHidden()
+            .frame(width: 127, height: 43)
+            .background(Color.white.opacity(0.5))
+            .cornerRadius(4)
+            .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.black, lineWidth: 1))
+    }
+
+    func customTimeField(_ label: String, time: Binding<Date>) -> some View {
+        DatePicker("", selection: time, displayedComponents: .hourAndMinute)
+            .labelsHidden()
+            .frame(width: 127, height: 42)
+            .background(Color.white.opacity(0.5))
+            .cornerRadius(4)
+            .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.black, lineWidth: 1))
+    }
+}
+
+#Preview {
+    CreateSessionView()
 }

@@ -26,8 +26,16 @@ class SessionService {
 
             do {
                 let decodedSessions = try JSONDecoder().decode([Session].self, from: data)
+
+                // 🔽 Trie les sessions par date de début décroissante
+                let sortedSessions = decodedSessions.sorted {
+                    let date1 = isoDateFormatter.date(from: $0.startDate) ?? Date.distantPast
+                    let date2 = isoDateFormatter.date(from: $1.startDate) ?? Date.distantPast
+                    return date1 > date2
+                }
+
                 DispatchQueue.main.async {
-                    completion(decodedSessions)
+                    completion(sortedSessions)
                 }
             } catch {
                 print("❌ Erreur de décodage :", error.localizedDescription)
@@ -35,6 +43,7 @@ class SessionService {
             }
         }.resume()
     }
+
 
     // Récupère la session actuellement ouverte (si elle existe)
     func fetchActiveSession(completion: @escaping (Session?) -> Void) {
