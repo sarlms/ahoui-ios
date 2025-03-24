@@ -25,20 +25,20 @@ class SellerService {
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("❌ Error fetching sellers: \(error.localizedDescription)")
+                print("Error fetching sellers: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
 
             guard let data = data else {
-                print("❌ No data received")
+                print("No data received")
                 completion(.failure(NSError(domain: "No data", code: 0, userInfo: nil)))
                 return
             }
 
             // ✅ Debug: Print raw response
             if let jsonString = String(data: data, encoding: .utf8) {
-                //print("✅ Raw JSON Response: \(jsonString)")
+                //print("Raw JSON Response: \(jsonString)")
             }
 
             do {
@@ -47,7 +47,7 @@ class SellerService {
                     completion(.success(sellers))
                 }
             } catch {
-                print("❌ Decoding error: \(error)")
+                print("Decoding error: \(error)")
                 completion(.failure(error))
             }
         }.resume()
@@ -124,7 +124,7 @@ class SellerService {
     }
     
     func createSeller(_ seller: Seller, completion: @escaping (Result<Seller, Error>) -> Void) {
-        guard let url = URL(string: "\(baseURL)") else { return } // ✅ Ensure correct API endpoint
+        guard let url = URL(string: "\(baseURL)") else { return } // Ensure correct API endpoint
 
         let sellerData = ["name": seller.name, "email": seller.email, "phone": seller.phone, "amountOwed": seller.amountOwed] as [String : Any]
 

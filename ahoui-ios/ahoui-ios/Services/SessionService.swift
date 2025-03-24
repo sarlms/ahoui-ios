@@ -6,20 +6,20 @@ class SessionService {
     // Récupère toutes les sessions
     func fetchSessions(completion: @escaping ([Session]) -> Void) {
         guard let url = URL(string: baseURL) else {
-            print("❌ URL invalide")
+            print("URL invalide")
             completion([])
             return
         }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
-                print("❌ Erreur de requête :", error.localizedDescription)
+                print("Erreur de requête :", error.localizedDescription)
                 completion([])
                 return
             }
 
             guard let data = data else {
-                print("❌ Aucune donnée reçue")
+                print("Aucune donnée reçue")
                 completion([])
                 return
             }
@@ -38,7 +38,7 @@ class SessionService {
                     completion(sortedSessions)
                 }
             } catch {
-                print("❌ Erreur de décodage :", error.localizedDescription)
+                print("Erreur de décodage :", error.localizedDescription)
                 completion([])
             }
         }.resume()
@@ -48,20 +48,20 @@ class SessionService {
     // Récupère la session actuellement ouverte (si elle existe)
     func fetchActiveSession(completion: @escaping (Session?) -> Void) {
         guard let url = URL(string: "\(baseURL)/active") else {
-            print("❌ URL invalide")
+            print("URL invalide")
             completion(nil)
             return
         }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
-                print("❌ Erreur de requête :", error.localizedDescription)
+                print("Erreur de requête :", error.localizedDescription)
                 completion(nil)
                 return
             }
 
             guard let data = data else {
-                print("❌ Aucune donnée reçue")
+                print("Aucune donnée reçue")
                 completion(nil)
                 return
             }
@@ -73,7 +73,7 @@ class SessionService {
                     completion(activeSession)
                 }
             } catch {
-                print("❌ Erreur de décodage :", error.localizedDescription)
+                print("Erreur de décodage :", error.localizedDescription)
                 completion(nil)
             }
         }.resume()
@@ -83,10 +83,10 @@ class SessionService {
     func fetchActiveSessionId(completion: @escaping (String?) -> Void) {
         fetchActiveSession { session in
             if let session = session {
-                print("✅ ID de la session active :", session.id)
+                print("ID de la session active :", session.id)
                 completion(session.id)
             } else {
-                print("⚠️ Impossible de récupérer l'ID de la session active")
+                print("Impossible de récupérer l'ID de la session active")
                 completion(nil)
             }
         }
@@ -95,20 +95,20 @@ class SessionService {
     // Récupère la prochaine session à venir (la plus proche dans le futur)
     func fetchNextSession(completion: @escaping (Session?) -> Void) {
         guard let url = URL(string: "\(baseURL)/upcoming") else {
-            print("❌ URL invalide")
+            print("URL invalide")
             completion(nil)
             return
         }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
-                print("❌ Erreur de requête :", error.localizedDescription)
+                print("Erreur de requête :", error.localizedDescription)
                 completion(nil)
                 return
             }
 
             guard let data = data else {
-                print("❌ Aucune donnée reçue")
+                print("Aucune donnée reçue")
                 completion(nil)
                 return
             }
@@ -120,7 +120,7 @@ class SessionService {
                     completion(nextSession)
                 }
             } catch {
-                print("❌ Erreur de décodage :", error.localizedDescription)
+                print("Erreur de décodage :", error.localizedDescription)
                 completion(nil)
             }
         }.resume()
@@ -226,7 +226,7 @@ class SessionService {
     // Supprime une session spécifique
     func deleteSession(sessionId: String, authToken: String?, completion: @escaping (Bool) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(sessionId)") else {
-            print("❌ URL invalide")
+            print("URL invalide")
             completion(false)
             return
         }
@@ -238,31 +238,31 @@ class SessionService {
         if let token = authToken {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         } else {
-            print("❌ Aucun token d'authentification fourni")
+            print("Aucun token d'authentification fourni")
             completion(false)
             return
         }
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("❌ Erreur lors de la suppression :", error.localizedDescription)
+                print("Erreur lors de la suppression :", error.localizedDescription)
                 completion(false)
                 return
             }
 
             guard let httpResponse = response as? HTTPURLResponse else {
-                print("❌ Réponse invalide du serveur")
+                print("Réponse invalide du serveur")
                 completion(false)
                 return
             }
 
             if httpResponse.statusCode == 200 {
                 DispatchQueue.main.async {
-                    print("✅ Session supprimée avec succès")
+                    print("Session supprimée avec succès")
                     completion(true)
                 }
             } else {
-                print("❌ Erreur serveur lors de la suppression (Code \(httpResponse.statusCode))")
+                print("Erreur serveur lors de la suppression (Code \(httpResponse.statusCode))")
                 completion(false)
             }
         }.resume()
