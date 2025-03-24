@@ -11,6 +11,13 @@ class DepositedGameViewModel: ObservableObject {
     @Published var selectedSessionId: String? = nil
 
     private let service: DepositedGameService
+    
+    private let isoDateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
+
 
     init(service: DepositedGameService) {
         self.service = service
@@ -111,4 +118,34 @@ class DepositedGameViewModel: ObservableObject {
             return games.sorted { $0.salePrice > $1.salePrice }
         }
     }
+    
+    func getSessionStatus(for session: Session?) -> String {
+        guard let session = session,
+              let start = isoDateFormatter.date(from: session.startDate),
+              let end = isoDateFormatter.date(from: session.endDate) else {
+            return "inconnue"
+        }
+
+        let now = Date()
+        if now < start { return "à venir" }
+        if now > end { return "clôturée" }
+        return "en cours"
+    }
+
+    func toggleAvailability(_ game: DepositedGame) {
+        let updated = ["forSale": game.forSale]
+        
+        service.updateDepositedGame(id: game.id, with: updated) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    print("✅ Disponibilité mise à jour")
+                    self.fetchAllDepositedGames()
+                case .failure(let error):
+                    print("❌ Erreur : \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
 }

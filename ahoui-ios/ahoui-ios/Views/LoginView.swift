@@ -3,6 +3,7 @@ import SwiftUI
 struct LoginView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     @State private var isMenuOpen = false
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         NavigationStack {
@@ -10,7 +11,6 @@ struct LoginView: View {
                 // ✅ Fond beige clair
                 Color(red: 1, green: 0.965, blue: 0.922)
                     .ignoresSafeArea()
-
                 Spacer()
                 VStack(spacing: 30) {
                     Spacer()

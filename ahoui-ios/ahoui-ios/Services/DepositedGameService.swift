@@ -162,4 +162,31 @@ class DepositedGameService {
         }.resume()
     }
     
+
+    func updateDepositedGame(id: String, with fields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: "\(baseURL)/depositedGame/\(id)") else {
+            completion(.failure(URLError(.badURL)))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: fields)
+
+        URLSession.shared.dataTask(with: request) { _, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {
+                completion(.failure(URLError(.badServerResponse)))
+                return
+            }
+
+            completion(.success(()))
+        }.resume()
+    }
+    
 }

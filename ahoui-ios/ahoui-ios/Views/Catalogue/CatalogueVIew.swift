@@ -3,139 +3,176 @@ import SwiftUI
 struct CatalogueView: View {
     @ObservedObject var viewModel: DepositedGameViewModel
     @ObservedObject var sessionViewModel: SessionViewModel
-
+    
+    @State private var shouldNavigate = false
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
+    @State private var isMenuOpen = false
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
-        ZStack {
-            Color(red: 1, green: 0.965, blue: 0.922)
-                .edgesIgnoringSafeArea(.all)
-
-            VStack {
-                Text("Catalogue")
-                    .font(.custom("Poppins-SemiBold", size: 25))
-                    .foregroundColor(.black)
-                    .padding(.top, 20)
-
-                SearchBar(text: $viewModel.searchText)
-
-                HStack {
-                    Picker("Session", selection: $viewModel.selectedSessionId) {
-                        Text("Toutes les sessions").tag(nil as String?)
-                        ForEach(sessionViewModel.sessions) { session in
-                            Text(session.name).tag(session.id as String?)
-                        }
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                    .frame(width: 200)
-                    .background(Color.white.opacity(0.5))
-                    .cornerRadius(10)
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
-
-                    Picker(selection: $viewModel.selectedSortOption, label: SortButton(title: "Trier par", action: {})) {
-                        ForEach(DepositedGameViewModel.SortOption.allCases, id: \.self) { option in
-                            Text(option.rawValue).tag(option)
-                        }
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                    .frame(width: 150)
-                    .background(Color.white.opacity(0.5))
-                    .cornerRadius(10)
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
-                }
-                .padding(.horizontal, 20)
-
-                if viewModel.isLoading {
-                    ProgressView().padding()
-                } else if let errorMessage = viewModel.errorMessage {
-                    Text(errorMessage).foregroundColor(.red)
-                } else {
-                    ScrollView {
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: 2), spacing: 16) {
-                            ForEach(viewModel.filteredGames) { game in
-                                NavigationLink(destination: CatalogueGameDetailView(viewModel: viewModel, gameId: game.id)) {
-                                    GameCard(game: game)
-                                }
+        NavigationStack {
+            ZStack {
+                Color(red: 1, green: 0.965, blue: 0.922)
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 16) {
+                    Text("Catalogue")
+                        .font(.custom("Poppins-SemiBold", size: 25))
+                        .foregroundColor(.black)
+                        .padding(.top, 40)
+                    
+                    SearchBar(text: $viewModel.searchText)
+                    
+                    HStack {
+                        Picker("Session", selection: $viewModel.selectedSessionId) {
+                            Text("Toutes les sessions").tag(nil as String?)
+                            ForEach(sessionViewModel.sessions) { session in
+                                Text(session.name).tag(session.id as String?)
                             }
                         }
-                        .padding(.horizontal)
+                        .pickerStyle(MenuPickerStyle())
+                        .frame(width: 200)
+                        .background(Color.white.opacity(0.5))
+                        .cornerRadius(10)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
+                        
+                        Picker(selection: $viewModel.selectedSortOption, label: SortButton(title: "Trier par", action: {})) {
+                            ForEach(DepositedGameViewModel.SortOption.allCases, id: \.self) { option in
+                                Text(option.rawValue).tag(option)
+                            }
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                        .frame(width: 150)
+                        .background(Color.white.opacity(0.5))
+                        .cornerRadius(10)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
                     }
-                }
+                    .padding(.horizontal, 20)
+                    
+                    if viewModel.isLoading {
+                        ProgressView().padding()
+                    } else if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage).foregroundColor(.red)
+                    } else {
+                        ScrollView {
+                            LazyVGrid(columns: [
+                                GridItem(.flexible(), spacing: 20),
+                                GridItem(.flexible(), spacing: 20)
+                            ], spacing: 20) {
+                                ForEach(viewModel.filteredGames) { game in
+                                    NavigationLink(destination: CatalogueGameDetailView(viewModel: viewModel, gameId: game.id)) {
+                                        GameCard(game: game)
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 0)
+                            .frame(maxWidth: .infinity)
+                        }
 
-                Spacer()
+                    }
+                    
+                    Spacer()
+                }
+                .frame(maxWidth: 300)
+                .padding(.horizontal, 45)
+                .padding(.top, 30)
+                .navigationBarBackButtonHidden(true)
+                .overlay(
+                    NavBarView(isMenuOpen: $isMenuOpen)
+                        .environmentObject(viewModel)
+                )
+                .onAppear {
+                    viewModel.fetchAllDepositedGames()
+                    sessionViewModel.loadSessions()
+                }
+                
             }
         }
-        .onAppear {
-            viewModel.fetchAllDepositedGames()
-            sessionViewModel.loadSessions()
+    }
+    
+    
+    struct SearchBar: View {
+        @Binding var text: String
+        
+        var body: some View {
+            HStack {
+                TextField("Rechercher le nom d’un jeu", text: $text)
+                    .padding(8)
+                    .background(Color.white.opacity(0.5))
+                    .cornerRadius(10)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
+                    .padding(.horizontal, 1)
+                    .font(.custom("Poppins-LightItalic", size: 13))
+                
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.black)
+            }
         }
     }
-}
+    
+    struct SortButton: View {
+        var title: String
+        var action: () -> Void
 
+        var body: some View {
+            Button(action: action) {
+                HStack(spacing: 8) {
+                    Image(systemName: "play.fill")
+                        .foregroundColor(.black)
+                        .font(.system(size: 14))
 
-struct SearchBar: View {
-    @Binding var text: String
-
-    var body: some View {
-        HStack {
-            TextField("Rechercher le nom d’un jeu", text: $text)
-                .padding(10)
+                    Text(title)
+                        .font(.custom("Poppins-Medium", size: 14))
+                        .foregroundColor(.black)
+                }
+                .frame(height: 29)
+                .padding(.horizontal, 16)
                 .background(Color.white.opacity(0.5))
                 .cornerRadius(10)
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
-                .padding(.horizontal, 20)
-
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.black)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.black, lineWidth: 1)
+                )
+            }
+            .buttonStyle(PlainButtonStyle()) // ✅ empêche le style bleu par défaut
         }
     }
-}
 
-struct SortButton: View {
-    var title: String
-    var action: () -> Void
 
-    var body: some View {
-        Button(action: action) {
-            HStack {
-                Image(systemName: "play.fill")
-                Text(title)
+    
+    struct GameCard: View {
+        let game: DepositedGame
+        
+        var body: some View {
+            VStack {
+                AsyncImage(url: URL(string: game.gameDescription.photoURL)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit) // ✅ Garde les proportions sans crop
+                } placeholder: {
+                    Color.gray.opacity(0.3)
+                }
+                .frame(width: 100, height: 100)
+                .background(Color.white)
+                .cornerRadius(10)
+                .clipped()
+                
+                Text(game.gameDescription.name)
+                    .font(.custom("Poppins-SemiBold", size: 11))
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity)
+
+                
+                Text("\(game.salePrice, specifier: "%.0f")€")
+                    .font(.custom("Poppins-SemiBold", size: 20))
+                    .foregroundColor(.black)
             }
-            .font(.custom("Poppins", size: 14))
-            .foregroundColor(.black)
-            .padding(8)
-            .background(Color.white.opacity(0.5))
-            .cornerRadius(10)
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
+            .padding()
+            .frame(width: 150, height: 180)
+            .background(Color.white)
+            .cornerRadius(20)
         }
-    }
-}
-
-struct GameCard: View {
-    let game: DepositedGame
-
-    var body: some View {
-        VStack {
-            AsyncImage(url: URL(string: game.gameDescription.photoURL)) { image in
-                image.resizable()
-            } placeholder: {
-                Color.gray.opacity(0.3)
-            }
-            .frame(width: 100, height: 100)
-            .cornerRadius(10)
-
-            Text(game.gameDescription.name)
-                .font(.custom("Poppins-SemiBold", size: 11))
-                .foregroundColor(.black)
-                .multilineTextAlignment(.center)
-                .frame(width: 126)
-
-            Text("\(game.salePrice, specifier: "%.0f")€")
-                .font(.custom("Montserrat-SemiBold", size: 20))
-                .foregroundColor(.black)
-        }
-        .padding()
-        .frame(width: 154, height: 184)
-        .background(Color.white)
-        .cornerRadius(20)
-        .shadow(color: Color.black.opacity(0.25), radius: 4, x: 0, y: 6)
     }
 }
