@@ -52,7 +52,7 @@ struct NavBarView: View {
                                 sessionViewModel: SessionViewModel()
                             )))
                         ])
-
+                        
                         if viewModel.isAuthenticated {
                             singleButton("+ SESSION", $shouldNavigateToCreateSession, AnyView(CreateSessionView()))
 

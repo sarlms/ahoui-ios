@@ -3,8 +3,7 @@ import SwiftUI
 struct NewManagerView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: ManagerViewModel
-    //@StateObject private var viewModel = ManagerViewModel()
-    
+
     @State private var firstName = ""
     @State private var lastName = ""
     @State private var email = ""
@@ -38,7 +37,7 @@ struct NewManagerView: View {
                     
                     Toggle("Admin ?", isOn: $isAdmin)
                         .padding(.horizontal, 20)
-                        .font(.custom("Poppins-Light", size: 12))
+                        .font(.custom("Poppins-Regular", size: 13))
                         .foregroundColor(.black)
                 }
                 .padding()
@@ -51,6 +50,7 @@ struct NewManagerView: View {
 
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
+                        .font(.custom("Poppins", size: 13))
                         .foregroundColor(.red)
                         .padding()
                 }
@@ -61,7 +61,7 @@ struct NewManagerView: View {
                     }
                 }) {
                     Text("Créer")
-                        .font(.custom("Poppins-Light", size: 14))
+                        .font(.custom("Poppins-Medium", size: 14))
                         .foregroundColor(.black)
                         .padding()
                         .frame(width: 120)
@@ -110,17 +110,19 @@ struct CustomTextFieldNewManager: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(label)
-                .font(.custom("Poppins-Light", size: 12))
+                .font(.custom("Poppins-Medium", size: 13))
                 .foregroundColor(.black)
             
             if isSecure {
                 SecureField(placeholder, text: $text)
+                    .font(.custom("Poppins", size: 13))
                     .padding(10)
                     .background(Color.white.opacity(0.5))
                     .cornerRadius(4)
                     .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.black, lineWidth: 1))
             } else {
                 TextField(placeholder, text: $text)
+                    .font(.custom("Poppins", size: 13))
                     .padding(10)
                     .background(Color.white.opacity(0.5))
                     .cornerRadius(4)

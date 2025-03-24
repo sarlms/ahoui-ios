@@ -48,7 +48,7 @@ struct EditManagerView: View {
 
                     Toggle("Admin ?", isOn: $isAdmin)
                         .padding(.horizontal, 20)
-                        .font(.custom("Poppins-Light", size: 12))
+                        .font(.custom("Poppins-Regular", size: 13))
                         .foregroundColor(.black)
                 }
                 .padding()
@@ -61,6 +61,7 @@ struct EditManagerView: View {
 
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
+                        .font(.custom("Poppins", size: 13))
                         .foregroundColor(.red)
                         .padding()
                 }
@@ -73,7 +74,7 @@ struct EditManagerView: View {
                         }
                     }) {
                         Text("Enregistrer")
-                            .font(.custom("Poppins-Light", size: 14))
+                            .font(.custom("Poppins-Medium", size: 14))
                             .foregroundColor(.black)
                             .padding()
                             .frame(width: 120)
@@ -88,7 +89,7 @@ struct EditManagerView: View {
                         showDeleteAlert = true
                     }) {
                         Text("Supprimer")
-                            .font(.custom("Poppins-Light", size: 14))
+                            .font(.custom("Poppins-Medium", size: 14))
                             .foregroundColor(.red)
                             .padding()
                             .frame(width: 120)
@@ -98,14 +99,14 @@ struct EditManagerView: View {
                     }
                     .alert(isPresented: $showDeleteAlert) {
                         Alert(
-                            title: Text("Confirmer la suppression"),
-                            message: Text("Êtes-vous sûr de vouloir supprimer ce manager ?"),
-                            primaryButton: .destructive(Text("Supprimer")) {
-                                Task {
-                                    await deleteManager()
-                                }
-                            },
-                            secondaryButton: .cancel()
+                            title: Text("Confirmer la suppression")
+                                .font(.custom("Poppins-SemiBold", size: 14)),
+                            message: Text("Êtes-vous sûr de vouloir supprimer ce manager ?")
+                                .font(.custom("Poppins", size: 13)),
+                            primaryButton: .destructive(Text("Supprimer")
+                                .font(.custom("Poppins-Medium", size: 13))),
+                            secondaryButton: .cancel(Text("Annuler")
+                                .font(.custom("Poppins-Medium", size: 13)))
                         )
                     }
                 }

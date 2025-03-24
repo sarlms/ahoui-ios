@@ -4,6 +4,8 @@ struct ClientListView: View {
     @StateObject private var viewModel = ClientViewModel(service: ClientService())
     @State private var searchText = ""
     @State private var showNewClientView = false
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
+    @State private var isMenuOpen = false
 
     var filteredClients: [Client] {
         if searchText.isEmpty {
@@ -15,53 +17,75 @@ struct ClientListView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
-                Text("Liste des clients")
-                    .font(.system(size: 25, weight: .semibold))
-                    .foregroundColor(.black)
-                
-                Button(action: { showNewClientView = true }) {
-                    Text("Créer un nouveau client")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(Color.green)
-                        .padding()
-                        .frame(width: 220)
-                        .background(Color.white.opacity(0.5))
-                        .cornerRadius(15)
-                        .overlay(RoundedRectangle(cornerRadius: 15)
-                            .stroke(Color.green, lineWidth: 1))
-                }
-                .sheet(isPresented: $showNewClientView) {
-                    NewClientView()
-                        .environmentObject(viewModel)
-                }
+            ZStack {
+                Color(red: 1, green: 0.965, blue: 0.922)
+                    .ignoresSafeArea()
 
-                TextField("Rechercher un client", text: $searchText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                    .overlay(
-                        HStack {
-                            Spacer()
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.gray)
-                                .padding(.trailing, 10)
-                        }
-                    )
-                    .padding(.horizontal)
+                VStack {
+                    Text("Liste des clients")
+                        .font(.custom("Poppins-SemiBold", size: 25))
+                        .foregroundColor(.black)
+                        .padding(.top, 160)
 
-                ScrollView {
-                    VStack {
-                        ForEach(filteredClients) { client in
-                            NavigationLink(destination: ClientDetailView(client: client)) {
-                                ClientCardView(client: client)
+                    Spacer(minLength: 20)
+
+                    Button(action: { showNewClientView = true }) {
+                        Text("Créer un nouveau client")
+                            .font(.custom("Poppins-Medium", size: 13))
+                            .foregroundColor(Color(red: 0.05, green: 0.61, blue: 0.04))
+                            .padding()
+                            .frame(width: 220, height: 40)
+                            .background(Color(red: 1, green: 0.985, blue: 0.962))
+                            .cornerRadius(20)
+                            .overlay(RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color(red: 0.05, green: 0.61, blue: 0.04), lineWidth: 1))
+                    }
+                    .padding(.horizontal, 80)
+                    .sheet(isPresented: $showNewClientView) {
+                        NewClientView()
+                            .environmentObject(viewModel)
+                    }
+
+                    Spacer(minLength: 20)
+
+                    HStack {
+                        TextField("", text: $searchText, prompt: Text("Rechercher un client").italic().font(.custom("Poppins-Italic", size: 12)))
+                            .padding(8)
+                            .background(Color(red: 1, green: 0.985, blue: 0.962))
+                            .cornerRadius(15)
+                            .overlay(RoundedRectangle(cornerRadius: 15).stroke(Color.black, lineWidth: 1))
+                            .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 4)
+
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.horizontal, 50)
+
+                    Spacer(minLength: 10)
+
+                    ScrollView {
+                        LazyVStack(spacing: 20) {
+                            if filteredClients.isEmpty {
+                                Text("Aucun client disponible")
+                                    .font(.custom("Poppins", size: 13))
+                                    .foregroundColor(.gray)
+                            } else {
+                                ForEach(filteredClients) { client in
+                                    ClientCardView(client: client)
+                                        .padding(.horizontal, 40)
+                                }
                             }
-                            .buttonStyle(PlainButtonStyle()) // Removes link styling
                         }
                     }
+
+                    Spacer()
                 }
+                .padding(.horizontal, 24)
+
+                NavBarView(isMenuOpen: $isMenuOpen)
+                    .environmentObject(navigationViewModel)
             }
-            .padding()
-            .background(Color(UIColor.systemBackground).edgesIgnoringSafeArea(.all))
+            .navigationBarBackButtonHidden(true)
             .onAppear {
                 viewModel.fetchClients()
             }
@@ -74,27 +98,32 @@ struct ClientCardView: View {
     let client: Client
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             Text(client.name)
-                .font(.system(size: 16, weight: .bold))
-                .foregroundColor(.black)
-            
-            Text("Email : \(client.email)")
-                .font(.system(size: 14))
+                .font(.custom("Poppins-SemiBold", size: 15))
                 .foregroundColor(.black)
 
-            Text("Téléphone : \(client.phone)")
-                .font(.system(size: 14))
-                .foregroundColor(.black)
+            InfoRow(label: "Email", value: client.email)
+            InfoRow(label: "Téléphone", value: client.phone)
+            InfoRow(label: "Adresse", value: client.address)
 
-            Text("Adresse : \(client.address)")
-                .font(.system(size: 14))
-                .foregroundColor(.black)
+            HStack {
+                Spacer()
+                NavigationLink(destination: ClientDetailView(client: client)) {
+                    Text("Éditer")
+                        .font(.custom("Poppins-Medium", size: 14))
+                        .foregroundColor(.green)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 5)
+                        .overlay(RoundedRectangle(cornerRadius: 15).stroke(Color.green, lineWidth: 1))
+                }
+            }
+            .padding(.top, 5)
         }
         .padding()
-        .frame(width: 300, height: 140)
-        .background(Color.white.opacity(0.9))
+        .background(Color.white.opacity(0.5))
         .cornerRadius(20)
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
     }
 }
+

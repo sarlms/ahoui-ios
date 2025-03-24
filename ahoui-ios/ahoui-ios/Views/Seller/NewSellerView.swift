@@ -2,7 +2,7 @@ import SwiftUI
 
 struct NewSellerView: View {
     @EnvironmentObject var viewModel: SellerViewModel
-    @Environment(\.presentationMode) var presentationMode // ✅ Allows navigation back
+    @Environment(\.presentationMode) var presentationMode
 
     @State private var name = ""
     @State private var email = ""
@@ -14,62 +14,60 @@ struct NewSellerView: View {
     }
 
     var body: some View {
-        VStack {
-            Text("Nouveau vendeur")
-                .font(.system(size: 25, weight: .semibold))
-                .foregroundColor(.black)
+        ZStack {
+            Color(red: 1, green: 0.965, blue: 0.922)
+                .edgesIgnoringSafeArea(.all)
 
             VStack {
-                InputField(title: "Nom", text: $name, placeholder: "Entrez le nom")
-                InputField(title: "Email", text: $email, placeholder: "Entrez l’email")
-                InputField(title: "Numéro de téléphone", text: $phone, placeholder: "Entrez le numéro de téléphone")
-                InputField(title: "Montant dû (€)", text: $amountOwed, placeholder: "0")
+                Text("Nouveau vendeur")
+                    .font(.custom("Poppins-SemiBold", size: 25))
+                    .foregroundColor(.black)
+                    .padding(.top, 30)
 
-                Button(action: {
-                    let newSeller = Seller(
-                        id: UUID().uuidString, // ⚠️ This should be removed if the backend generates the ID
-                        name: name,
-                        email: email,
-                        phone: phone,
-                        amountOwed: amountOwedDouble
-                    )
-                    viewModel.createSeller(seller: newSeller)
-                    presentationMode.wrappedValue.dismiss() // ✅ Navigate back to SellerListView
-                }) {
+                Spacer(minLength: 20)
+
+                VStack(alignment: .leading, spacing: 15) {
+                    StyledInputField(title: "Nom", text: $name, placeholder: "Nom du vendeur")
+                    StyledInputField(title: "Email", text: $email, placeholder: "Email")
+                    StyledInputField(title: "Téléphone", text: $phone, placeholder: "Téléphone")
+                    StyledInputField(title: "Montant dû (€)", text: $amountOwed, placeholder: "0")
+                }
+                .padding()
+                .background(Color.white.opacity(0.5))
+                .cornerRadius(20)
+                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
+                .frame(width: 300)
+
+                Spacer(minLength: 20)
+
+                Button(action: createSeller) {
                     Text("Créer")
-                        .font(.system(size: 12, weight: .medium))
+                        .font(.custom("Poppins-Medium", size: 14))
                         .foregroundColor(.black)
                         .padding()
-                        .frame(width: 80)
-                        .background(Color.white.opacity(0.5))
-                        .cornerRadius(15)
-                        .overlay(RoundedRectangle(cornerRadius: 15).stroke(Color.black, lineWidth: 1))
+                        .frame(width: 120)
+                        .background(Color.white)
+                        .cornerRadius(20)
+                        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
                 }
+                .disabled(name.isEmpty || email.isEmpty || phone.isEmpty)
+
+                Spacer()
             }
             .padding()
-            .frame(width: 284, height: 317)
-            .background(Color.white.opacity(0.5))
-            .cornerRadius(20)
-            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
         }
-        .padding()
+    }
+
+    func createSeller() {
+        let newSeller = Seller(
+            id: UUID().uuidString,
+            name: name,
+            email: email,
+            phone: phone,
+            amountOwed: amountOwedDouble
+        )
+        viewModel.createSeller(seller: newSeller)
+        presentationMode.wrappedValue.dismiss()
     }
 }
 
-
-struct InputField: View {
-    var title: String
-    @Binding var text: String
-    var placeholder: String
-
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(title)
-                .font(.system(size: 12, weight: .light))
-                .foregroundColor(.black)
-            TextField(placeholder, text: $text)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.bottom, 5)
-        }
-    }
-}

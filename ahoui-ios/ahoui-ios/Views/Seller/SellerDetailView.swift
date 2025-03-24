@@ -4,7 +4,7 @@ struct SellerDetailView: View {
     @EnvironmentObject var viewModel: SellerViewModel
     @EnvironmentObject var sessionViewModel: SessionViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
-    @Environment(\.presentationMode) var presentationMode // ✅ Used to go back after delete
+    @Environment(\.presentationMode) var presentationMode
     let sellerId: String
 
     @State private var name = ""
@@ -16,7 +16,6 @@ struct SellerDetailView: View {
     @StateObject private var transactionViewModel = TransactionViewModel(service: TransactionService())
     @StateObject private var refundViewModel = RefundViewModel(service: RefundService())
 
-
     @State private var selectedOption = "Jeux déposés"
     let options = ["Jeux déposés", "Transactions", "Remboursements"]
 
@@ -26,160 +25,149 @@ struct SellerDetailView: View {
 
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea()
+            Color(red: 1, green: 0.965, blue: 0.922)
+                .edgesIgnoringSafeArea(.all)
 
-            VStack {
-                Text("Détails du vendeur")
-                    .font(.system(size: 25, weight: .semibold))
-                    .foregroundColor(.black)
+            ScrollView {
+                VStack(spacing: 20) {
+                    Text("Détails du vendeur")
+                        .font(.custom("Poppins-SemiBold", size: 25))
+                        .foregroundColor(.black)
+                        .padding(.top, 30)
 
-                if let seller = viewModel.selectedSeller {
-                    VStack {
-                        InputField(title: "Nom", text: $name, placeholder: "")
-                        InputField(title: "Email", text: $email, placeholder: "")
-                        InputField(title: "Numéro de téléphone", text: $phone, placeholder: "")
-                        InputField(title: "Montant dû (€)", text: $amountOwed, placeholder: "0")
+                    if let seller = viewModel.selectedSeller {
+                        VStack(alignment: .leading, spacing: 15) {
+                            StyledClientInputField(title: "Nom", text: $name)
+                            StyledClientInputField(title: "Email", text: $email)
+                            StyledClientInputField(title: "Numéro de téléphone", text: $phone)
+                            StyledClientInputField(title: "Montant dû (€)", text: $amountOwed)
+                        }
+                        .padding()
+                        .background(Color.white.opacity(0.5))
+                        .cornerRadius(20)
+                        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
+                        .frame(width: 300)
 
-                        HStack {
+                        HStack(spacing: 15) {
                             Button(action: updateSellerDetails) {
                                 Text("Enregistrer")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.white)
+                                    .font(.custom("Poppins-Medium", size: 14))
+                                    .foregroundColor(.black)
                                     .padding()
-                                    .frame(width: 100)
-                                    .background(Color.blue)
-                                    .cornerRadius(15)
+                                    .frame(width: 110)
+                                    .background(Color.white)
+                                    .cornerRadius(20)
+                                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
                             }
 
                             Button(action: deleteSeller) {
                                 Text("Supprimer")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.white)
+                                    .font(.custom("Poppins-Medium", size: 14))
+                                    .foregroundColor(.red)
                                     .padding()
-                                    .frame(width: 100)
-                                    .background(Color.red)
-                                    .cornerRadius(15)
+                                    .frame(width: 110)
+                                    .background(Color.white)
+                                    .cornerRadius(20)
+                                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.red, lineWidth: 1))
                             }
 
                             Button(action: refundSeller) {
                                 Text("Rembourser")
+                                    .font(.custom("Poppins-Medium", size: 14))
                                     .foregroundColor(.white)
                                     .padding()
-                                    .background(seller.amountOwed > 0 ? Color.green : Color.gray)
-                                    .cornerRadius(10)
+                                    .frame(width: 110)
+                                    .background(seller.amountOwed > 0 ? Color(red: 1, green: 0.65, blue: 0.75) : Color.gray)
+                                    .cornerRadius(20)
                             }
                             .disabled(seller.amountOwed == 0)
                         }
-                    }
-                    .padding()
-                    .frame(width: 300, height: 317)
-                    .background(Color.white.opacity(0.5))
-                    .cornerRadius(20)
-                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
+                        .padding(.top, 10)
 
-                    // 🔹 Dropdown menu
-                    Picker("Sélectionner", selection: $selectedOption) {
-                        ForEach(options, id: \.self) { option in
-                            Text(option).tag(option)
-                        }
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                    .padding()
-                    .frame(width: 200)
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
-                    .onChange(of: selectedOption) { newValue in
-                        if newValue == "Jeux déposés" {
-                            depositedGameViewModel.fetchDepositedGamesBySeller(sellerId: sellerId)
-                        } else if newValue == "Transactions" {
-                            transactionViewModel.fetchTransactionsBySeller(sellerId: sellerId)
-                        } else if newValue == "Remboursements" {
-                            refundViewModel.fetchRefundsBySeller(sellerId: sellerId)
-                        }
-                    }
-
-
-                    // 🔹 Display Deposited Games when "Jeux déposés" is selected
-                    if selectedOption == "Jeux déposés" {
-                        if depositedGameViewModel.isLoading {
-                            ProgressView("Chargement des jeux déposés...")
-                        } else if let errorMessage = depositedGameViewModel.errorMessage {
-                            Text("Erreur: \(errorMessage)").foregroundColor(.red)
-                        } else if depositedGameViewModel.depositedGamesForSeller.isEmpty {
-                            Text("⚠️ Aucun jeu déposé trouvé pour ce vendeur.")
-                                .font(.headline)
-                                .foregroundColor(.gray)
-                                .onAppear {
-                                    print("🚨 UI thinks depositedGamesForSeller is empty!") // ✅ Debugging
-                                }
-                        } else {
-                            ScrollView {
-                                VStack(spacing: 15) {
-                                    ForEach(depositedGameViewModel.depositedGamesForSeller, id: \.id) { game in
-                                        DepositedGameSellerDetailView(game: game) // ✅ Display deposited games
-                                            .onAppear {
-                                                print("🎮 Showing game: \(game.gameDescription.name) | ID: \(game.id)") // ✅ Debugging
-                                            }
-                                    }
-                                }
-                                .padding(.top, 10)
+                        Picker("Sélectionner", selection: $selectedOption) {
+                            ForEach(options, id: \.self) { option in
+                                Text(option).tag(option)
                             }
                         }
-                    }
+                        .pickerStyle(MenuPickerStyle())
+                        .padding()
+                        .frame(width: 200)
+                        .background(Color.white.opacity(0.5))
+                        .cornerRadius(10)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
+                        .onChange(of: selectedOption) { newValue in
+                            if newValue == "Jeux déposés" {
+                                depositedGameViewModel.fetchDepositedGamesBySeller(sellerId: sellerId)
+                            } else if newValue == "Transactions" {
+                                transactionViewModel.fetchTransactionsBySeller(sellerId: sellerId)
+                            } else if newValue == "Remboursements" {
+                                refundViewModel.fetchRefundsBySeller(sellerId: sellerId)
+                            }
+                        }
 
-                    if selectedOption == "Transactions" {
-                        if transactionViewModel.isLoading {
-                            ProgressView("Chargement des transactions...")
-                        } else if let errorMessage = transactionViewModel.errorMessage {
-                            Text("Erreur: \(errorMessage)").foregroundColor(.red)
-                        } else if transactionViewModel.transactions.isEmpty {
-                            Text("Aucune transaction trouvée.").foregroundColor(.gray)
-                        } else {
-                            ScrollView {
-                                VStack(spacing: 15) {
+                        VStack(spacing: 15) {
+                            if selectedOption == "Jeux déposés" {
+                                if depositedGameViewModel.isLoading {
+                                    ProgressView("Chargement des jeux déposés...")
+                                } else if let errorMessage = depositedGameViewModel.errorMessage {
+                                    Text("Erreur: \(errorMessage)").foregroundColor(.red)
+                                } else if depositedGameViewModel.depositedGamesForSeller.isEmpty {
+                                    Text("⚠️ Aucun jeu déposé trouvé pour ce vendeur.")
+                                        .font(.custom("Poppins", size: 13))
+                                        .foregroundColor(.gray)
+                                } else {
+                                    ForEach(depositedGameViewModel.depositedGamesForSeller, id: \.id) { game in
+                                        DepositedGameSellerDetailView(game: game)
+                                    }
+                                }
+                            }
+
+                            if selectedOption == "Transactions" {
+                                if transactionViewModel.isLoading {
+                                    ProgressView("Chargement des transactions...")
+                                } else if let errorMessage = transactionViewModel.errorMessage {
+                                    Text("Erreur: \(errorMessage)").foregroundColor(.red)
+                                } else if transactionViewModel.transactions.isEmpty {
+                                    Text("Aucune transaction trouvée.")
+                                        .font(.custom("Poppins", size: 13))
+                                        .foregroundColor(.gray)
+                                } else {
                                     ForEach(transactionViewModel.transactions) { transaction in
                                         TransactionView(transaction: transaction)
                                     }
                                 }
-                                .padding(.top, 10)
                             }
-                        }
-                    }
-                    if selectedOption == "Remboursements" {
-                        if refundViewModel.isLoading {
-                            ProgressView("Chargement des remboursements...")
-                        } else if let errorMessage = refundViewModel.errorMessage {
-                            Text("Erreur: \(errorMessage)").foregroundColor(.red)
-                        } else if refundViewModel.refunds.isEmpty {
-                            Text("Aucun remboursement trouvé.").foregroundColor(.gray)
-                        } else {
-                            ScrollView {
-                                VStack(spacing: 15) {
+
+                            if selectedOption == "Remboursements" {
+                                if refundViewModel.isLoading {
+                                    ProgressView("Chargement des remboursements...")
+                                } else if let errorMessage = refundViewModel.errorMessage {
+                                    Text("Erreur: \(errorMessage)").foregroundColor(.red)
+                                } else if refundViewModel.refunds.isEmpty {
+                                    Text("Aucun remboursement trouvé.")
+                                        .font(.custom("Poppins", size: 13))
+                                        .foregroundColor(.gray)
+                                } else {
                                     ForEach(refundViewModel.refunds, id: \.refundDate) { refund in
                                         RefundView(refund: refund)
                                     }
                                 }
-                                .padding(.top, 10)
                             }
                         }
+                        .padding(.top, 10)
+
+                    } else {
+                        ProgressView("Chargement...")
                     }
-
-
-                } else {
-                    ProgressView("Chargement...")
                 }
+                .padding(.bottom, 30)
             }
-            .padding()
             .onAppear {
                 viewModel.fetchSeller(id: sellerId)
                 sessionViewModel.loadActiveSession()
-                
-                // Fetch deposited games, transactuin and refunds immediately when the page loads
                 depositedGameViewModel.fetchDepositedGamesBySeller(sellerId: sellerId)
                 transactionViewModel.fetchTransactionsBySeller(sellerId: sellerId)
             }
-
             .onReceive(viewModel.$selectedSeller) { seller in
                 if let seller = seller {
                     name = seller.name
@@ -190,6 +178,7 @@ struct SellerDetailView: View {
             }
         }
     }
+
 
     func updateSellerDetails() {
         let updatedSeller = Seller(id: sellerId, name: name, email: email, phone: phone, amountOwed: amountOwedDouble)
@@ -220,27 +209,6 @@ struct SellerDetailView: View {
             sessionViewModel: sessionViewModel
         )
 
-        presentationMode.wrappedValue.dismiss() // ✅ OK, will dismiss after triggering refund
-    }
-
-}
-
-
-
-struct ActionButton: View {
-    var title: String
-    var color: Color
-
-    var body: some View {
-        Button(action: { /* Handle action */ }) {
-            Text(title)
-                .font(.system(size: 12, weight: .medium))
-                .foregroundColor(color)
-                .padding()
-                .frame(width: 90)
-                .background(Color.white.opacity(0.5))
-                .cornerRadius(15)
-                .overlay(RoundedRectangle(cornerRadius: 15).stroke(color, lineWidth: 1))
-        }
+        presentationMode.wrappedValue.dismiss()
     }
 }

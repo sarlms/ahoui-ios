@@ -9,39 +9,76 @@ struct NewClientView: View {
     @State private var address = ""
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                Text("Créer un client")
-                    .font(.system(size: 22, weight: .bold))
+        ZStack {
+            Color(red: 1, green: 0.965, blue: 0.922)
+                .edgesIgnoringSafeArea(.all)
 
-                InputFieldNewClient(title: "Nom", text: $name, placeholder: "Nom du client")
-                InputFieldNewClient(title: "Email", text: $email, placeholder: "Email")
-                InputFieldNewClient(title: "Téléphone", text: $phone, placeholder: "Téléphone")
-                InputFieldNewClient(title: "Adresse", text: $address, placeholder: "Adresse")
+            VStack {
+                Text("Nouveau client")
+                    .font(.custom("Poppins-SemiBold", size: 25))
+                    .foregroundColor(.black)
+                    .padding(.top, 30)
+
+                Spacer(minLength: 20)
+
+                VStack(alignment: .leading, spacing: 15) {
+                    StyledInputField(title: "Nom", text: $name, placeholder: "Nom du client")
+                    StyledInputField(title: "Email", text: $email, placeholder: "Email")
+                    StyledInputField(title: "Téléphone", text: $phone, placeholder: "Téléphone")
+                    StyledInputField(title: "Adresse", text: $address, placeholder: "Adresse")
+                }
+                .padding()
+                .background(Color.white.opacity(0.5))
+                .cornerRadius(20)
+                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
+                .frame(width: 300)
+
+                Spacer(minLength: 20)
 
                 Button(action: createClient) {
                     Text("Créer")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.white)
+                        .font(.custom("Poppins-Medium", size: 14))
+                        .foregroundColor(.black)
                         .padding()
-                        .frame(width: 200)
-                        .background(Color.green)
-                        .cornerRadius(15)
+                        .frame(width: 120)
+                        .background(Color.white)
+                        .cornerRadius(20)
+                        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 1))
                 }
-                .padding()
+                .disabled(name.isEmpty || email.isEmpty || phone.isEmpty || address.isEmpty)
 
                 Spacer()
             }
             .padding()
-            .background(Color(UIColor.systemBackground).edgesIgnoringSafeArea(.all))
-            .navigationTitle("Nouveau client")
         }
     }
 
     func createClient() {
-        let newClient = Client(id: "", name: name, email: email, phone: phone, address: address) // Empty id
+        let newClient = Client(id: "", name: name, email: email, phone: phone, address: address)
         viewModel.createClient(client: newClient)
         presentationMode.wrappedValue.dismiss()
     }
-
 }
+
+struct StyledInputField: View {
+    let title: String
+    @Binding var text: String
+    let placeholder: String
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.custom("Poppins-Medium", size: 13))
+                .foregroundColor(.black)
+
+            TextField(placeholder, text: $text)
+                .font(.custom("Poppins", size: 13))
+                .padding(10)
+                .background(Color.white.opacity(0.5))
+                .cornerRadius(4)
+                .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.black, lineWidth: 1))
+        }
+        .padding(.horizontal, 20)
+    }
+}
+

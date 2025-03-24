@@ -9,8 +9,8 @@ class TransactionViewModel: ObservableObject {
     
     // Filter inputs
     @Published var searchTransactionId = ""
-    @Published var searchClientName = ""
-    @Published var searchSellerName = ""
+    @Published var searchClientEmail = ""
+    @Published var searchSellerEmail = ""
     @Published var searchGameName = ""
     @Published var searchSessionName = ""
 
@@ -65,10 +65,20 @@ class TransactionViewModel: ObservableObject {
     func applyFilters() {
         filteredTransactions = transactionsList.filter { transaction in
             (searchTransactionId.isEmpty || transaction.id.contains(searchTransactionId)) &&
-            (searchClientName.isEmpty || transaction.client.name.lowercased().contains(searchClientName.lowercased())) &&
-            (searchSellerName.isEmpty || transaction.seller.name.lowercased().contains(searchSellerName.lowercased())) &&
+            (searchClientEmail.isEmpty || transaction.client.email.lowercased().contains(searchClientEmail.lowercased())) &&
+            (searchSellerEmail.isEmpty || transaction.seller.email.lowercased().contains(searchSellerEmail.lowercased())) &&
             (searchGameName.isEmpty || transaction.label.gameDescription.name.lowercased().contains(searchGameName.lowercased())) &&
             (searchSessionName.isEmpty || transaction.session.name.lowercased().contains(searchSessionName.lowercased()))
         }
     }
+    
+    func resetFilters() {
+        searchTransactionId = ""
+        searchClientEmail = ""
+        searchSellerEmail = ""
+        searchGameName = ""
+        searchSessionName = ""
+        filteredTransactions = transactionsList
+    }
+
 }

@@ -38,7 +38,7 @@ class SessionService {
                     completion(sortedSessions)
                 }
             } catch {
-                print("Erreur de décodage :", error.localizedDescription)
+                print("Erreur de décodage fetchsessions :", error.localizedDescription)
                 completion([])
             }
         }.resume()
@@ -73,7 +73,7 @@ class SessionService {
                     completion(activeSession)
                 }
             } catch {
-                print("Erreur de décodage :", error.localizedDescription)
+                print("Erreur de décodage fetchactive session :", error.localizedDescription)
                 completion(nil)
             }
         }.resume()
@@ -120,7 +120,7 @@ class SessionService {
                     completion(nextSession)
                 }
             } catch {
-                print("Erreur de décodage :", error.localizedDescription)
+                print("Erreur de décodage fetchnextsession:", error.localizedDescription)
                 completion(nil)
             }
         }.resume()
