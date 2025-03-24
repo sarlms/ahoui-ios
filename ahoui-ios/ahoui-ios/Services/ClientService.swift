@@ -2,13 +2,20 @@ import Foundation
 
 class ClientService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/client"
-    private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyNDYzMTg4LCJleHAiOjE3NDI0NjYxODh9.fnpsca9zJe-QOXvCs_AELVUWodfkC7yh6RdMuZwndT4"
+    
+    private var bearerToken: String? {
+        return UserDefaults.standard.string(forKey: "token")
+    }
 
-    private func createRequest(url: URL, method: String, body: Data? = nil) -> URLRequest {
+    private func createRequest(url: URL, method: String, body: Data? = nil, requiresAuth: Bool = false) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        
+        if requiresAuth, let token = bearerToken {
+            request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
         request.httpBody = body
         return request
     }
@@ -96,7 +103,7 @@ class ClientService {
             return
         }
 
-        var request = createRequest(url: url, method: "POST", body: jsonData)
+        var request = createRequest(url: url, method: "POST", body: jsonData, requiresAuth: true)
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
@@ -134,7 +141,7 @@ class ClientService {
             return
         }
 
-        var request = createRequest(url: url, method: "PUT", body: jsonData)
+        var request = createRequest(url: url, method: "PUT", body: jsonData, requiresAuth: true)
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
@@ -166,7 +173,7 @@ class ClientService {
             return
         }
 
-        let request = createRequest(url: url, method: "DELETE")
+        let request = createRequest(url: url, method: "DELETE", requiresAuth: true)
 
         URLSession.shared.dataTask(with: request) { _, _, error in
             DispatchQueue.main.async {
