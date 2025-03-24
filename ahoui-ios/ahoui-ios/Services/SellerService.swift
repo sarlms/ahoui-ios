@@ -2,26 +2,10 @@ import Foundation
 
 class SellerService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/seller"
-    
-    private var bearerToken: String? {
-        return UserDefaults.standard.string(forKey: "token")
-    }
-
-    // Function to create an authenticated request
-    private func createRequest(url: URL, method: String, body: Data? = nil, requiresAuth: Bool = false) -> URLRequest {
-        var request = URLRequest(url: url)
-        request.httpMethod = method
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        if requiresAuth, let token = bearerToken {
-            request.addValue("Bearer (token)", forHTTPHeaderField: "Authorization")
-        }
-        request.httpBody = body
-        return request
-    }
 
     func fetchSellers(completion: @escaping (Result<[Seller], Error>) -> Void) {
         guard let url = URL(string: baseURL) else { return }
-        let request = createRequest(url: url, method: "GET")
+        let request = NetworkHelper.createRequest(url: url, method: "GET")
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -56,7 +40,7 @@ class SellerService {
 
     func fetchSeller(id: String, completion: @escaping (Result<Seller, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(id)") else { return }
-        let request = createRequest(url: url, method: "GET")
+        let request = NetworkHelper.createRequest(url: url, method: "GET")
 
         URLSession.shared.dataTask(with: request) { data, _, error in
             if let error = error {
@@ -80,7 +64,7 @@ class SellerService {
 
     func deleteSeller(id: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(id)") else { return }
-        let request = createRequest(url: url, method: "DELETE")
+        let request = NetworkHelper.createRequest(url: url, method: "DELETE")
 
         URLSession.shared.dataTask(with: request) { _, _, error in
             if let error = error {
@@ -98,7 +82,7 @@ class SellerService {
 
         do {
             let jsonData = try JSONEncoder().encode(updatedSeller)
-            var request = createRequest(url: url, method: "PUT", body: jsonData)
+            var request = NetworkHelper.createRequest(url: url, method: "PUT", body: jsonData)
 
             URLSession.shared.dataTask(with: request) { data, _, error in
                 if let error = error {
@@ -130,7 +114,7 @@ class SellerService {
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: sellerData, options: [])
-            var request = createRequest(url: url, method: "POST", body: jsonData)
+            var request = NetworkHelper.createRequest(url: url, method: "POST", body: jsonData)
 
             URLSession.shared.dataTask(with: request) { data, _, error in
                 if let error = error {
@@ -160,7 +144,7 @@ class SellerService {
             
             do {
                 let jsonData = try JSONEncoder().encode(refund)
-                let request = createRequest(url: url, method: "POST", body: jsonData)
+                let request = NetworkHelper.createRequest(url: url, method: "POST", body: jsonData)
                 
                 URLSession.shared.dataTask(with: request) { _, _, error in
                     DispatchQueue.main.async {
@@ -186,7 +170,7 @@ class SellerService {
             return
         }
 
-        var request = createRequest(url: url, method: "PUT", body: jsonData)
+        var request = NetworkHelper.createRequest(url: url, method: "PUT", body: jsonData)
 
         URLSession.shared.dataTask(with: request) { _, _, error in
             DispatchQueue.main.async {

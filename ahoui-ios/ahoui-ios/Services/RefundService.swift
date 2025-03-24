@@ -2,21 +2,6 @@ import Foundation
 
 class RefundService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/refund"
-    
-    private var authToken: String? {
-        return UserDefaults.standard.string(forKey: "token")
-    }
-
-    private func createRequest(url: URL, method: String, body: Data? = nil, requiresAuth: Bool = false) -> URLRequest {
-        var request = URLRequest(url: url)
-        request.httpMethod = method
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        if requiresAuth, let token = authToken {
-            request.addValue("Bearer (token)", forHTTPHeaderField: "Authorization")
-        }
-        request.httpBody = body
-        return request
-    }
 
     // ✅ Fetch refunds by seller
     func fetchRefundsBySeller(sellerId: String, completion: @escaping (Result<[Refund], Error>) -> Void) {
@@ -25,7 +10,7 @@ class RefundService {
             return
         }
 
-        let request = createRequest(url: url, method: "GET")
+        let request = NetworkHelper.createRequest(url: url, method: "GET")
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
@@ -84,7 +69,7 @@ class RefundService {
                 print("📤 Refund Request JSON:\n\(jsonString)")
             }
 
-            var request = createRequest(url: url, method: "POST", body: jsonData)
+            var request = NetworkHelper.createRequest(url: url, method: "POST", body: jsonData)
 
             URLSession.shared.dataTask(with: request) { data, response, error in
                 DispatchQueue.main.async {
@@ -113,7 +98,7 @@ class RefundService {
             return
         }
 
-        let request = createRequest(url: url, method: "GET")
+        let request = NetworkHelper.createRequest(url: url, method: "GET")
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {

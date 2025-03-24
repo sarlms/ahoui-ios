@@ -79,7 +79,7 @@ class CreateDepositedGameViewModel: ObservableObject {
 
             print("📦 Envoi DepositedGame : \(depositedGameData)")
 
-            depositedGameService.createDepositedGame(data: depositedGameData, token: token) { result in
+            depositedGameService.createDepositedGame(data: depositedGameData) { result in
                 switch result {
                 case .success:
                     print("✅ Jeu déposé ajouté : \(game.name)")

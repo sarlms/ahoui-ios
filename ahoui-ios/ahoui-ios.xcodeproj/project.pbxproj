@@ -102,6 +102,7 @@
 		B73FF4292D8F53E500BF24BF /* CartItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF4282D8F53E500BF24BF /* CartItemView.swift */; };
 		B73FF42E2D915CE100BF24BF /* CatalogueVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF42D2D915CE100BF24BF /* CatalogueVIew.swift */; };
 		B73FF4302D915D0B00BF24BF /* CatalogueGameDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF42F2D915D0B00BF24BF /* CatalogueGameDetailView.swift */; };
+		B73FF4322D919E3E00BF24BF /* NetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF4312D919E3E00BF24BF /* NetworkHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -201,6 +202,7 @@
 		B73FF4282D8F53E500BF24BF /* CartItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemView.swift; sourceTree = "<group>"; };
 		B73FF42D2D915CE100BF24BF /* CatalogueVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogueVIew.swift; sourceTree = "<group>"; };
 		B73FF42F2D915D0B00BF24BF /* CatalogueGameDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogueGameDetailView.swift; sourceTree = "<group>"; };
+		B73FF4312D919E3E00BF24BF /* NetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -339,6 +341,7 @@
 				B73FF3B82D8C206300BF24BF /* ManagerService.swift */,
 				B73FF3C92D8CAB6E00BF24BF /* GameDescriptionService.swift */,
 				B73FF3D92D8D761400BF24BF /* DepositFeePaymentService.swift */,
+				B73FF4312D919E3E00BF24BF /* NetworkHelper.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -649,6 +652,7 @@
 				B73FF3AA2D8B2C9400BF24BF /* CartViewModel.swift in Sources */,
 				B73FF3422D884B4900BF24BF /* Refund.swift in Sources */,
 				B73FF3B22D8C143B00BF24BF /* SharedComponents.swift in Sources */,
+				B73FF4322D919E3E00BF24BF /* NetworkHelper.swift in Sources */,
 				B73FF3C82D8CAB5100BF24BF /* GameDescription.swift in Sources */,
 				B73FF3862D8A1FB700BF24BF /* ClientService.swift in Sources */,
 				B73FF3282D86F13D00BF24BF /* CustomTextField.swift in Sources */,

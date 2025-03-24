@@ -2,23 +2,6 @@ import Foundation
 
 class ClientService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/client"
-    
-    private var bearerToken: String? {
-        return UserDefaults.standard.string(forKey: "token")
-    }
-
-    private func createRequest(url: URL, method: String, body: Data? = nil, requiresAuth: Bool = false) -> URLRequest {
-        var request = URLRequest(url: url)
-        request.httpMethod = method
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        if requiresAuth, let token = bearerToken {
-            request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
-        
-        request.httpBody = body
-        return request
-    }
 
     // Fetch all clients
     func fetchClients(completion: @escaping (Result<[Client], Error>) -> Void) {
@@ -27,7 +10,7 @@ class ClientService {
             return
         }
 
-        let request = createRequest(url: url, method: "GET")
+        let request = NetworkHelper.createRequest(url: url, method: "GET")
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
@@ -59,7 +42,7 @@ class ClientService {
             return
         }
 
-        let request = createRequest(url: url, method: "GET")
+        let request = NetworkHelper.createRequest(url: url, method: "GET")
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
@@ -103,7 +86,7 @@ class ClientService {
             return
         }
 
-        var request = createRequest(url: url, method: "POST", body: jsonData, requiresAuth: true)
+        var request = NetworkHelper.createRequest(url: url, method: "POST", body: jsonData, requiresAuth: true)
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
@@ -141,7 +124,7 @@ class ClientService {
             return
         }
 
-        var request = createRequest(url: url, method: "PUT", body: jsonData, requiresAuth: true)
+        var request = NetworkHelper.createRequest(url: url, method: "PUT", body: jsonData, requiresAuth: true)
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
@@ -173,7 +156,7 @@ class ClientService {
             return
         }
 
-        let request = createRequest(url: url, method: "DELETE", requiresAuth: true)
+        let request = NetworkHelper.createRequest(url: url, method: "DELETE", requiresAuth: true)
 
         URLSession.shared.dataTask(with: request) { _, _, error in
             DispatchQueue.main.async {
