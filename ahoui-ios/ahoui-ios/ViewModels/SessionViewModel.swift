@@ -4,6 +4,8 @@ class SessionViewModel: ObservableObject {
     @Published var activeSession: Session?
     @Published var activeSessionId: String?
     @Published var nextSession: Session?
+    @Published var sessions: [Session] = []
+    @Published var selectedSessionId: String? = nil
     
     private let sessionService = SessionService()
 
@@ -57,5 +59,12 @@ class SessionViewModel: ObservableObject {
         return dateString // 🔴 Si aucun format ne fonctionne, on retourne la date brute
     }
 
+    func loadSessions() {
+        sessionService.fetchSessions { [weak self] fetchedSessions in
+            DispatchQueue.main.async {
+                self?.sessions = fetchedSessions
+            }
+        }
+    }
 
 }

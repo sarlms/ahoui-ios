@@ -3,15 +3,18 @@ import Foundation
 class SellerService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/seller"
     
-    // Static Bearer Token (Replace with your actual token)
-    private let bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyMjA4MzQ2LCJleHAiOjE3NDIyMTEzNDZ9.OfVxjQR11jlqvvRftTZwQP3jMsuHMAm540e2Ya0k_y4"
+    private var bearerToken: String? {
+        return UserDefaults.standard.string(forKey: "token")
+    }
 
     // Function to create an authenticated request
-    private func createRequest(url: URL, method: String, body: Data? = nil) -> URLRequest {
+    private func createRequest(url: URL, method: String, body: Data? = nil, requiresAuth: Bool = false) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
+        if requiresAuth, let token = bearerToken {
+            request.addValue("Bearer (token)", forHTTPHeaderField: "Authorization")
+        }
         request.httpBody = body
         return request
     }

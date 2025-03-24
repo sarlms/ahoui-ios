@@ -97,10 +97,11 @@
 		B73FF4152D8DFBB800BF24BF /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B73FF4142D8DFBB800BF24BF /* Poppins-Italic.ttf */; };
 		B73FF4172D8DFBBE00BF24BF /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B73FF4162D8DFBBE00BF24BF /* Poppins-ExtraLightItalic.ttf */; };
 		B73FF4192D8DFBC400BF24BF /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B73FF4182D8DFBC400BF24BF /* Poppins-Thin.ttf */; };
-		B73FF41D2D8E0CE100BF24BF /* CatalogueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF41C2D8E0CE100BF24BF /* CatalogueView.swift */; };
 		B73FF4252D8F53B500BF24BF /* ClientSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF4242D8F53B500BF24BF /* ClientSelectionView.swift */; };
 		B73FF4272D8F53CC00BF24BF /* ScanGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF4262D8F53CC00BF24BF /* ScanGameView.swift */; };
 		B73FF4292D8F53E500BF24BF /* CartItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF4282D8F53E500BF24BF /* CartItemView.swift */; };
+		B73FF42E2D915CE100BF24BF /* CatalogueVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF42D2D915CE100BF24BF /* CatalogueVIew.swift */; };
+		B73FF4302D915D0B00BF24BF /* CatalogueGameDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73FF42F2D915D0B00BF24BF /* CatalogueGameDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -195,10 +196,11 @@
 		B73FF4142D8DFBB800BF24BF /* Poppins-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Italic.ttf"; sourceTree = "<group>"; };
 		B73FF4162D8DFBBE00BF24BF /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
 		B73FF4182D8DFBC400BF24BF /* Poppins-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Thin.ttf"; sourceTree = "<group>"; };
-		B73FF41C2D8E0CE100BF24BF /* CatalogueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogueView.swift; sourceTree = "<group>"; };
 		B73FF4242D8F53B500BF24BF /* ClientSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientSelectionView.swift; sourceTree = "<group>"; };
 		B73FF4262D8F53CC00BF24BF /* ScanGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanGameView.swift; sourceTree = "<group>"; };
 		B73FF4282D8F53E500BF24BF /* CartItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemView.swift; sourceTree = "<group>"; };
+		B73FF42D2D915CE100BF24BF /* CatalogueVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogueVIew.swift; sourceTree = "<group>"; };
+		B73FF42F2D915D0B00BF24BF /* CatalogueGameDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogueGameDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,6 +296,7 @@
 		B73FF30D2D81D20200BF24BF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B73FF42C2D915CB500BF24BF /* Catalogue */,
 				B73FF3F42D8DD28E00BF24BF /* CreateSession */,
 				B73FF3EF2D8DAFF000BF24BF /* GameDescription */,
 				B73FF3E82D8D9D7900BF24BF /* Session */,
@@ -310,7 +313,6 @@
 				B73FF32F2D87423E00BF24BF /* HomeView.swift */,
 				B73FF3222D86ED1400BF24BF /* LoginView.swift */,
 				B73FF3242D86EFD000BF24BF /* NavBarView.swift */,
-				B73FF41C2D8E0CE100BF24BF /* CatalogueView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -481,6 +483,15 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		B73FF42C2D915CB500BF24BF /* Catalogue */ = {
+			isa = PBXGroup;
+			children = (
+				B73FF42D2D915CE100BF24BF /* CatalogueVIew.swift */,
+				B73FF42F2D915D0B00BF24BF /* CatalogueGameDetailView.swift */,
+			);
+			path = Catalogue;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -589,6 +600,7 @@
 				B73FF3232D86ED1400BF24BF /* LoginView.swift in Sources */,
 				B73FF3AE2D8B7FD200BF24BF /* NavigationViewModel.swift in Sources */,
 				B73FF3BD2D8C21DD00BF24BF /* EditManagerView.swift in Sources */,
+				B73FF4302D915D0B00BF24BF /* CatalogueGameDetailView.swift in Sources */,
 				B73FF3F62D8DD2A200BF24BF /* CreateSessionView.swift in Sources */,
 				B73FF3CE2D8CCA7D00BF24BF /* GameSelectionView.swift in Sources */,
 				B73FF3822D8A05AC00BF24BF /* RefundView.swift in Sources */,
@@ -604,6 +616,7 @@
 				B73FF3E72D8D95E100BF24BF /* TransactionCardTreasury.swift in Sources */,
 				B73FF3442D884CE000BF24BF /* RefundService.swift in Sources */,
 				B73FF36A2D89C5A800BF24BF /* DepositedGame.swift in Sources */,
+				B73FF42E2D915CE100BF24BF /* CatalogueVIew.swift in Sources */,
 				B73FF2FE2D81D1C000BF24BF /* ContentView.swift in Sources */,
 				B73FF3F32D8DD27200BF24BF /* CreateSessionViewModel.swift in Sources */,
 				B73FF3D22D8CCAB500BF24BF /* SellerSelectionView.swift in Sources */,
@@ -642,7 +655,6 @@
 				B73FF3712D89EEA900BF24BF /* DepositedGameSellerDetailView.swift in Sources */,
 				B73FF3402D8834A300BF24BF /* NewSellerView.swift in Sources */,
 				B73FF38F2D8A20C400BF24BF /* NewClientView.swift in Sources */,
-				B73FF41D2D8E0CE100BF24BF /* CatalogueView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

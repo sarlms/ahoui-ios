@@ -2,13 +2,18 @@ import Foundation
 
 class RefundService {
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/refund"
-    private let authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRkZGQ2MzVlNzZiMmU1OTUzZjk0NCIsImVtYWlsIjoic2FyYWhAZ21haWwuY29tIiwiaWF0IjoxNzQyNTU4MzQ2LCJleHAiOjE3NDI1NjEzNDZ9.h_jMc2JfZZ89CvVdqW8fddHbDgL4ggcN9BtTv9SJBBY"
+    
+    private var authToken: String? {
+        return UserDefaults.standard.string(forKey: "token")
+    }
 
-    private func createRequest(url: URL, method: String, body: Data? = nil) -> URLRequest {
+    private func createRequest(url: URL, method: String, body: Data? = nil, requiresAuth: Bool = false) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        if requiresAuth, let token = authToken {
+            request.addValue("Bearer (token)", forHTTPHeaderField: "Authorization")
+        }
         request.httpBody = body
         return request
     }

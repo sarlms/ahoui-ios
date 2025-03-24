@@ -47,7 +47,10 @@ struct NavBarView: View {
                         sectionTitle("Sessions et catalogue")
                         buttonRow([
                             ("SESSIONS", $shouldNavigateToSessionList, AnyView(SessionListView())),
-                            ("CATALOGUE", $shouldNavigateToCatalogue, AnyView(CatalogueView()))
+                            ("CATALOGUE", $shouldNavigateToCatalogue, AnyView(CatalogueView(
+                                viewModel: DepositedGameViewModel(service: DepositedGameService()),
+                                sessionViewModel: SessionViewModel()
+                            )))
                         ])
 
                         if viewModel.isAuthenticated {
