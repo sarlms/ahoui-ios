@@ -1,25 +1,23 @@
 import Foundation
 
 class ClientViewModel: ObservableObject {
-    @Published var clients: [Client] = []
-    @Published var selectedClient: Client?
+    @Published var clients: [Client] = [] // store fetched clients
+    @Published var selectedClient: Client? // store the selected client for page navigation
     @Published var isLoading = false
     @Published var errorMessage: String?
 
     
-    //utilisé pour commencer à taper l'email du client dans le Cart
+    // used for email text filtering
     @Published var uniqueClientEmails: [String] = []
     @Published var selectedEmail: String?
     @Published var searchText: String = "" {
         didSet {
             if searchText.isEmpty {
-                selectedClient = nil // Effacer le client sélectionné si l'input est vidé
+                selectedClient = nil // delete the selected client if input is empty
             }
         }
     }
-    
-    
-    //utilisé pour commencer à taper l'email du client dans le Cart
+    // for email text filtering
     var filteredEmails: [String] {
         if searchText.isEmpty {
             return uniqueClientEmails
@@ -35,7 +33,7 @@ class ClientViewModel: ObservableObject {
         self.service = service
     }
 
-    // Fetch all clients
+    /// Fetch all clients
     func fetchClients() {
         isLoading = true
         errorMessage = nil
@@ -55,7 +53,7 @@ class ClientViewModel: ObservableObject {
         }
     }
 
-    //🔹 Fetch a single client by ID
+    /// Fetch a single client by id
     func fetchClientById(clientId: String) {
         isLoading = true
         errorMessage = nil
@@ -73,7 +71,7 @@ class ClientViewModel: ObservableObject {
         }
     }
     
-    // Create a client
+    /// Create a client
     func createClient(client: Client) {
         service.createClient(client: client) { [weak self] result in
             DispatchQueue.main.async {
@@ -87,8 +85,7 @@ class ClientViewModel: ObservableObject {
         }
     }
     
-    
-    // utilisée dans Cart (encaissement)
+    /// Fetch all client emails
     func fetchUniqueClientEmails() {
         isLoading = true
         errorMessage = nil
@@ -98,7 +95,7 @@ class ClientViewModel: ObservableObject {
                 self?.isLoading = false
                 switch result {
                 case .success(let clients):
-                    let emails = Set(clients.map { $0.email }) // Récupérer les emails uniques
+                    let emails = Set(clients.map { $0.email }) // fetch unique emails
                     self?.uniqueClientEmails = Array(emails).sorted()
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
@@ -107,7 +104,7 @@ class ClientViewModel: ObservableObject {
         }
     }
     
-    // Update client details
+    /// Update client details
     func updateClient(client: Client, completion: @escaping (Bool) -> Void) {
         isLoading = true
         errorMessage = nil
@@ -130,7 +127,7 @@ class ClientViewModel: ObservableObject {
         }
     }
     
-    // Delete a client by ID
+    /// Delete a client by id
     func deleteClient(clientId: String, completion: @escaping (Bool) -> Void) {
         isLoading = true
         errorMessage = nil
@@ -151,6 +148,7 @@ class ClientViewModel: ObservableObject {
         }
     }
     
+    /// Fetch a client by email
     func fetchClientByEmail(email: String) {
         guard let client = clients.first(where: { $0.email == email }) else {
             service.fetchClients { [weak self] result in
@@ -161,7 +159,7 @@ class ClientViewModel: ObservableObject {
                             self?.selectedClient = foundClient
                         }
                     case .failure(let error):
-                        self?.errorMessage = "❌ Impossible de récupérer le client : \(error.localizedDescription)"
+                        self?.errorMessage = "Error fetching the client : \(error.localizedDescription)"
                     }
                 }
             }
@@ -170,8 +168,5 @@ class ClientViewModel: ObservableObject {
 
         selectedClient = client
     }
-
-
-    
 
 }

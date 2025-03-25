@@ -1,5 +1,6 @@
 import Foundation
 
+// Represents the client in the database
 struct Client: Identifiable, Codable {
     let id: String
     let name: String
@@ -7,9 +8,8 @@ struct Client: Identifiable, Codable {
     let phone: String
     let address: String
 
-    // Map _id from MongoDB to id
     enum CodingKeys: String, CodingKey {
-        case id = "_id"
+        case id = "_id" // Maps the JSON field "_id" to the Swift property "id" because of MongoDB
         case name
         case email
         case phone

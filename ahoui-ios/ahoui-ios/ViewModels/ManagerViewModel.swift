@@ -1,13 +1,13 @@
 import Foundation
 
 class ManagerViewModel: ObservableObject {
-    @Published var managers: [Manager] = []
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
+    @Published var managers: [Manager] = [] // to store the fetched managers
+    @Published var isLoading: Bool = false // indicates if the data is being fetched
+    @Published var errorMessage: String? // stores error messages to display in the UI
 
-    private let service = ManagerService() // ✅ Injected service
+    private let service = ManagerService() // Injected service
 
-    /// Fetch managers from the API
+    /// Fetch all managers
     func fetchManagers() async {
         DispatchQueue.main.async { self.isLoading = true }
         
@@ -26,7 +26,7 @@ class ManagerViewModel: ObservableObject {
         DispatchQueue.main.async { self.isLoading = false }
     }
 
-    /// Create a new manager
+    /// Create a manager
     func createManager(_ manager: CreateManager) async {
         do {
             try await service.createManager(manager)
@@ -38,7 +38,7 @@ class ManagerViewModel: ObservableObject {
         }
     }
 
-    /// Update manager
+    /// Update a manager by id
     func updateManager(id: String, updatedManager: UpdateManager) async {
         do {
             try await service.updateManager(id: id, updatedManager: updatedManager)
@@ -50,14 +50,14 @@ class ManagerViewModel: ObservableObject {
         }
     }
     
-    /// Delete manager
+    /// Delete a manager by id
     func deleteManager(id: String) async {
         do {
             try await service.deleteManager(id: id)
             await fetchManagers() // Refresh the manager list after deletion
         } catch {
             await MainActor.run {
-                self.errorMessage = "Failed to delete manager: (error.localizedDescription)"
+                self.errorMessage = "Failed to delete manager: \(error.localizedDescription)"
             }
         }
     }

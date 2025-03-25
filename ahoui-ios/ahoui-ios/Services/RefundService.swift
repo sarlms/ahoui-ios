@@ -1,9 +1,10 @@
 import Foundation
 
 class RefundService {
+    
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/refund"
 
-    // ✅ Fetch refunds by seller
+    /// GET request to fetch refunds by seller
     func fetchRefundsBySeller(sellerId: String, completion: @escaping (Result<[Refund], Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/seller/\(sellerId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -34,7 +35,7 @@ class RefundService {
         }.resume()
     }
 
-    // ✅ Create refund
+    /// POST request to create a refund
     func createRefund(sellerId: String, refundAmount: Double, authViewModel: AuthViewModel, sessionViewModel: SessionViewModel, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let managerId = authViewModel.managerId else {
             completion(.failure(NSError(domain: "Manager ID not found", code: 0, userInfo: nil)))
@@ -64,9 +65,9 @@ class RefundService {
             
             
 
-            // ✅ Log the request body before sending it
+            // Log the request body before sending it
             if let jsonString = String(data: jsonData, encoding: .utf8) {
-                print("📤 Refund Request JSON:\n\(jsonString)")
+                print("Refund Request JSON:\n\(jsonString)")
             }
 
             var request = NetworkHelper.createRequest(url: url, method: "POST", body: jsonData)
@@ -91,7 +92,7 @@ class RefundService {
         }
     }
     
-    // ✅ Fetch all refunds
+    /// GET request to fetch all refunds
     func fetchAllRefunds(completion: @escaping (Result<[Refund], Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -103,29 +104,29 @@ class RefundService {
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 if let error = error {
-                    print("❌ Error fetching refunds: \(error.localizedDescription)")
+                    print("Error fetching refunds: \(error.localizedDescription)")
                     completion(.failure(error))
                     return
                 }
 
                 guard let data = data else {
-                    print("❌ No refund data received")
+                    print("No refund data received")
                     completion(.failure(NSError(domain: "No data", code: -2, userInfo: nil)))
                     return
                 }
 
-                // ✅ Log Raw Response
+                // Log Raw Response
                 if let rawJSON = String(data: data, encoding: .utf8) {
-                    print("📩 Raw Refund JSON Response: \(rawJSON)")
+                    print("Raw Refund JSON Response: \(rawJSON)")
                 }
 
-                // ✅ Attempt to Decode
+                // Attempt to Decode
                 do {
                     let refunds = try JSONDecoder().decode([Refund].self, from: data)
-                    print("✅ Successfully decoded refunds: \(refunds)")
+                    print("Successfully decoded refunds: \(refunds)")
                     completion(.success(refunds))
                 } catch {
-                    print("❌ Error decoding refunds: \(error.localizedDescription)")
+                    print("Error decoding refunds: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }

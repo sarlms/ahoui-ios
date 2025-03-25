@@ -1,9 +1,10 @@
 import Foundation
 
 class ManagerService {
+    
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/manager"
     
-    /// Fetch managers from the API
+    /// GET request to fetch all managers
     func fetchManagers() async throws -> [Manager] {
         guard let url = URL(string: baseURL) else { throw URLError(.badURL) }
         let request = try NetworkHelper.createRequest(url: url, method: "GET", requiresAuth: true)
@@ -16,7 +17,7 @@ class ManagerService {
         return try JSONDecoder().decode([Manager].self, from: data)
     }
 
-    /// Create a new manager
+    /// POST request to create a new manager
     func createManager(_ manager: CreateManager) async throws {
         guard let url = URL(string: "\(baseURL)/create") else { throw URLError(.badURL) }
         let jsonData = try JSONEncoder().encode(manager)
@@ -28,7 +29,7 @@ class ManagerService {
         }
     }
 
-    /// Update an existing manager
+    /// PUT request to update a manager by id
     func updateManager(id: String, updatedManager: UpdateManager) async throws {
         guard let url = URL(string: "\(baseURL)/\(id)") else { throw URLError(.badURL) }
         let jsonData = try JSONEncoder().encode(updatedManager)
@@ -40,7 +41,7 @@ class ManagerService {
         }
     }
 
-    /// Delete a manager by ID
+    /// DELETE request to delete a manager by id
     func deleteManager(id: String) async throws {
         guard let url = URL(string: "\(baseURL)/\(id)") else { throw URLError(.badURL) }
         let request = try NetworkHelper.createRequest(url: url, method: "DELETE", requiresAuth: true)

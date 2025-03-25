@@ -1,8 +1,10 @@
 import Foundation
 
 class SellerService {
+    
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/seller"
 
+    /// GET request to fetch all sellers
     func fetchSellers(completion: @escaping (Result<[Seller], Error>) -> Void) {
         guard let url = URL(string: baseURL) else { return }
         let request = NetworkHelper.createRequest(url: url, method: "GET")
@@ -20,7 +22,7 @@ class SellerService {
                 return
             }
 
-            // ✅ Debug: Print raw response
+            // Debug: Print raw response
             if let jsonString = String(data: data, encoding: .utf8) {
                 //print("Raw JSON Response: \(jsonString)")
             }
@@ -37,7 +39,7 @@ class SellerService {
         }.resume()
     }
 
-
+    /// GET request to fetch a single seller by id
     func fetchSeller(id: String, completion: @escaping (Result<Seller, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(id)") else { return }
         let request = NetworkHelper.createRequest(url: url, method: "GET")
@@ -62,6 +64,7 @@ class SellerService {
         }.resume()
     }
 
+    /// DELETE method to delete a seller by id
     func deleteSeller(id: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(id)") else { return }
         let request = NetworkHelper.createRequest(url: url, method: "DELETE")
@@ -77,6 +80,7 @@ class SellerService {
         }.resume()
     }
     
+    /// PUT request to update a seller by id
     func updateSeller(id: String, updatedSeller: Seller, completion: @escaping (Result<Seller, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(id)") else { return }
 
@@ -107,6 +111,7 @@ class SellerService {
         }
     }
     
+    /// POST request to create a seller
     func createSeller(_ seller: Seller, completion: @escaping (Result<Seller, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)") else { return } // Ensure correct API endpoint
 
@@ -139,6 +144,7 @@ class SellerService {
         }
     }
     
+    /// POST request to create a refund
     func createRefund(refund: Refund, completion: @escaping (Result<Void, Error>) -> Void) {
             guard let url = URL(string: "\(baseURL)/refund") else { return }
             
@@ -160,7 +166,7 @@ class SellerService {
             }
         }
     
-    
+    /// PUT request to update the amount owned to a seller
     func updateSellerAmountOwed(sellerId: String, amount: Double, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(sellerId)") else { return }
 
@@ -182,6 +188,5 @@ class SellerService {
             }
         }.resume()
     }
-
 
 }

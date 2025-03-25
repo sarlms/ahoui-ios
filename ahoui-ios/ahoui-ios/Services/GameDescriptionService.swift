@@ -1,13 +1,7 @@
-//
-//  GameDescription.swift
-//  ahoui-ios
-//
-//  Created by etud on 20/03/2025.
-//
-
 import Foundation
 
 class GameDescriptionService {
+    
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/gameDescription"
 
     func fetchAllGames(completion: @escaping (Result<[GameDescription], Error>) -> Void) {

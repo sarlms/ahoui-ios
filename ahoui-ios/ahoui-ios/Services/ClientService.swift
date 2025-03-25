@@ -1,9 +1,10 @@
 import Foundation
 
 class ClientService {
+    
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/client"
 
-    // Fetch all clients
+    /// GET request to fetch all clients
     func fetchClients(completion: @escaping (Result<[Client], Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -35,7 +36,7 @@ class ClientService {
         }.resume()
     }
 
-    // Fetch a single client by ID
+    /// GET request to fetch a single client by id
     func fetchClientById(clientId: String, completion: @escaping (Result<Client, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(clientId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -67,7 +68,7 @@ class ClientService {
         }.resume()
     }
 
-    // Create a new client
+    /// POST request to create a new client
     func createClient(client: Client, completion: @escaping (Result<Client, Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -111,7 +112,7 @@ class ClientService {
         }.resume()
     }
 
-    // Update an existing client
+    /// PUT request to update a client by id
     func updateClient(clientId: String, client: Client, completion: @escaping (Result<Client, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(clientId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -149,7 +150,7 @@ class ClientService {
         }.resume()
     }
 
-    // Delete a client by ID
+    /// DELETE request to delete a client by id
     func deleteClient(clientId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(clientId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))

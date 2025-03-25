@@ -1,8 +1,10 @@
 import Foundation
 
 class DepositedGameService {
+    
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr/depositedGame"
 
+    /// POST request to deposit a game
     func createDepositedGame(data: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
@@ -27,6 +29,7 @@ class DepositedGameService {
         }.resume()
     }
 
+    /// GET request to fetch all deposited games
     func fetchAllDepositedGames(completion: @escaping (Result<[DepositedGame], Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
@@ -51,13 +54,14 @@ class DepositedGameService {
                     let games = try JSONDecoder().decode([DepositedGame].self, from: data)
                     completion(.success(games))
                 } catch {
-                    print("❌ JSON Decoding Error for ALL games: \(error.localizedDescription)")
+                    print("JSON Decoding Error for ALL games: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }
         }.resume()
     }
 
+    /// GET request to fetch all deposited game by a seller
     func fetchDepositedGamesBySeller(sellerId: String, completion: @escaping (Result<[SellerDepositedGameSeller], Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/seller/\(sellerId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
@@ -82,13 +86,14 @@ class DepositedGameService {
                     let games = try JSONDecoder().decode([SellerDepositedGameSeller].self, from: data)
                     completion(.success(games))
                 } catch {
-                    print("❌ JSON Decoding Error for SELLER games: \(error.localizedDescription)")
+                    print("JSON Decoding Error for SELLER games: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }
         }.resume()
     }
 
+    /// PUT request to update the game status as "sold"
     func markAsSold(gameId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(gameId)") else { return }
 
@@ -111,6 +116,7 @@ class DepositedGameService {
         }.resume()
     }
 
+    /// GET request to fetch a deposited game by the game's id
     func fetchDepositedGameById(gameId: String, completion: @escaping (Result<DepositedGame, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/\(gameId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
@@ -142,6 +148,7 @@ class DepositedGameService {
         }.resume()
     }
 
+    /// PATCH request to update a deposited game
     func updateDepositedGame(id: String, with fields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/depositedGame/\(id)") else {
             completion(.failure(URLError(.badURL)))

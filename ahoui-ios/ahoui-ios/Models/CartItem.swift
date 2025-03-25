@@ -1,12 +1,6 @@
-//
-//  CarteItem.swift
-//
-//
-//  Created by etud on 19/03/2025.
-//
-
 import Foundation
 
+/// Represents a cart item
 struct CartItem: Identifiable {
     let id: String
     let game: DepositedGame

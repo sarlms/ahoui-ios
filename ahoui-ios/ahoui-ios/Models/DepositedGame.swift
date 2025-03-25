@@ -1,5 +1,6 @@
 import Foundation
 
+/// Represents a game deposited by a seller for a session
 struct DepositedGame: Identifiable, Codable {
     let id: String
     let seller: DepositedGameSellerInfo?
@@ -10,19 +11,18 @@ struct DepositedGame: Identifiable, Codable {
     let pickedUp: Bool
     let sold: Bool
 
-    // ✅ Map `_id` from MongoDB to `id`
     enum CodingKeys: String, CodingKey {
-        case id = "_id"
-        case seller = "sellerId" // ✅ Correct mapping
-        case session = "sessionId" // ✅ Correct mapping
-        case gameDescription = "gameDescriptionId" // ✅ Correct mapping
+        case id = "_id" // Maps the JSON field "_id" to the Swift property "id" because of MongoDB
+        case seller = "sellerId" // Reference to seller object
+        case session = "sessionId" // reference to session object
+        case gameDescription = "gameDescriptionId" // reference to game description object
         case salePrice
         case forSale
         case pickedUp
         case sold
     }
     
-    // ✅ Initialisation avec des valeurs par défaut
+    // wtf is this sarah
     init(id: String = UUID().uuidString,
          seller: DepositedGameSellerInfo? = nil,
          session: DepositedGameSessionInfo? = nil,
@@ -42,33 +42,33 @@ struct DepositedGame: Identifiable, Codable {
     }
 }
 
-// 🔹 Nested struct for seller details
+/// Nested struct for seller details
 struct DepositedGameSellerInfo: Codable {
     let id: String
     let name: String
     let email: String?
 
     enum CodingKeys: String, CodingKey {
-        case id = "_id"
+        case id = "_id" // Maps the JSON field "_id" to the Swift property "id" because of MongoDB
         case name
         case email
     }
 }
 
-// 🔹 Nested struct for session details
+/// Nested struct for session details
 struct DepositedGameSessionInfo: Codable {
     let id: String
     let name: String
-    let saleComission: Int? // ✅ Removed startDate and endDate (they were missing in API)
+    let saleComission: Int?
 
     enum CodingKeys: String, CodingKey {
-        case id = "_id"
+        case id = "_id" // Maps the JSON field "_id" to the Swift property "id" because of MongoDB
         case name
         case saleComission
     }
 }
 
-// 🔹 Nested struct for game description
+/// Nested struct for game description
 struct DepositedGameDescriptionInfo: Codable {
     let id: String
     let name: String
@@ -80,7 +80,7 @@ struct DepositedGameDescriptionInfo: Codable {
     let ageRange: String
 
     enum CodingKeys: String, CodingKey {
-        case id = "_id"
+        case id = "_id" // Maps the JSON field "_id" to the Swift property "id" because of MongoDB
         case name
         case publisher
         case description
