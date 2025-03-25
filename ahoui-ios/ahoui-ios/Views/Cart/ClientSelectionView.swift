@@ -3,6 +3,7 @@ import SwiftUI
 struct ClientSelectionView: View {
     @ObservedObject var clientViewModel: ClientViewModel
     @Binding var showDropdown: Bool
+    @State private var showNewClientView = false
 
     var body: some View {
         VStack(spacing: 5) {
@@ -100,7 +101,7 @@ struct ClientSelectionView: View {
                     .foregroundColor(.black)
                     .padding(.top, 5)
                     .onTapGesture {
-                        print("Action de création d’un nouveau client")
+                        showNewClientView = true
                     }
             }
             .padding()
@@ -112,6 +113,11 @@ struct ClientSelectionView: View {
         .onAppear {
             clientViewModel.fetchClients()
             clientViewModel.fetchUniqueClientEmails()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .sheet(isPresented: $showNewClientView) {
+            NewClientView()
+                .environmentObject(clientViewModel)
         }
     }
 }

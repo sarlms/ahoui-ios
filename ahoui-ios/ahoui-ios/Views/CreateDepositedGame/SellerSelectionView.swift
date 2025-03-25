@@ -3,6 +3,8 @@ import SwiftUI
 struct SellerSelectionView: View {
     @ObservedObject var sellerViewModel: SellerViewModel
     @Binding var showSellerDropdown: Bool
+    @State private var showNewSellerView = false
+
 
     var body: some View {
         ZStack {
@@ -109,8 +111,9 @@ struct SellerSelectionView: View {
                         .foregroundColor(.black)
                         .padding(.top, 5)
                         .onTapGesture {
-                            print("Action de création d’un nouveau vendeur")
+                            showNewSellerView = true
                         }
+
                     
                 }
                 .padding()
@@ -121,5 +124,9 @@ struct SellerSelectionView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .sheet(isPresented: $showNewSellerView) {
+            NewSellerView()
+                .environmentObject(sellerViewModel)
+        }
     }
 }
