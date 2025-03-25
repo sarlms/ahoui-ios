@@ -16,9 +16,9 @@ class AuthViewModel: ObservableObject {
 
     private let baseURL = "https://ahoui-back.cluster-ig4.igpolytech.fr"
 
-    /// 🔹 Login Function
+    /// Login Function
     func login() {
-        print("🔑 Logging in with email:", email)
+        print("Logging in with email:", email)
         isLoading = true
         loginError = nil
 
@@ -45,47 +45,47 @@ class AuthViewModel: ObservableObject {
                 self.isLoading = false
 
                 if let error = error {
-                    print("❌ Erreur de requête : \(error.localizedDescription)")
+                    print("Erreur de requête : \(error.localizedDescription)")
                     self.loginError = "Erreur de connexion au serveur"
                     return
                 }
 
                 guard let data = data else {
-                    print("❌ Aucune donnée reçue")
+                    print("Aucune donnée reçue")
                     self.loginError = "Aucune réponse du serveur"
                     return
                 }
 
                 let json = try? JSONSerialization.jsonObject(with: data, options: [])
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("📩 Réponse brute du serveur : \(responseString)")
+                    print("Réponse brute du serveur : \(responseString)")
                 }
 
                 guard let responseDict = json as? [String: Any],
                       let token = responseDict["token"] as? String else {
-                    print("🚨 API Response:", json ?? "Invalid JSON")
+                    print("API Response:", json ?? "Invalid JSON")
                     self.loginError = "Email ou mot de passe incorrect"
                     return
                 }
 
-                // ✅ Decode JWT Token to Get Manager ID
+                // Decode JWT Token to Get Manager ID
                 if let managerId = self.decodeJWT(token: token) {
                     self.authToken = token
                     self.managerId = managerId
                     self.isAuthenticated = true
                     self.fetchManagerProfile(token: token) // Fetch additional data
                 } else {
-                    print("❌ Impossible de décoder le JWT")
+                    print("Impossible de décoder le JWT")
                     self.loginError = "Erreur d'authentification"
                 }
             }
         }.resume()
     }
 
-    /// 🔹 Fetch Manager Profile After Login
+    /// Fetch Manager Profile After Login
     func fetchManagerProfile(token: String) {
         guard let url = URL(string: "\(baseURL)/manager/profile") else {
-            print("❌ Invalid URL")
+            print("Invalid URL")
             return
         }
 
@@ -95,28 +95,28 @@ class AuthViewModel: ObservableObject {
         
         DispatchQueue.main.async {
             UserDefaults.standard.set(token, forKey: "token")
-            print("✅✅✅✅✅ TOKEN ajouté en local storage : \(token)")
+            print("TOKEN ajouté en local storage : \(token)")
         }
 
         URLSession.shared.dataTask(with: request) { data, _, error in
             if let error = error {
-                print("❌ Error fetching profile: \(error.localizedDescription)")
+                print("Error fetching profile: \(error.localizedDescription)")
                 return
             }
 
             guard let data = data else {
-                print("❌ No data received")
+                print("No data received")
                 return
             }
 
             let json = try? JSONSerialization.jsonObject(with: data, options: [])
             if let responseString = String(data: data, encoding: .utf8) {
-                print("📩 Server Response (Profile): \(responseString)")
+                print("Server Response (Profile): \(responseString)")
             }
 
             guard let responseDict = json as? [String: Any],
                   let managerId = responseDict["id"] as? String else {
-                print("🚨 API Response (Profile) is invalid:", json ?? "No JSON received")
+                print("API Response (Profile) is invalid:", json ?? "No JSON received")
                 return
             }
 
@@ -127,18 +127,18 @@ class AuthViewModel: ObservableObject {
                 self.isAdmin = responseDict["admin"] as? Bool ?? true
                 self.storeId = responseDict["storeId"] as? String
 
-                print("✅ Manager Info: \(self.firstName ?? "") \(self.lastName ?? ""), Admin: \(self.isAdmin)")
+                print("Manager Info: \(self.firstName ?? "") \(self.lastName ?? ""), Admin: \(self.isAdmin)")
             }
         }.resume()
     }
 
 
 
-    /// 🔹 Decode JWT Token to Extract Manager ID
+    /// Decode JWT Token to Extract Manager ID
     func decodeJWT(token: String) -> String? {
         let parts = token.split(separator: ".")
         guard parts.count == 3 else {
-            print("❌ JWT structure is invalid")
+            print("JWT structure is invalid")
             return nil
         }
 
@@ -152,35 +152,35 @@ class AuthViewModel: ObservableObject {
         }
 
         guard let payloadData = Data(base64Encoded: payload) else {
-            print("❌ Failed to decode Base64 JWT payload")
+            print("Failed to decode Base64 JWT payload")
             return nil
         }
 
         do {
             let jsonObject = try JSONSerialization.jsonObject(with: payloadData, options: [])
             if let payloadDict = jsonObject as? [String: Any], let managerId = payloadDict["id"] as? String {
-                print("✅ Extracted Manager ID from JWT: \(managerId)")
+                print("Extracted Manager ID from JWT: \(managerId)")
 
-                // ✅ Stocke dans UserDefaults et met à jour `shouldNavigateToHome`
+                // Stocke dans UserDefaults et met à jour `shouldNavigateToHome`
                 DispatchQueue.main.async {
                     self.managerId = managerId
                     UserDefaults.standard.set(managerId, forKey: "managerId")
-                    self.shouldNavigateToHome = true  // ✅ Active la navigation
-                    print("🔄 shouldNavigateToHome is set to TRUE ✅")
+                    self.shouldNavigateToHome = true  // Active la navigation
+                    print("shouldNavigateToHome is set to TRUE")
                 }
                 return managerId
             } else {
-                print("🚨 JWT Payload Invalid:", jsonObject)
+                print("JWT Payload Invalid:", jsonObject)
             }
         } catch {
-            print("❌ Error parsing JWT JSON:", error.localizedDescription)
+            print("Error parsing JWT JSON:", error.localizedDescription)
         }
 
         return nil
     }
 
 
-    /// 🔹 Logout Function
+    /// Logout Function
     func logout() {
         self.authToken = nil
         self.managerId = nil
@@ -191,7 +191,7 @@ class AuthViewModel: ObservableObject {
         self.isAuthenticated = false
         self.shouldNavigateToHome = false
         
-        // 🔹 Supprimer le managerId de UserDefaults
+        // Supprimer le managerId de UserDefaults
         UserDefaults.standard.removeObject(forKey: "managerId")
     }
 }

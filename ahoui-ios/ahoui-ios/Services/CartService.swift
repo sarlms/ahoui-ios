@@ -1,10 +1,3 @@
-//
-//  CheckoutService.swift
-//  
-//
-//  Created by etud on 19/03/2025.
-//
-
 import Foundation
 
 class CartService {
@@ -13,34 +6,34 @@ class CartService {
 
     @Published private(set) var cartItems: [DepositedGame] = []
 
-    /// Ajouter un jeu au panier s'il est à vendre et n'est pas déjà présent
+    /// POST request to add a game to the cart if it is not already inside the cart
     func addToCart(game: DepositedGame) {
         guard game.forSale else {
-            print("❌ Ce jeu n'est pas en vente.")
+            print("Ce jeu n'est pas en vente.")
             return
         }
         
         guard !game.sold else {
-            print("❌ Ce jeu est déjà vendu.")
+            print("Ce jeu est déjà vendu.")
             return
         }
 
         if cartItems.contains(where: { $0.id == game.id }) {
-            print("❌ Ce jeu est déjà dans le panier.")
+            print("Ce jeu est déjà dans le panier.")
             return
         }
 
         cartItems.append(game)
-        print("✅ Jeu ajouté au panier : \(game.gameDescription.name)")
+        print("Jeu ajouté au panier : \(game.gameDescription.name)")
     }
 
-    /// Supprimer un jeu du panier
+    /// DELETE request to remove a game from the cart
     func removeFromCart(game: DepositedGame) {
         cartItems.removeAll { $0.id == game.id }
-        print("🗑️ Jeu retiré du panier : \(game.gameDescription.name)")
+        print("Jeu retiré du panier : \(game.gameDescription.name)")
     }
 
-    /// Récupérer les jeux dans le panier
+    /// get the cart items
     func getCartItems() -> [DepositedGame] {
         return cartItems
     }

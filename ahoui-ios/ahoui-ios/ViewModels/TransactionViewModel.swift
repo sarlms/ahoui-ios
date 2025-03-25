@@ -20,7 +20,7 @@ class TransactionViewModel: ObservableObject {
         self.service = service
     }
 
-    // ✅ Fetch transactions for a seller
+    /// Fetch transactions for a seller
     func fetchTransactionsBySeller(sellerId: String) {
         isLoading = true
         errorMessage = nil
@@ -38,7 +38,7 @@ class TransactionViewModel: ObservableObject {
         }
     }
     
-    // ✅ Fetch all transactions
+    /// Fetch all transactions
     func fetchAllTransactions() async {
         DispatchQueue.main.async {
             self.isLoading = true

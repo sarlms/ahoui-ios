@@ -1,12 +1,6 @@
-//
-//  CartViewModel.swift
-//  session
-//
-//  Created by etud on 19/03/2025.
-//
 import Foundation
 
-// ✅ Création d'une structure identifiable pour gérer les erreurs
+// Création d'une structure identifiable pour gérer les erreurs
 struct ErrorMessage: Identifiable {
     let id = UUID() // Identifiant unique pour SwiftUI
     let message: String
@@ -24,7 +18,7 @@ class CartViewModel: ObservableObject {
     private let depositedGameService = DepositedGameService()
     private let authViewModel = AuthViewModel()
 
-    /// 🔹 Calcule automatiquement le total des jeux dans le panier
+    /// Calcule automatiquement le total des jeux dans le panier
     var totalPrice: Double {
         return cartItems.reduce(0) { $0 + $1.salePrice }
     }
@@ -50,19 +44,19 @@ class CartViewModel: ObservableObject {
                     let depositedGame = try JSONDecoder().decode(DepositedGame.self, from: data)
 
                     if !depositedGame.forSale {
-                        self.errorMessage = ErrorMessage(message: "❌ Ce jeu n'est pas à vendre.")
+                        self.errorMessage = ErrorMessage(message: "Ce jeu n'est pas à vendre.")
                         return
                     }
 
                     if self.cartItems.contains(where: { $0.id == depositedGame.id }) {
-                        self.errorMessage = ErrorMessage(message: "❌ Ce jeu est déjà dans le panier.")
+                        self.errorMessage = ErrorMessage(message: "Ce jeu est déjà dans le panier.")
                         return
                     }
 
                     self.cartService.addToCart(game: depositedGame)
                     self.cartItems = self.cartService.getCartItems()
                 } catch {
-                    self.errorMessage = ErrorMessage(message: "❌ Erreur de décodage des données.")
+                    self.errorMessage = ErrorMessage(message: "Erreur de décodage des données.")
                 }
             }
         }.resume()
@@ -74,52 +68,52 @@ class CartViewModel: ObservableObject {
     }
     
     func finalizeCheckout(clientId: String?) {
-        print("🔹 Début de finalizeCheckout")
+        print("Début de finalizeCheckout")
 
-        // 🔹 Vérification si le panier est vide
+        // Vérification si le panier est vide
         guard !cartItems.isEmpty else {
             DispatchQueue.main.async {
-                self.errorMessage = ErrorMessage(message: "❌ Votre panier est vide.")
+                self.errorMessage = ErrorMessage(message: "Votre panier est vide.")
             }
-            print("❌ Le panier est vide, abandon de la transaction.")
+            print("Le panier est vide, abandon de la transaction.")
             return
         }
         
         // 🔹 Vérification si un client est sélectionné
         guard let clientId = clientId else {
             DispatchQueue.main.async {
-                self.errorMessage = ErrorMessage(message: "❌ Veuillez sélectionner un client.")
+                self.errorMessage = ErrorMessage(message: "Veuillez sélectionner un client.")
             }
-            print("❌ Aucun client sélectionné, abandon de la transaction.")
+            print("Aucun client sélectionné, abandon de la transaction.")
             return
         }
-        print("✅ Client sélectionné : \(clientId)")
+        print("Client sélectionné : \(clientId)")
 
         // 🔹 Récupération du managerId depuis UserDefaults
         guard let managerId = UserDefaults.standard.string(forKey: "managerId") else {
             DispatchQueue.main.async {
-                self.errorMessage = ErrorMessage(message: "❌ Impossible de récupérer le manager.")
+                self.errorMessage = ErrorMessage(message: "Impossible de récupérer le manager.")
             }
-            print("❌ Erreur : managerId introuvable")
+            print("Erreur : managerId introuvable")
             return
         }
-        print("✅ Manager ID récupéré depuis UserDefaults : \(managerId)")
+        print("Manager ID récupéré depuis UserDefaults : \(managerId)")
 
         // 🔹 Récupérer la session active
         sessionService.fetchActiveSessionId { sessionId in
             guard let sessionId = sessionId else {
                 DispatchQueue.main.async {
-                    self.errorMessage = ErrorMessage(message: "❌ Aucune session active trouvée.")
+                    self.errorMessage = ErrorMessage(message: "Aucune session active trouvée.")
                 }
-                print("❌ Session active introuvable")
+                print("Session active introuvable")
                 return
             }
-            print("✅ ID de la session active : \(sessionId)")
+            print("ID de la session active : \(sessionId)")
 
             // 🔹 Construction de la liste des transactions
             let transactions = self.cartItems.map { game in
-                let labelId = String(game.id)  // ✅ Forcer l'ID en String
-                print("🛠️ Vérification ID labelId :", labelId)  // ✅ Vérification de l'ID
+                let labelId = String(game.id)  // Forcer l'ID en String
+                print("Vérification ID labelId :", labelId)  // Vérification de l'ID
 
                 let transaction = TransactionRequest(
                     labelId: labelId,
@@ -133,21 +127,21 @@ class CartViewModel: ObservableObject {
 
 
 
-            // 📩 Log des transactions avant l'envoi
-            print("📩 Transactions à envoyer : \(transactions)")
+            // Log des transactions avant l'envoi
+            print("Transactions à envoyer : \(transactions)")
 
-            // 🔹 Envoi des transactions au backend
+            // Envoi des transactions au backend
             self.transactionService.createMultipleTransactions(transactions: transactions) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success:
-                        print("✅ Transactions envoyées avec succès.")
+                        print("Transactions envoyées avec succès.")
                         self.updateSoldGamesAndSellers(transactions: transactions)
-                        self.cartItems.removeAll() // ✅ Vider le panier après validation
-                        print("✅ Panier vidé après validation.")
+                        self.cartItems.removeAll() // Vider le panier après validation
+                        print("Panier vidé après validation.")
                     case .failure(let error):
-                        self.errorMessage = ErrorMessage(message: "❌ Erreur lors de la validation: \(error.localizedDescription)")
-                        print("❌ Erreur lors de la création des transactions : \(error.localizedDescription)")
+                        self.errorMessage = ErrorMessage(message: "Erreur lors de la validation: \(error.localizedDescription)")
+                        print("Erreur lors de la création des transactions : \(error.localizedDescription)")
                     }
                 }
             }

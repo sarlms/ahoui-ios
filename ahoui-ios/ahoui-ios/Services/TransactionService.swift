@@ -16,14 +16,14 @@ class TransactionService {
         if let token = authToken {
             request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         } else {
-            print("❌ Aucun token trouvé dans UserDefaults")
+            print("Aucun token trouvé dans UserDefaults")
         }
 
         request.httpBody = body
         return request
     }
 
-    // ✅ Fetch all transactions
+    /// GET request to fetch all transactions
     func fetchAllTransactions() async throws -> [TransactionList] {
         guard let url = URL(string: baseURL) else {
             throw URLError(.badURL)
@@ -39,7 +39,7 @@ class TransactionService {
         return try JSONDecoder().decode([TransactionList].self, from: data)
     }
 
-    // ✅ Fetch transactions by seller
+    /// GET request to fetch transactions by seller
     func fetchTransactionsBySeller(sellerId: String, completion: @escaping (Result<[Transaction], Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/seller/\(sellerId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -66,36 +66,37 @@ class TransactionService {
                     let transactions = try decoder.decode([Transaction].self, from: data)
                     completion(.success(transactions))
                 } catch {
-                    print("❌ Decoding Error: \(error.localizedDescription)")
-                    print("🛑 Raw JSON: \(String(data: data, encoding: .utf8) ?? "Invalid JSON")")
+                    print("Decoding Error: \(error.localizedDescription)")
+                    print("Raw JSON: \(String(data: data, encoding: .utf8) ?? "Invalid JSON")")
                     completion(.failure(error))
                 }
             }
         }.resume()
     }
     
+    /// POST request to create many transactions at once
     func createMultipleTransactions(transactions: [TransactionRequest], completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
-            print("❌ Erreur : URL invalide")
+            print("Erreur : URL invalide")
             return
         }
         
-        // 🔹 Boucle sur chaque transaction pour les envoyer individuellement
+        // Boucle sur chaque transaction pour les envoyer individuellement
         let dispatchGroup = DispatchGroup()
         var hasError = false
 
         for transaction in transactions {
-            dispatchGroup.enter()  // 🔄 Début d'une requête
+            dispatchGroup.enter()  // Début d'une requête
             
             guard let jsonData = try? JSONEncoder().encode(transaction) else {
-                print("❌ Erreur lors de l'encodage JSON pour \(transaction)")
+                print("Erreur lors de l'encodage JSON pour \(transaction)")
                 hasError = true
                 dispatchGroup.leave()
                 continue
             }
 
-            print("📩 Envoi d'une transaction unique : \(String(data: jsonData, encoding: .utf8) ?? "❌ JSON invalide")")
+            print("Envoi d'une transaction unique : \(String(data: jsonData, encoding: .utf8) ?? "JSON invalide")")
 
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
@@ -104,31 +105,31 @@ class TransactionService {
             if let token = authToken {
                 request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             } else {
-                print("❌ Aucun token trouvé dans UserDefaults")
+                print("Aucun token trouvé dans UserDefaults")
             }
 
             request.httpBody = jsonData
 
             URLSession.shared.dataTask(with: request) { data, response, error in
-                defer { dispatchGroup.leave() }  // ✅ Fin de la requête
+                defer { dispatchGroup.leave() }  // Fin de la requête
 
                 if let error = error {
-                    print("❌ Erreur réseau lors de l'envoi : \(error.localizedDescription)")
+                    print("Erreur réseau lors de l'envoi : \(error.localizedDescription)")
                     hasError = true
                     return
                 }
 
                 if let httpResponse = response as? HTTPURLResponse {
-                    print("🔍 Réponse HTTP : \(httpResponse.statusCode)")
+                    print("Réponse HTTP : \(httpResponse.statusCode)")
                 }
 
                 if let data = data {
-                    print("📩 Réponse du serveur : \(String(data: data, encoding: .utf8) ?? "❌ Impossible d'afficher la réponse")")
+                    print("Réponse du serveur : \(String(data: data, encoding: .utf8) ?? "Impossible d'afficher la réponse")")
                 }
             }.resume()
         }
 
-        // 🔹 Notifier quand toutes les requêtes sont terminées
+        // Notifier quand toutes les requêtes sont terminées
         dispatchGroup.notify(queue: .main) {
             if hasError {
                 completion(.failure(NSError(domain: "Une ou plusieurs transactions ont échoué", code: -5, userInfo: nil)))

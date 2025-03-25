@@ -36,16 +36,16 @@ class SessionViewModel: ObservableObject {
     
     func formatDate(_ dateString: String) -> String {
         let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // ✅ Ajout du support pour les millisecondes
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // Ajout du support pour les millisecondes
         
         if let date = isoFormatter.date(from: dateString) {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "fr_FR") // ✅ Français
-            formatter.dateFormat = "dd/MM/yyyy HH:mm" // ✅ Format voulu
+            formatter.locale = Locale(identifier: "fr_FR") // Français
+            formatter.dateFormat = "dd/MM/yyyy HH:mm" // Format voulu
             return formatter.string(from: date)
         }
         
-        // 🔴 Si le format ISO ne fonctionne pas, essayons un autre format courant
+        // Si le format ISO ne fonctionne pas, essayons un autre format courant
         let alternativeFormatter = DateFormatter()
         alternativeFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         
@@ -56,7 +56,7 @@ class SessionViewModel: ObservableObject {
             return formatter.string(from: date)
         }
 
-        return dateString // 🔴 Si aucun format ne fonctionne, on retourne la date brute
+        return dateString // Si aucun format ne fonctionne, on retourne la date brute
     }
 
     func loadSessions() {

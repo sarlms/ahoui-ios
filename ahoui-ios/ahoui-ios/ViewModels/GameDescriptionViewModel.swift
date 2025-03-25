@@ -3,7 +3,7 @@ import Foundation
 class GameDescriptionViewModel: ObservableObject {
     @Published var gameDescriptions: [GameDescription] = []
     @Published var selectedGameDescription: GameDescription?
-    @Published var selectedGames: [GameDescription] = []  // ✅ Liste des jeux sélectionnés
+    @Published var selectedGames: [GameDescription] = []  // Liste des jeux sélectionnés
     @Published var uniqueGameNames: [String] = []
     @Published var selectedName: String?
     @Published var searchText: String = "" {
@@ -26,7 +26,7 @@ class GameDescriptionViewModel: ObservableObject {
     
     init(service: GameDescriptionService) {
         self.service = service
-        fetchGameDescriptions()  // ✅ Chargement immédiat
+        fetchGameDescriptions()  // Chargement immédiat
     }
     
     func fetchGameDescriptions() {
@@ -37,7 +37,7 @@ class GameDescriptionViewModel: ObservableObject {
                     self?.gameDescriptions = games
                     self?.uniqueGameNames = Array(Set(games.map { $0.name })).sorted()
                 case .failure(let error):
-                    print("❌ Erreur lors de la récupération des jeux : \(error.localizedDescription)")
+                    print("Erreur lors de la récupération des jeux : \(error.localizedDescription)")
                 }
             }
         }
@@ -52,13 +52,13 @@ class GameDescriptionViewModel: ObservableObject {
     
     func addGameToSelection() {
         guard let game = selectedGameDescription, !selectedGames.contains(where: { $0.id == game.id }) else { return }
-        selectedGames.append(game)  // ✅ Ajout du jeu sélectionné
-        searchText = ""  // ✅ Réinitialisation du champ
+        selectedGames.append(game)  // Ajout du jeu sélectionné
+        searchText = ""  // Réinitialisation du champ
         selectedGameDescription = nil
     }
     
     func removeGameFromSelection(game: GameDescription) {
-        selectedGames.removeAll { $0.id == game.id }  // ✅ Suppression d’un jeu de la liste
+        selectedGames.removeAll { $0.id == game.id }  // Suppression d’un jeu de la liste
     }
     
     func getGameDescriptionId(byName name: String) -> String? {
@@ -74,7 +74,7 @@ class GameDescriptionViewModel: ObservableObject {
                         self?.uniqueGameNames.append(newGame.name)
                         completion(true)
                     case .failure(let error):
-                        print("❌ Failed to create game: (error.localizedDescription)")
+                        print("Failed to create game: (error.localizedDescription)")
                         completion(false)
                     }
                 }
